@@ -10,6 +10,7 @@ app.prepare()
     .then(() => {
         const server = express();
 
+
         server.get('/a', (req, res) => {
             return app.render(req, res, '/b', req.query);
         });

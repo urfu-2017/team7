@@ -7,4 +7,4 @@ https://urfu-2017.github.io/webdev-slides/hackatone-01/index.html
 https://github.com/urfu-2017/hrudb-docs
 
 
-git remote add upstream <link to git repo>
+git remote add upstream https://github.com/urfu-2017/team7.git

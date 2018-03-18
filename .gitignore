@@ -115,3 +115,7 @@ $RECYCLE.BIN/
 
 
 # End of https://www.gitignore.io/api/osx,git,node,windows# Created by .ignore support plugin (hsz.mobi)
+
+
+**/.idea
+**/.next

@@ -1,4 +1,4 @@
-class User {
+module.exports.User = class User {
     constructor(id, name, avatarUrl, chats) {
         this.id = id;
         this.name = name;
@@ -7,7 +7,7 @@ class User {
     }
 }
 
-class Chat {
+module.exports.Chat = class Chat {
     constructor(id, name, users) {
         this.id = id;
         this.name = name;
@@ -15,7 +15,7 @@ class Chat {
     }
 }
 
-class Message {
+module.exports.Message = class Message {
     constructor(id, timestamp, author, content, originalContent, recepientChat) {
         this.id = id;
         this.timestamp = timestamp;

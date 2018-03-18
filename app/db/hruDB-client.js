@@ -1,4 +1,4 @@
-const { token } = require(__dirname + '/token');
+const { token } = require('../token');
 
 const url = 'https://hrudb.herokuapp.com';
 const got = require('got');
@@ -12,7 +12,10 @@ module.exports.postInStorage = function postInStorage(key, value) {
 }
 
 module.exports.getAllFromStorage = function getAllFromStorage(key) {
-    return sendRequest(`/storage/${key}/all`, 'GET');
+    return sendRequest(`/storage/${key}/all`, 'GET')
+        .then(response => {
+            return JSON.parse(response).map(elem => JSON.parse(elem));
+        });
 }
 
 module.exports.getLast = function getLast(key) {

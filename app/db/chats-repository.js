@@ -1,13 +1,17 @@
-const dbClient = require('./hruDBClient');
+const dbClient = require('./hruDB-client');
+const usersRepository = require('./users-repository');
 
-module.exports.ChatsRepository = class ChatsRepository {
+class ChatsRepository {
     static getAllChatsForUser(userId) {
-        let user = getUser(userId);
-
-        return Promise.all(user.chats.map(chatId => dbClient.getAllFromStorage(`Chats_${chatId}`)));
+        return usersRepository.getUser(userId)
+            .then(user => Promise.all(
+                user.chats.map(chatId => dbClient.getLast(`Chats_${chatId}`))
+            ));
     }
 
     static createChat(chat) {
         return dbClient.putInStorage(`Chats_${chat.id}`, chat);
     }
 }
+
+module.exports = ChatsRepository;

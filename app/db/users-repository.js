@@ -1,12 +1,14 @@
-const dbClient = require('./hruDBClient');
+const dbClient = require('./hruDB-client');
 
-module.exports.UsersRepository = class UsersRepository {
+class UsersRepository {
     static saveUser(user) {
         return dbClient.postInStorage('Users', user);
     }
 
     static getUser(userId) {
         return dbClient.getAllFromStorage('Users')
-            .then(users => users.find(user => user.id === id));
+            .then(users => users.find(user => user.id === userId));
     }
 }
+
+module.exports = UsersRepository;

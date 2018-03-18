@@ -1,4 +1,6 @@
-module.exports.MessagesRepository = class MessagesRepository {
+const dbClient = require('./hruDB-client');
+
+class MessagesRepository {
     static createMessage(message) {
         return dbClient.putInStorage(`Messages_${message.recepientChat}`, message);
     }
@@ -7,3 +9,5 @@ module.exports.MessagesRepository = class MessagesRepository {
         return dbClient.getAllFromStorage(`Messages_${chatId}`);
     }
 }
+
+module.exports = MessagesRepository;

@@ -3,6 +3,7 @@ node_js:
 - node
 cache: npm
 before_install: cd app
+script: echo "start deployment"
 deploy:
   skip_cleanup: true
   provider: script

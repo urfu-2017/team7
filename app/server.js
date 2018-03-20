@@ -1,15 +1,17 @@
 const express = require('express');
 const next = require('next');
+const authRouter = require('./routers/auth');
 
-const port = parseInt(process.env.PORT, 10) || 3000;
 const dev = process.env.NODE_ENV !== 'production';
 const app = next({ dev });
 const handle = app.getRequestHandler();
+const { HOSTNAME, PORT, HOST } = require('./constants');
 
 app.prepare()
     .then(() => {
         const server = express();
 
+        authRouter(server);
 
         server.get('/a', (req, res) => {
             return app.render(req, res, '/b', req.query);
@@ -27,11 +29,11 @@ app.prepare()
             return handle(req, res);
         });
 
-        server.listen(port, (err) => {
+        server.listen(PORT, HOSTNAME, (err) => {
             if (err) {
                 throw err;
             }
 
-            console.log(`> Ready on http://localhost:${port}`); 
+            console.log(`> Ready on http://${HOST}`);
         });
 });

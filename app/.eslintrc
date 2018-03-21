@@ -3,6 +3,7 @@
   "rules": {
     "comma-dangle": ["error", "never"],
     "indent": ["error", 4],
+    "react/jsx-indent": ["error", 4],
     "no-plusplus": "off"
   }
 }

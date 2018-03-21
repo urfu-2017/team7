@@ -6,7 +6,7 @@
     "build": "next build",
     "start": "NODE_ENV=production node server.js",
     "test": "npm run lint",
-    "lint": "eslint .",
+    "lint": "eslint . --ext .js,.jsx",
     "deploy": "now --public -e NODE_ENV=production --token $NOW_TOKEN --npm",
     "alias": "now alias --token=$NOW_TOKEN"
   },

@@ -1,40 +1,8 @@
 {
-  "plugins": [
-      "react"
-  ],
-  "parserOptions": {
-      "ecmaVersion": 6,
-      "sourceType": "module",
-      "ecmaFeatures": {
-          "jsx": true
-      }
-  },
-  "env": {
-      "es6":     true,
-      "browser": true,
-      "node":    true,
-      "mocha":   true
-  },   
-  "extends": [
-      "eslint:recommended", 
-      "plugin:react/recommended"
-  ],    
+  "extends": "airbnb",
   "rules": {
-      "arrow-spacing": ["error"],
-      "eol-last": ["error", "always"],
-      "linebreak-style": ["error"],
-      "no-multiple-empty-lines": "error",
-      "no-console": ["error", { "allow": ["log"] }],
-      "no-trailing-spaces": ["error"],
-      "no-var": ["error"],
-      "newline-before-return": ["error"],
-      "newline-per-chained-call": ["error"],
-      "object-shorthand": ["error", "always"],
-      "prefer-arrow-callback": ["error"],
-      "prefer-template": ["error"],
-      "prefer-const": ["error", { "destructuring": "all" }],
-      "prefer-destructuring": ["error", {"object": true, "array": false}],
-      "quotes": ["error", "single"],
-      "semi": ["error"]
+    "comma-dangle": ["error", "never"],
+    "indent": ["error", 4],
+    "no-plusplus": "off"
   }
 }

@@ -4,16 +4,8 @@ import testStore from '../../stores/test';
 import UserView from './User';
 
 class User extends React.Component {
-    onClick() {
-        testStore.change();
-    }
     render() {
-        return (
-            <UserView
-                show={testStore.show}
-                onClick={() => testStore.change()}
-            />
-        )
+        return <UserView show={testStore.show} onClick={() => testStore.change()} />;
     }
 }
 

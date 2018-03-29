@@ -1,15 +1,14 @@
-import { observable, action } from 'mobx';
+import { observable } from 'mobx';
 
 class TestStore {
   @observable show;
 
   constructor() {
-    this.show = true;
-    this.change = this.change.bind(this)
+      this.show = true;
   }
 
   change() {
-    this.show = !this.show;
+      this.show = !this.show;
   }
 }
 

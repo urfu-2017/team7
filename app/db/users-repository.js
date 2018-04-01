@@ -11,7 +11,7 @@ export class UsersRepository {
 
     async getUser(userId) {
         const users = await this.hrudbClient.getAll('Users');
-        console.info('users', users);
+
         return users.find(user => user.id === userId);
     }
 }

@@ -16,12 +16,16 @@ export class HrudbClient {
         return this.sendRequest(`/storage/${key}`, 'POST', value);
     }
 
-    getAll(key) {
-        return this.sendRequestJson(`/storage/${key}/all`, 'GET');
+    async getAll(key) {
+        const items = JSON.parse(await this.sendRequest(`/storage/${key}/all`, 'GET'));
+
+        return items.map(x => JSON.parse(x));
     }
 
-    get(key) {
-        return this.sendRequestJson(`/storage/${key}`, 'GET');
+    async get(key) {
+        const items = JSON.parse(await this.sendRequest(`/storage/${key}`, 'GET'));
+
+        return items;
     }
 
     remove(key) {

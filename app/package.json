@@ -2,9 +2,9 @@
   "name": "team7chat",
   "version": "1.0.0",
   "scripts": {
-    "dev": "node server.js",
+    "dev": "node .",
     "build": "next build",
-    "start": "NODE_ENV=production node server.js",
+    "start": "NODE_ENV=production node .",
     "mocha": "mocha --timeout 5000 --require babel-core/register",
     "mwatch": "npm run mocha -- --watch",
     "test": "npm run lint && npm run mocha",

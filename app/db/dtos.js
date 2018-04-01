@@ -16,12 +16,12 @@ module.exports.Chat = class Chat {
 }
 
 module.exports.Message = class Message {
-    constructor(id, timestamp, author, content, originalContent, recepientChat) {
+    constructor(id, timestamp, author, content, originalContent, recipientChat) {
         this.id = id;
         this.timestamp = timestamp;
         this.author = author;
         this.content = content;
         this.originalContent = originalContent;
-        this.recepientChat = recepientChat;
+        this.recipientChat = recipientChat;
     }
 }

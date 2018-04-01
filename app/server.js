@@ -13,17 +13,11 @@ app.prepare()
 
         authRouter(server);
 
-        server.get('/a', (req, res) => {
-            return app.render(req, res, '/b', req.query);
-        });
+        server.get('/b', (req, res) => app.render(req, res, '/a', req.query));
 
-        server.get('/b', (req, res) => {
-            return app.render(req, res, '/a', req.query);
-        });
+        server.get('/posts/:id', (req, res) => app.render(req, res, '/posts', { id: req.params.id }));
 
-        server.get('/posts/:id', (req, res) => {
-            return app.render(req, res, '/posts', { id: req.params.id });
-        });
+        server.get('*', (req, res) => handle(req, res));
 
         server.get('*', (req, res) => {
             return handle(req, res);
@@ -36,4 +30,4 @@ app.prepare()
 
             console.log(`> Ready on http://${HOST}`);
         });
-});
+    });

@@ -1,4 +1,4 @@
-import { HrudbClient } from '../db/hrudb-client';
+import HrudbClient from '../db/hrudb-client';
 import { expect } from 'chai';
 
 describe('HrudbClient', async () => {

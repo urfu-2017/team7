@@ -1,4 +1,4 @@
-export class MessagesRepository {
+export default class MessagesRepository {
     constructor(hrudbClient) {
         this.hrudbClient = hrudbClient;
     }

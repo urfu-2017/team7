@@ -1,7 +1,8 @@
-const url = 'https://hrudb.herokuapp.com';
 import got from 'got';
 
-export class HrudbClient {
+const url = 'https://hrudb.herokuapp.com';
+
+export default class HrudbClient {
     constructor(token) {
         this.token = token;
     }
@@ -34,15 +35,16 @@ export class HrudbClient {
 
     async sendRequest(relativeUrl, method, body) {
         const headers = {
-            'Authorization': this.token,
+            Authorization: this.token,
             'Content-Type': 'plain/text'
         };
         const options = {
             headers,
             method
         };
-        if (body !== undefined)
+        if (body !== undefined) {
             options.body = JSON.stringify(body);
+        }
 
         const response = await got(url + relativeUrl, options);
         return response.body;

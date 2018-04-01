@@ -1,9 +1,10 @@
-import { HrudbClient } from '../db/hrudb-client';
-import { ChatsRepository } from '../db/chats-repository';
-import { User, Chat, Message } from '../db/datatypes';
-import { MessagesRepository } from '../db/messages-repository';
-import { UsersRepository } from '../db/users-repository';
 import { expect } from 'chai';
+import HrudbClient from '../db/hrudb-client';
+import ChatsRepository from '../db/chats-repository';
+import MessagesRepository from '../db/messages-repository';
+import UsersRepository from '../db/users-repository';
+import { User, Chat, Message } from '../db/datatypes';
+
 
 describe('Repositories', async () => {
     const testToken = '8f92d8b92cffc5d2c4ddb2af9959dfa9391b6f43';

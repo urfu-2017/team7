@@ -1,4 +1,4 @@
-export class UsersRepository {
+export default class UsersRepository {
     constructor(hrudbClient) {
         this.hrudbClient = hrudbClient;
     }

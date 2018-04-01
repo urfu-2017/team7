@@ -1,4 +1,4 @@
-export class ChatsRepository {
+export default class ChatsRepository {
     constructor(hrudbClient, usersRepository) {
         this.hrudbClient = hrudbClient;
         this.usersRepository = usersRepository;
@@ -6,8 +6,9 @@ export class ChatsRepository {
 
     async getAllChatsForUser(userId) {
         const user = await this.usersRepository.getUser(userId);
+        const chats = await Promise.all(user.chats.map(chatId => this.hrudbClient.get(`Chats_${chatId}`)));
 
-        return await Promise.all(user.chats.map(chatId => this.hrudbClient.get(`Chats_${chatId}`)));
+        return chats;
     }
 
     createChat(chat) {

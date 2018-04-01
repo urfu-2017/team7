@@ -1,44 +1,46 @@
-const { token } = require('../token');
+'use strict';
 
 const url = 'https://hrudb.herokuapp.com';
-const got = require('got');
+import got from 'got';
 
-module.exports.putInStorage = function putInStorage(key, value) {
-    return sendRequest(`/storage/${key}`, 'PUT', JSON.stringify(value));
-}
+export class HrudbClient {
+    constructor(token) {
+        this.token = token;
+    }
 
-module.exports.postInStorage = function postInStorage(key, value) {
-    return sendRequest(`/storage/${key}`, 'POST', JSON.stringify(value));
-}
+    put(key, value) {
+        return this.sendRequest(`/storage/${key}`, 'PUT', value);
+    }
 
-module.exports.getAllFromStorage = function getAllFromStorage(key) {
-    return sendRequest(`/storage/${key}/all`, 'GET')
-        .then(response => {
-            return JSON.parse(response).map(elem => JSON.parse(elem));
-        });
-}
+    post(key, value) {
+        return this.sendRequest(`/storage/${key}`, 'POST', value);
+    }
 
-module.exports.getLast = function getLast(key) {
-    return sendRequest(`/storage/${key}`, 'GET');
-}
+    getAll(key) {
+        return this.sendRequestJson(`/storage/${key}/all`, 'GET');
+    }
 
-module.exports.delete = function del(key) {
-    return sendRequest(`/storage/${key}`, 'DELETE');
-}
+    get(key) {
+        return this.sendRequestJson(`/storage/${key}`, 'GET');
+    }
 
-function sendRequest(relativeUrl, method, body) {
-    const headers = {
-        'Authorization': token,
-        'Content-Type': 'plain/text'
-    };
-    const options = {
-        headers,
-        method,
-        body
-    };
-    const fullUrl = url + relativeUrl;
+    remove(key) {
+        return this.sendRequest(`/storage/${key}`, 'DELETE');
+    }
 
-    return got(fullUrl, options)
-        .then(response => response.body)
-        .catch(response => console.error(response));
+    async sendRequest(relativeUrl, method, body) {
+        const headers = {
+            'Authorization': this.token,
+            'Content-Type': 'plain/text'
+        };
+        const options = {
+            headers,
+            method
+        };
+        if (body !== undefined)
+            options.body = JSON.stringify(body);
+
+        const response = await got(url + relativeUrl, options);
+        return response.body;
+    }
 }

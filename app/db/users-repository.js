@@ -1,14 +1,17 @@
-const dbClient = require('./hruDB-client');
+'use strict';
 
-class UsersRepository {
-    static saveUser(user) {
-        return dbClient.postInStorage('Users', user);
+export class UsersRepository {
+    constructor(hrudbClient) {
+        this.hrudbClient = hrudbClient;
     }
 
-    static getUser(userId) {
-        return dbClient.getAllFromStorage('Users')
-            .then(users => users.find(user => user.id === userId));
+    saveUser(user) {
+        return this.hrudbClient.post('Users', user);
+    }
+
+    async getUser(userId) {
+        const users = await this.hrudbClient.getAll('Users');
+        console.info('users', users);
+        return users.find(user => user.id === userId);
     }
 }
-
-module.exports = UsersRepository;

@@ -1,13 +1,15 @@
-const dbClient = require('./hruDB-client');
+'use strict';
 
-class MessagesRepository {
-    static createMessage(message) {
-        return dbClient.putInStorage(`Messages_${message.recipientChat}`, message);
+export class MessagesRepository {
+    constructor(hrudbClient) {
+        this.hrudbClient = hrudbClient;
     }
 
-    static getMessagesFromChat(chatId) {
-        return dbClient.getAllFromStorage(`Messages_${chatId}`);
+    createMessage(message) {
+        return this.hrudbClient.put(`Messages_${message.recipientChat}`, message);
+    }
+
+    getMessagesFromChat(chatId) {
+        return this.hrudbClient.getAll(`Messages_${chatId}`);
     }
 }
-
-module.exports = MessagesRepository;

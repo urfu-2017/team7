@@ -1,5 +1,3 @@
-'use strict';
-
 export class User {
     constructor(id, name, avatarUrl, chats) {
         this.id = id;

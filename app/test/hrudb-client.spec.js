@@ -1,5 +1,3 @@
-'use strict';
-
 import { HrudbClient } from '../db/hrudb-client';
 import { expect } from 'chai';
 

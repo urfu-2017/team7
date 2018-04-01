@@ -1,5 +1,3 @@
-'use strict';
-
 export class MessagesRepository {
     constructor(hrudbClient) {
         this.hrudbClient = hrudbClient;

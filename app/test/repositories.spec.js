@@ -1,5 +1,3 @@
-'use strict';
-
 import { HrudbClient } from '../db/hrudb-client';
 import { ChatsRepository } from '../db/chats-repository';
 import { User, Chat, Message } from '../db/datatypes';

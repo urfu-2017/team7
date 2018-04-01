@@ -1,5 +1,3 @@
-'use strict';
-
 const url = 'https://hrudb.herokuapp.com';
 import got from 'got';
 

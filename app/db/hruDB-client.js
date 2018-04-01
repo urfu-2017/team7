@@ -15,19 +15,21 @@ export class HrudbClient {
     }
 
     async getAll(key) {
-        const items = JSON.parse(await this.sendRequest(`/storage/${key}/all`, 'GET'));
+        const items = await this.sendRequestJson(`/storage/${key}/all`, 'GET');
 
         return items.map(x => JSON.parse(x));
     }
 
-    async get(key) {
-        const items = JSON.parse(await this.sendRequest(`/storage/${key}`, 'GET'));
-
-        return items;
+    get(key) {
+        return this.sendRequestJson(`/storage/${key}`, 'GET');
     }
 
     remove(key) {
         return this.sendRequest(`/storage/${key}`, 'DELETE');
+    }
+
+    async sendRequestJson(relativeUrl, method, body) {
+        return JSON.parse(await this.sendRequest(relativeUrl, method, body));
     }
 
     async sendRequest(relativeUrl, method, body) {

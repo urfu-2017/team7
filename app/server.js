@@ -6,7 +6,7 @@ import expressSession from 'express-session';
 import loginController from './controllers/loginController';
 import getGithubPassport from './middlewares/auth';
 
-const installMiddleware = (app, config, passport) => {
+const installAllMiddlewares = (app, config, passport) => {
     app.use(cookieParser());
     app.use(expressSession({
         secret: config.EXPRESS_SESSION_SECRET,
@@ -29,7 +29,7 @@ export default async (config) => {
         clientId: config.GITHUB_CLIENT_ID,
         clientSecret: config.GITHUB_CLIENT_SECRET
     });
-    installMiddleware(server, config, passport);
+    installAllMiddlewares(server, config, passport);
     server.use('/', loginController(passport));
     server.get('/b', (req, res) => app.render(req, res, '/a', req.query));
     server.get('/posts/:id', (req, res) => app.render(req, res, '/posts', { id: req.params.id }));

@@ -4,7 +4,7 @@ import cookieParser from 'cookie-parser';
 import expressSession from 'express-session';
 
 import loginController from './controllers/loginController';
-import getGithubPassport from './middleware/auth';
+import getGithubPassport from './middlewares/auth';
 
 const installMiddleware = (app, config, passport) => {
     app.use(cookieParser());

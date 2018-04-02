@@ -2,20 +2,18 @@ import { Passport } from 'passport';
 import { Strategy } from 'passport-github';
 
 
-export default ({ callbackUrl, clientId, clientSecret }) => {
-    const githubStrategy = new Strategy(
-        {
-            clientID: clientId,
-            clientSecret,
-            callbackURL: callbackUrl
-        },
-        (accessToken, refreshToken, profile, done) => {
-            done(null, profile);
-        }
-    );
+export const getGithubStrategy = ({ callbackUrl, clientId, clientSecret }) =>
+    new Strategy({
+        clientID: clientId,
+        clientSecret,
+        callbackURL: callbackUrl
+    }, (accessToken, refreshToken, profile, done) => {
+        done(null, profile);
+    });
 
+export const getPassport = (strategies) => {
     const passport = new Passport();
-    passport.use(githubStrategy);
+    strategies.forEach(x => passport.use(x));
 
     // Определяем функцию для сохранения данных пользователя в сессию
     passport.serializeUser((user, done) => {
@@ -28,4 +26,15 @@ export default ({ callbackUrl, clientId, clientSecret }) => {
     });
 
     return passport;
+};
+
+export const installPassport = (app, passport) => {
+    app.use(passport.initialize());
+    app.use(passport.session());
+};
+
+export const getGithubPassport = ({ callbackUrl, clientId, clientSecret }) => {
+    const strategy = getGithubStrategy({ callbackUrl, clientId, clientSecret });
+
+    return getPassport([strategy]);
 };

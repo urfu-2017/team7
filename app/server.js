@@ -4,7 +4,7 @@ import cookieParser from 'cookie-parser';
 import expressSession from 'express-session';
 
 import loginController from './controllers/loginController';
-import getGithubPassport from './middlewares/auth';
+import { getGithubPassport, installPassport } from './middlewares/auth';
 
 const installAllMiddlewares = (app, config, passport) => {
     app.use(cookieParser());
@@ -15,8 +15,7 @@ const installAllMiddlewares = (app, config, passport) => {
         // Указываем хранилище (по умолчанию, в памяти)
         // store: new require('connect-mongo')(expressSession)(options)
     }));
-    app.use(passport.initialize());
-    app.use(passport.session());
+    installPassport(app, passport);
 };
 
 export default async (config) => {

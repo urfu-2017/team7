@@ -1,21 +1,22 @@
-const e = require('./eventNames');
+import * as e from './eventNames';
+
+import HrudbClient from '../db/hrudb-client';
+import UsersRepository from '../db/users-repository';
+import MessagesRepository from '../db/messages-repository';
+import ChatsRepository from '../db/chats-repository';
+
 const socketio = require('socket.io');
+
 
 // TODO: что-то сделать со сборкой зависимостей
 // Возможно создавать инстанс класса прямо в файле модуля
-const HrudbClient = require('../db/hrudb-client');
-const UsersRepository = require('../db/users-repository');
-const MessagesRepository = require('../db/messages-repository');
-const ChatsRepository = require('../db/chats-repository');
-
-
 const hrudbClient = new HrudbClient('');
 const usersRepository = new UsersRepository(hrudbClient);
 const chatsRepository = new ChatsRepository(hrudbClient, usersRepository);
 const messagesRepository = new MessagesRepository(hrudbClient);
 
 
-exports.listen = (server) => {
+export default function (server) {
     const io = socketio(server, {
         path: '/socket',
         serveClient: false,
@@ -26,6 +27,7 @@ exports.listen = (server) => {
 
     io.on('connection', (socket) => {
         socket.on(e.GET_CHATS, (data) => {
+            // TODO: доставать data.userId из куки. (socket.request)
             const userChats = chatsRepository.getAllChatsForUser(data.userId);
             socket.broadcast
                 .to(socket.id)
@@ -50,5 +52,5 @@ exports.listen = (server) => {
                 .emit(e.MESSAGE, data);
         });
     });
-};
+}
 

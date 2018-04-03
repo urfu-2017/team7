@@ -1,6 +1,6 @@
-exports.GET_CHATS = 'GET_CHATS';
-exports.LIST_CHATS = 'LIST_CHATS';
-exports.GET_MESSAGES = 'GET_MESSAGES';
-exports.LIST_MESSAGES = 'LIST_MESSAGES';
-exports.NEW_MESSAGE = 'NEW_MESSAGE';
-exports.MESSAGE = 'MESSAGE';
+export const GET_CHATS = 'GET_CHATS';
+export const LIST_CHATS = 'LIST_CHATS';
+export const GET_MESSAGES = 'GET_MESSAGES';
+export const LIST_MESSAGES = 'LIST_MESSAGES';
+export const NEW_MESSAGE = 'NEW_MESSAGE';
+export const MESSAGE = 'MESSAGE';

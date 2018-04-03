@@ -4,13 +4,14 @@ const getConfig = require('./config').default;
 
 if (require.main === module) {
     const config = getConfig();
-    const server = getServer(config);
+    getServer(config).then((server) => {
+        server.listen(config.PORT, config.HOST, (err) => {
+            if (err) {
+                throw err;
+            }
 
-    server.listen(config.PORT, config.HOST, (err) => {
-        if (err) {
-            throw err;
-        }
-
-        console.info(`> Running on http://${config.HOST}:${config.PORT}`);
+            // eslint-disable-next-line no-console
+            console.info(`> Running on http://${config.HOST}:${config.PORT}`);
+        });
     });
 }

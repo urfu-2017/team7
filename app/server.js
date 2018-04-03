@@ -1,9 +1,9 @@
 const express = require('express');
 const next = require('next');
-
+const socketServer = require('./sockets/server');
 const port = parseInt(process.env.PORT, 10) || 3000;
 const dev = process.env.NODE_ENV !== 'production';
-const app = next({dev});
+const app = next({ dev });
 const handle = app.getRequestHandler();
 
 app.prepare()
@@ -17,17 +17,15 @@ app.prepare()
         server.get('/posts/:id', (req, res) => app.render(req, res, '/posts', { id: req.params.id }));
 
         server.get('*', (req, res) => handle(req, res));
-        server.get('/posts/:id', (req, res) => {
-            return app.render(req, res, '/posts', {id: req.params.id});
-        });
+        server.get('/posts/:id', (req, res) => app.render(req, res, '/posts', { id: req.params.id }));
 
+        socketServer.listen(server);
         server.listen(port, (err) => {
             if (err) {
                 throw err;
             }
 
+            // eslint-disable-next-line no-console
             console.log(`> Ready on http://localhost:${port}`);
         });
-
-
     });

@@ -1,22 +1,22 @@
-'use strict';
 const e = require('./eventNames');
-function getUserChats(userId) {
-    return [{ id: '123', name: 'Chatname', users:[] }];
-}
+const socketio = require('socket.io');
+
+// TODO: что-то сделать со сборкой зависимостей
+// Возможно создавать инстанс класса прямо в файле модуля
+const HrudbClient = require('../db/hrudb-client');
+const UsersRepository = require('../db/users-repository');
+const MessagesRepository = require('../db/messages-repository');
+const ChatsRepository = require('../db/chats-repository');
 
 
-function getMessages(groupId) {
-    return [
-        { id: '1', content: 'ololo', author:{} },
-        { id: '2', content: 'kekeke', author:{} },
-        { id: '3', content: 'azaza', author:{} }];
-}
+const hrudbClient = new HrudbClient('');
+const usersRepository = new UsersRepository(hrudbClient);
+const chatsRepository = new ChatsRepository(hrudbClient, usersRepository);
+const messagesRepository = new MessagesRepository(hrudbClient);
 
-function saveMessage() {
 
-}
-exports.listen = function (server) {
-    const io = require('socket.io')(server, {
+exports.listen = (server) => {
+    const io = socketio(server, {
         path: '/socket',
         serveClient: false,
         pingInterval: 10000,
@@ -24,9 +24,9 @@ exports.listen = function (server) {
         cookie: false
     });
 
-    io.on('connection', socket => {
-        socket.on(e.GET_CHATS, data => {
-            let userChats = getUserChats(data.userId);
+    io.on('connection', (socket) => {
+        socket.on(e.GET_CHATS, (data) => {
+            const userChats = chatsRepository.getAllChatsForUser(data.userId);
             socket.broadcast
                 .to(socket.id)
                 .emit(e.CHATS_LIST, userChats);
@@ -36,21 +36,19 @@ exports.listen = function (server) {
                 .forEach(name => socket.join(name));
         });
 
-        socket.on(e.GET_MESSAGES, data => {
-            let messages = getMessages(data.groupId);
+        socket.on(e.GET_MESSAGES, (data) => {
+            const messages = messagesRepository.getMessagesFromChat(data.groupId);
             socket.broadcast
                 .to(socket.id)
                 .emit(e.LIST_MESSAGES, messages);
         });
 
-        socket.on(e.NEW_MESSAGE, data => {
-            saveMessage(data);
+        socket.on(e.NEW_MESSAGE, (data) => {
+            messagesRepository.createMessage(data);
             socket.broadcast
                 .to(data.groupId)
                 .emit(e.MESSAGE, data);
-        })
-
+        });
     });
-
 };
 

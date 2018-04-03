@@ -1,20 +1,18 @@
 const socket = require('socket.io-client')('/socket');
 const e = require('./eventNames');
 
-exports.sendMessage = function(message)
-{
-    socket.emit(e.MESSAGE, message)
+exports.sendMessage = (message) => {
+    socket.emit(e.MESSAGE, message);
 };
 
-exports.getGroups = function(user)
-{
-    socket.emit(e.GET_CHATS, user)
+exports.getGroups = (user) => {
+    socket.emit(e.GET_CHATS, user);
 };
 
-exports.onChatsList = function(handler){
+exports.onChatsList = (handler) => {
     socket.on(e.CHATS_LIST, handler);
 };
 
-exports.onMessage = function(handler){
+exports.onMessage = (handler) => {
     socket.on(e.MESSAGE, handler);
 };

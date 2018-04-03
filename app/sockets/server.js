@@ -29,11 +29,11 @@ exports.listen = (server) => {
             const userChats = chatsRepository.getAllChatsForUser(data.userId);
             socket.broadcast
                 .to(socket.id)
-                .emit(e.CHATS_LIST, userChats);
+                .emit(e.LIST_CHATS, userChats);
 
             userChats
-                .map(x => x.name)
-                .forEach(name => socket.join(name));
+                .map(x => x.groupId)
+                .forEach(groupId => socket.join(groupId));
         });
 
         socket.on(e.GET_MESSAGES, (data) => {

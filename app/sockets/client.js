@@ -2,7 +2,7 @@ const socket = require('socket.io-client')('/socket');
 const e = require('./eventNames');
 
 exports.sendMessage = (message) => {
-    socket.emit(e.MESSAGE, message);
+    socket.emit(e.NEW_MESSAGE, message);
 };
 
 exports.getGroups = (user) => {
@@ -10,7 +10,7 @@ exports.getGroups = (user) => {
 };
 
 exports.onChatsList = (handler) => {
-    socket.on(e.CHATS_LIST, handler);
+    socket.on(e.LIST_CHATS, handler);
 };
 
 exports.onMessage = (handler) => {

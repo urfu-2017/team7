@@ -2,9 +2,10 @@ import Router from 'express-promise-router';
 import connectEnsureLogin from 'connect-ensure-login';
 import { saveUser, getUser } from '../db/users-repository';
 import { User } from '../db/datatypes';
+import { passport } from '../middlewares/auth';
 
 
-export default passport => Router()
+export default Router()
     .get('/login', passport.authenticate('github'))
     .get('/logout', (req, res) => {
         req.logout();

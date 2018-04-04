@@ -1,8 +1,8 @@
 import { Passport } from 'passport';
 import { Strategy } from 'passport-github';
+import config from '../config';
 
-
-export const getGithubStrategy = ({ callbackUrl, clientId, clientSecret }) =>
+const getGithubStrategy = ({ callbackUrl, clientId, clientSecret }) =>
     new Strategy({
         clientID: clientId,
         clientSecret,
@@ -11,30 +11,26 @@ export const getGithubStrategy = ({ callbackUrl, clientId, clientSecret }) =>
         done(null, profile);
     });
 
-export const getPassport = (strategies) => {
-    const passport = new Passport();
-    strategies.forEach(x => passport.use(x));
+export const passport = new Passport();
 
-    // Определяем функцию для сохранения данных пользователя в сессию
-    passport.serializeUser((user, done) => {
-        done(null, user);
-    });
+passport.use(getGithubStrategy({
+    callbackUrl: config.PASSPORT_CALLBACK_URL,
+    clientId: config.GITHUB_CLIENT_ID,
+    clientSecret: config.GITHUB_CLIENT_SECRET
+}));
 
-    // Определяем функцию для получения данных пользователя из сессии
-    passport.deserializeUser((user, done) => {
-        done(null, user);
-    });
+// Определяем функцию для сохранения данных пользователя в сессию
+passport.serializeUser((user, done) => {
+    done(null, user);
+});
 
-    return passport;
-};
+// Определяем функцию для получения данных пользователя из сессии
+passport.deserializeUser((user, done) => {
+    done(null, user);
+});
 
-export const installPassport = (app, passport) => {
+export const installPassport = (app) => {
     app.use(passport.initialize());
     app.use(passport.session());
 };
 
-export const getGithubPassport = ({ callbackUrl, clientId, clientSecret }) => {
-    const strategy = getGithubStrategy({ callbackUrl, clientId, clientSecret });
-
-    return getPassport([strategy]);
-};

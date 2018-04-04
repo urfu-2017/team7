@@ -4,9 +4,9 @@ import expressSession from 'express-session';
 
 import config from './config';
 import loginController from './controllers/loginController';
-import { getGithubPassport, installPassport } from './middlewares/auth';
+import { installPassport } from './middlewares/auth';
 
-function installAllMiddlewares(app, passport) {
+function installAllMiddlewares(app) {
     app.use(cookieParser());
     app.use(expressSession({
         secret: config.EXPRESS_SESSION_SECRET,
@@ -16,19 +16,14 @@ function installAllMiddlewares(app, passport) {
         // Указываем хранилище (по умолчанию, в памяти)
         // store: new require('connect-mongo')(expressSession)(options)
     }));
-    installPassport(app, passport);
+    installPassport(app);
 }
 
 
 export function getExpressApp() {
     const app = express();
-    const passport = getGithubPassport({
-        callbackUrl: config.PASSPORT_CALLBACK_URL,
-        clientId: config.GITHUB_CLIENT_ID,
-        clientSecret: config.GITHUB_CLIENT_SECRET
-    });
-    installAllMiddlewares(app, passport);
-    app.use('/', loginController(passport));
+    installAllMiddlewares(app);
+    app.use('/', loginController);
     return app;
 }
 

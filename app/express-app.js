@@ -11,7 +11,8 @@ function installAllMiddlewares(app, passport) {
     app.use(expressSession({
         secret: config.EXPRESS_SESSION_SECRET,
         resave: false,
-        saveUninitialized: false
+        saveUninitialized: false,
+        cookie: { secure: config.COOKIE_HTTPS, httpOnly: true }
         // Указываем хранилище (по умолчанию, в памяти)
         // store: new require('connect-mongo')(expressSession)(options)
     }));

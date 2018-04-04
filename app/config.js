@@ -9,7 +9,8 @@ const {
     GITHUB_CLIENT_SECRET,
     PASSPORT_CALLBACK_URL,
     EXPRESS_SESSION_SECRET,
-    HRUDB_TOKEN
+    HRUDB_TOKEN,
+    COOKIE_HTTPS
 } = process.env;
 
 export default {
@@ -20,5 +21,6 @@ export default {
     EXPRESS_SESSION_SECRET,
     IS_PRODUCTION,
     PASSPORT_CALLBACK_URL: PASSPORT_CALLBACK_URL || `https://${HOST}/login/return`,
-    HRUDB_TOKEN
+    HRUDB_TOKEN,
+    COOKIE_HTTPS: COOKIE_HTTPS === 'true'
 };

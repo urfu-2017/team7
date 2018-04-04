@@ -1,11 +1,11 @@
 import got from 'got';
-import { HRUDB_TOKEN } from '../config';
+import config from '../config';
 
 const url = 'https://hrudb.herokuapp.com';
 
 const sendRequest = async (relativeUrl, method, body) => {
     const headers = {
-        Authorization: HRUDB_TOKEN,
+        Authorization: config.HRUDB_TOKEN,
         'Content-Type': 'plain/text'
     };
     const options = {

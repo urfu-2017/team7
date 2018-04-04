@@ -1,11 +1,10 @@
+import Server from 'socket.io';
 import * as e from './eventNames';
 
 import HrudbClient from '../db/hrudb-client';
 import UsersRepository from '../db/users-repository';
 import MessagesRepository from '../db/messages-repository';
 import ChatsRepository from '../db/chats-repository';
-
-const socketio = require('socket.io');
 
 
 // TODO: что-то сделать со сборкой зависимостей
@@ -16,8 +15,8 @@ const chatsRepository = new ChatsRepository(hrudbClient, usersRepository);
 const messagesRepository = new MessagesRepository(hrudbClient);
 
 
-export default function (server) {
-    const io = socketio(server, {
+export default async function (server) {
+    const socketServer = Server(server, {
         path: '/socket',
         serveClient: false,
         pingInterval: 10000,
@@ -25,7 +24,7 @@ export default function (server) {
         cookie: false
     });
 
-    io.on('connection', (socket) => {
+    socketServer.on('connection', (socket) => {
         socket.on(e.GET_CHATS, (data) => {
             // TODO: доставать data.userId из куки. (socket.request)
             const userChats = chatsRepository.getAllChatsForUser(data.userId);

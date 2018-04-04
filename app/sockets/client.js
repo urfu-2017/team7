@@ -1,6 +1,7 @@
+import connect from 'socket.io-client';
 import * as e from './eventNames';
 
-const socket = require('socket.io-client')('/socket');
+const socket = connect('/socket');
 
 exports.sendMessage = (message) => {
     socket.emit(e.NEW_MESSAGE, message);

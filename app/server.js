@@ -1,28 +1,15 @@
-const express = require('express');
-const next = require('next');
+import next from 'next';
+import installSocketServer from './sockets/server';
+import installExpressApp from './express-app';
+import config from './config';
 
-const port = parseInt(process.env.PORT, 10) || 3000;
-const dev = process.env.NODE_ENV !== 'production';
-const app = next({ dev });
-const handle = app.getRequestHandler();
 
-app.prepare()
-    .then(() => {
-        const server = express();
+export default async () => {
+    const server = next({ dev: config.IS_PRODUCTION });
+    await server.prepare();
+    await installSocketServer(server);
+    await installExpressApp(server);
+    // eslint-disable-next-line no-console
+    console.info(`> Running on http://${config.HOST}:${config.PORT}`);
+};
 
-        server.get('/a', (req, res) => app.render(req, res, '/b', req.query));
-
-        server.get('/b', (req, res) => app.render(req, res, '/a', req.query));
-
-        server.get('/posts/:id', (req, res) => app.render(req, res, '/posts', { id: req.params.id }));
-
-        server.get('*', (req, res) => handle(req, res));
-
-        server.listen(port, (err) => {
-            if (err) {
-                throw err;
-            }
-
-            console.log(`> Ready on http://localhost:${port}`);
-        });
-    });

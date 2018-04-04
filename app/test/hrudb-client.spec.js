@@ -1,7 +1,7 @@
 import HrudbClient from '../db/hrudb-client';
 import { expect } from 'chai';
 
-describe('HrudbClient', async () => {
+describe.skip('HrudbClient', async () => {
     const testToken = '8f92d8b92cffc5d2c4ddb2af9959dfa9391b6f43';
     const hrudb = new HrudbClient(testToken);
 

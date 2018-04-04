@@ -1,6 +1,6 @@
 import next from 'next';
 import installSocketServer from './sockets/server';
-import installExpressApp from './express-app';
+import { installExpressApp } from './express-app';
 import config from './config';
 
 

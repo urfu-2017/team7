@@ -18,7 +18,8 @@ function installAllMiddlewares(app, passport) {
     installPassport(app, passport);
 }
 
-export default async function installExpressApp(server) {
+
+export function getExpressApp() {
     const app = express();
     const passport = getGithubPassport({
         callbackUrl: config.PASSPORT_CALLBACK_URL,
@@ -26,11 +27,14 @@ export default async function installExpressApp(server) {
         clientSecret: config.GITHUB_CLIENT_SECRET
     });
     installAllMiddlewares(app, passport);
-
-    const handle = server.getRequestHandler();
     app.use('/', loginController(passport));
-    app.get('*', (req, res) => handle(req, res));
+    return app;
+}
 
+export const installExpressServer = async (server) => {
+    const handle = server.getRequestHandler();
+    const app = getExpressApp();
+    app.get('*', (req, res) => handle(req, res));
     return new Promise((resolve, reject) => {
         app.listen(config.PORT, config.HOST, (err) => {
             if (err) {
@@ -39,4 +43,4 @@ export default async function installExpressApp(server) {
             resolve();
         });
     });
-}
+};

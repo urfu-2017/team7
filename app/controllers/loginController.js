@@ -21,8 +21,10 @@ export default Router()
                 user = new User(id, username, null, []);
                 await saveUser(user);
             }
+            res.cookie('userId', id);
+            res.cookie('userId.sig', 'TODO: place signature of userId');
 
-            res.json(user);
+            res.json({ user, cookies: req.cookies });
         }
     )
     .get(

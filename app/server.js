@@ -1,4 +1,5 @@
 import next from 'next';
+import cookieParser from 'cookie-parser';
 import installSocketServer from './sockets/server';
 import { installExpressApp } from './express-app';
 import config from './config';

@@ -3,18 +3,30 @@ import * as e from './eventNames';
 
 const socket = connect('/socket');
 
-exports.sendMessage = (message) => {
+const socket = client('/socket');
+
+export function sendMessage(message) {
     socket.emit(e.NEW_MESSAGE, message);
-};
+}
 
-exports.getGroups = (user) => {
-    socket.emit(e.GET_CHATS, user);
-};
+export function getChats() {
+    socket.emit(e.GET_CHATS);
+}
 
-exports.onChatsList = (handler) => {
+/**
+ * @callback onChatsListCallback
+ * @param {Chat[]} chats
+ */
+
+/**
+ * @param {onChatsListCallback} handler
+ */
+export function onChatsList(handler) {
     socket.on(e.LIST_CHATS, handler);
-};
+}
 
-exports.onMessage = (handler) => {
+
+export function onMessage(handler) {
     socket.on(e.MESSAGE, handler);
-};
+}
+

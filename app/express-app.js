@@ -1,6 +1,6 @@
 import express from 'express';
 import cookieParser from 'cookie-parser';
-import expressSession from 'express-session';
+import cookieSession from 'cookie-session';
 
 import config from './config';
 import loginController from './controllers/loginController';
@@ -8,17 +8,13 @@ import { installPassport } from './middlewares/auth';
 
 function installAllMiddlewares(app) {
     app.use(cookieParser());
-    app.use(expressSession({
-        secret: config.EXPRESS_SESSION_SECRET,
-        resave: false,
-        saveUninitialized: false,
-        cookie: { secure: config.COOKIE_HTTPS, httpOnly: true }
-        // Указываем хранилище (по умолчанию, в памяти)
-        // store: new require('connect-mongo')(expressSession)(options)
+    app.use(cookieSession({
+        secure: config.COOKIE_HTTPS,
+        httpOnly: true,
+        keys: [config.EXPRESS_SESSION_SECRET]
     }));
     installPassport(app);
 }
-
 
 export function getExpressApp() {
     const app = express();

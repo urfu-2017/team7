@@ -5,10 +5,7 @@ import proxyquire from 'proxyquire';
 describe.skip('HrudbClient', async () => {
     const testToken = '8f92d8b92cffc5d2c4ddb2af9959dfa9391b6f43';
     const hrudb = proxyquire('../db/hrudb-client', {
-        '../config': {
-            __esModule: true,
-            default: { HRUDB_TOKEN: testToken }
-        }
+        '../config': { default: { HRUDB_TOKEN: testToken } }
     });
 
     beforeEach(async () => {

@@ -11,7 +11,7 @@ function installAllMiddlewares(app) {
     app.use(cookieSession({
         secure: config.COOKIE_HTTPS,
         httpOnly: true,
-        keys: [config.EXPRESS_SESSION_SECRET]
+        secret: config.EXPRESS_SESSION_SECRET
     }));
     installPassport(app);
 }

@@ -6,7 +6,12 @@ import { User, Chat, Message } from '../db/datatypes';
 describe.skip('Repositories', async () => {
     const testToken = '8f92d8b92cffc5d2c4ddb2af9959dfa9391b6f43';
     const hrudb = proxyquire('../db/hrudb-client', {
-        '../config': { default: { HRUDB_TOKEN: testToken } }
+        '../config': {
+            default: {
+                HRUDB_TOKEN: testToken,
+                HRUDB_URL: 'https://hrudb.herokuapp.com'
+            }
+        }
     });
     const userRepo = proxyquire('../db/users-repository', {
         './hrudb-client': hrudb

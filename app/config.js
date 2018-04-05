@@ -10,7 +10,8 @@ const {
     PASSPORT_CALLBACK_URL,
     EXPRESS_SESSION_SECRET,
     HRUDB_TOKEN,
-    COOKIE_HTTPS
+    COOKIE_HTTPS,
+    HRUDB_URL
 } = process.env;
 
 export default {
@@ -22,5 +23,6 @@ export default {
     IS_PRODUCTION,
     PASSPORT_CALLBACK_URL: PASSPORT_CALLBACK_URL || `https://${HOST}/login/return`,
     HRUDB_TOKEN,
-    COOKIE_HTTPS: COOKIE_HTTPS === 'true'
+    COOKIE_HTTPS: COOKIE_HTTPS === 'true',
+    HRUDB_URL: HRUDB_URL || 'https://hrudb.herokuapp.com'
 };

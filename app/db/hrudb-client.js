@@ -1,8 +1,6 @@
 import got from 'got';
 import config from '../config';
 
-const url = 'https://hrudb.herokuapp.com';
-
 const sendRequest = async (relativeUrl, method, body) => {
     const headers = {
         Authorization: config.HRUDB_TOKEN,
@@ -16,7 +14,7 @@ const sendRequest = async (relativeUrl, method, body) => {
         options.body = JSON.stringify(body);
     }
 
-    const response = await got(url + relativeUrl, options);
+    const response = await got(config.HRUDB_URL + relativeUrl, options);
     return response.body;
 };
 

@@ -1,15 +1,19 @@
-export default class UsersRepository {
-    constructor(hrudbClient) {
-        this.hrudbClient = hrudbClient;
+import { post, getAll } from './hrudb-client';
+import { User } from './datatypes';
+
+export const saveUser = user => post('Users', user);
+export const getUser = async (userId) => {
+    const users = await getAll('Users');
+
+    return users.find(user => user.id === userId);
+};
+
+export const createIfNotExists = async (username, id) => {
+    let user = await getUser(id);
+    if (!user) {
+        user = new User(id, username, null, []);
+        await saveUser(user);
     }
 
-    saveUser(user) {
-        return this.hrudbClient.post('Users', user);
-    }
-
-    async getUser(userId) {
-        const users = await this.hrudbClient.getAll('Users');
-
-        return users.find(user => user.id === userId);
-    }
-}
+    return user;
+};

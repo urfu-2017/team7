@@ -1,20 +1,29 @@
 import { expect } from 'chai';
-import HrudbClient from '../db/hrudb-client';
-import ChatsRepository from '../db/chats-repository';
-import MessagesRepository from '../db/messages-repository';
-import UsersRepository from '../db/users-repository';
+import proxyquire from 'proxyquire';
 import { User, Chat, Message } from '../db/datatypes';
 
 
-describe('Repositories', async () => {
+describe.skip('Repositories', async () => {
     const testToken = '8f92d8b92cffc5d2c4ddb2af9959dfa9391b6f43';
-    const hrudb = new HrudbClient(testToken);
-    const userRepo = new UsersRepository(hrudb);
-    const chatsRepo = new ChatsRepository(hrudb, userRepo);
+    const hrudb = proxyquire('../db/hrudb-client', {
+        '../config': {
+            default: {
+                HRUDB_TOKEN: testToken,
+                HRUDB_URL: 'https://hrudb.herokuapp.com'
+            }
+        }
+    });
+    const userRepo = proxyquire('../db/users-repository', {
+        './hrudb-client': hrudb
+    });
+    const chatsRepo = proxyquire('../db/chats-repository', {
+        './hrudb-client': hrudb,
+        './users-repository': userRepo
+    });
 
     beforeEach(async () => {
         await hrudb.remove('Chats_0');
-    })
+    });
 
     it('can do somthing', async () => {
         const user = new User(0, "Admiral", "", [0]);
@@ -24,5 +33,5 @@ describe('Repositories', async () => {
 
         expect(chats).to.have.lengthOf(1);
         expect(chats[0]).to.be.deep.equal(chat);
-    })
+    });
 });

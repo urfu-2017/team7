@@ -1,13 +1,4 @@
-export default class MessagesRepository {
-    constructor(hrudbClient) {
-        this.hrudbClient = hrudbClient;
-    }
+import { put, getAll } from './hrudb-client';
 
-    createMessage(message) {
-        return this.hrudbClient.put(`Messages_${message.recipientChat}`, message);
-    }
-
-    getMessagesFromChat(chatId) {
-        return this.hrudbClient.getAll(`Messages_${chatId}`);
-    }
-}
+export const createMessage = message => put(`Messages_${message.recipientChat}`, message);
+export const getMessagesFromChat = chatId => getAll(`Messages_${chatId}`);

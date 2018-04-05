@@ -1,36 +1,32 @@
 import express from 'express';
 import cookieParser from 'cookie-parser';
-import expressSession from 'express-session';
+import cookieSession from 'cookie-session';
 
 import config from './config';
 import loginController from './controllers/loginController';
-import { getGithubPassport, installPassport } from './middlewares/auth';
+import { installPassport } from './middlewares/auth';
 
-function installAllMiddlewares(app, passport) {
+function installAllMiddlewares(app) {
     app.use(cookieParser());
-    app.use(expressSession({
-        secret: config.EXPRESS_SESSION_SECRET,
-        resave: false,
-        saveUninitialized: false
-        // Указываем хранилище (по умолчанию, в памяти)
-        // store: new require('connect-mongo')(expressSession)(options)
+    app.use(cookieSession({
+        secure: config.COOKIE_HTTPS,
+        httpOnly: true,
+        secret: config.EXPRESS_SESSION_SECRET
     }));
-    installPassport(app, passport);
+    installPassport(app);
 }
 
-export default async function installExpressApp(server) {
+export function getExpressApp() {
     const app = express();
-    const passport = getGithubPassport({
-        callbackUrl: config.PASSPORT_CALLBACK_URL,
-        clientId: config.GITHUB_CLIENT_ID,
-        clientSecret: config.GITHUB_CLIENT_SECRET
-    });
-    installAllMiddlewares(app, passport);
+    installAllMiddlewares(app);
+    app.use('/', loginController);
+    return app;
+}
 
+export const installExpressServer = async (server) => {
     const handle = server.getRequestHandler();
-    app.use('/', loginController(passport));
+    const app = getExpressApp();
     app.get('*', (req, res) => handle(req, res));
-
     return new Promise((resolve, reject) => {
         app.listen(config.PORT, config.HOST, (err) => {
             if (err) {
@@ -39,4 +35,4 @@ export default async function installExpressApp(server) {
             resolve();
         });
     });
-}
+};

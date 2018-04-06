@@ -13,10 +13,10 @@ describe.skip('Repositories', async () => {
             }
         }
     });
-    const userRepo = proxyquire('../db/users-repository', {
+    const userRepo = proxyquire('../db/userIds-repository', {
         './hrudb-client': hrudb
     });
-    const chatsRepo = proxyquire('../db/chats-repository', {
+    const chatsRepo = proxyquire('../db/chatIds-repository', {
         './hrudb-client': hrudb,
         './users-repository': userRepo
     });
@@ -29,7 +29,7 @@ describe.skip('Repositories', async () => {
         const user = new User(0, "Admiral", "", [0]);
         const chat = new Chat(0, "testchat", [0]);
         await chatsRepo.createChat(chat);
-        const chats = await chatsRepo.getAllChatsForUser(user.id);
+        const chats = await chatsRepo.getAllChatsForUser(user.userId);
 
         expect(chats).to.have.lengthOf(1);
         expect(chats[0]).to.be.deep.equal(chat);

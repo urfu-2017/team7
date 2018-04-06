@@ -11,13 +11,10 @@ export default Router()
     })
     .get(
         '/login/return',
-        passport.authenticate('github', { failureRedirect: '/' }),
-        async (req, res) => {
-            res.json({ userId: req.user, cookies: req.cookies });
-        }
+        passport.authenticate('github', { failureRedirect: '/login', successRedirect: '/' })
     )
     .get(
         '/profile',
-        connectEnsureLogin.ensureLoggedIn('/'),
+        connectEnsureLogin.ensureLoggedIn('/login'),
         (req, res) => res.json({ user: req.user })
     );

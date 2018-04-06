@@ -1,58 +1,73 @@
 import Server from 'socket.io';
-import * as e from './eventNames';
-import HrudbClient from '../db/hrudb-client';
-import UsersRepository from '../db/users-repository';
-import MessagesRepository from '../db/messages-repository';
-import ChatsRepository from '../db/chats-repository';
-import User from '../db/datatypes';
+import uuidv4 from 'uuid/v4';
+import { clientNames, serverNames } from './eventNames';
+import * as usersRepository from '../db/users-repository';
+import * as messagesRepository from '../db/messages-repository';
+import * as chatsRepository from '../db/chats-repository';
+import * as userInfoProvider from './user-info-provider';
+import { Chat, Message } from '../db/datatypes';
 
+function registerMessageHandlers(socketServer, socket, userId) {
+    socket.on(clientNames.GET_CHATS, async () => {
+        const userChats = await chatsRepository.getAllChatsForUser(userId);
+        socket.emit(serverNames.LIST_CHATS, userChats);
 
-// TODO: что-то сделать со сборкой зависимостей
-// Возможно создавать инстанс класса прямо в файле модуля
-const hrudbClient = new HrudbClient('8f92d8b92cffc5d2c4ddb2af9959dfa9391b6f43');
-const usersRepository = new UsersRepository(hrudbClient);
-const chatsRepository = new ChatsRepository(hrudbClient, usersRepository);
-const messagesRepository = new MessagesRepository(hrudbClient);
+        userChats
+            .map(x => x.chatId)
+            .forEach(chatId => socket.join(chatId));
+    });
 
+    socket.on(clientNames.GET_MESSAGES, async ({ chatId }) => {
+        const messages = await messagesRepository.getMessagesFromChat(chatId);
+        socket.emit(serverNames.LIST_MESSAGES, messages);
+    });
+
+    socket.on(clientNames.GET_USER, async (payload) => {
+        const user = await usersRepository.getUser(payload.userId);
+        socket.emit(serverNames.USER, user);
+    });
+
+    socket.on(clientNames.NEW_MESSAGE, async ({ chatId, text }) => {
+        const message = new Message(
+            uuidv4(),
+            new Date(),
+            userId,
+            text,
+            text,
+            chatId,
+        );
+        await messagesRepository.createMessage(message);
+        socketServer.to(message.chatId)
+            .emit(serverNames.MESSAGE, message);
+    });
+}
 
 export default async function (server) {
-    const socketServer = Server(server, {
-        path: '/socket',
+    const commonChat = new Chat(
+        '6584f174-0ce1-43bd-88ac-026cfe879022',
+        'Общий чат', [],
+        'https://image.flaticon.com/icons/png/128/167/167742.png'
+    );
+    await chatsRepository.upsertChat(commonChat);
+
+    const socketServer = new Server(server, {
         serveClient: false,
         pingInterval: 10000,
         pingTimeout: 5000,
         cookie: false
     });
 
-    io.on('connection', (socket) => {
-        socket.on(e.GET_CHATS, () => {
-            const userId = uuidv4();
-            const user = new User(userId, uuidv4(), null, []);
-            usersRepository.saveUser(user);
+    socketServer.on('connection', async (socket) => {
+        try {
+            const userId = await userInfoProvider.getUserId(socket.handshake);
+            await usersRepository.joinChat(userId, commonChat.chatId);
 
-            const userChats = chatsRepository.getAllChatsForUser(userId);
-            socket.broadcast
-                .to(socket.id)
-                .emit(e.LIST_CHATS, userChats);
-
-            userChats
-                .map(x => x.groupId)
-                .forEach(groupId => socket.join(groupId));
-        });
-
-        socket.on(e.GET_MESSAGES, (data) => {
-            const messages = messagesRepository.getMessagesFromChat(data.groupId);
-            socket.broadcast
-                .to(socket.id)
-                .emit(e.LIST_MESSAGES, messages);
-        });
-
-        socket.on(e.NEW_MESSAGE, (data) => {
-            messagesRepository.createMessage(data);
-            socket.broadcast
-                .to(data.groupId)
-                .emit(e.MESSAGE, data);
-        });
+            registerMessageHandlers(socketServer, socket, userId);
+            console.info('Incoming socket connected.');
+        } catch (e) {
+            console.error('Incoming socket connection failed.', e);
+            socket.disconnect(true);
+        }
     });
 }
 

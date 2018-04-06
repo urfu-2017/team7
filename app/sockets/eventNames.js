@@ -1,6 +1,14 @@
-export const GET_CHATS = 'GET_CHATS';
-export const LIST_CHATS = 'LIST_CHATS';
-export const GET_MESSAGES = 'GET_MESSAGES';
-export const LIST_MESSAGES = 'LIST_MESSAGES';
-export const NEW_MESSAGE = 'NEW_MESSAGE';
-export const MESSAGE = 'MESSAGE';
+
+export const clientNames = Object.freeze({
+    GET_CHATS: 'GET_CHATS',
+    GET_MESSAGES: 'GET_MESSAGES',
+    NEW_MESSAGE: 'NEW_MESSAGE',
+    GET_USER: 'GET_USER'
+});
+
+export const serverNames = Object.freeze({
+    LIST_CHATS: 'LIST_CHATS',
+    LIST_MESSAGES: 'LIST_MESSAGES',
+    MESSAGE: 'MESSAGE',
+    USER: 'USER'
+});

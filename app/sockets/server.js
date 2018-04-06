@@ -1,19 +1,7 @@
 import Server from 'socket.io';
 import * as e from './eventNames';
-
-import HrudbClient from '../db/hrudb-client';
-import UsersRepository from '../db/users-repository';
-import MessagesRepository from '../db/messages-repository';
-import ChatsRepository from '../db/chats-repository';
-
-
-// TODO: что-то сделать со сборкой зависимостей
-// Возможно создавать инстанс класса прямо в файле модуля
-const hrudbClient = new HrudbClient('');
-const usersRepository = new UsersRepository(hrudbClient);
-const chatsRepository = new ChatsRepository(hrudbClient, usersRepository);
-const messagesRepository = new MessagesRepository(hrudbClient);
-
+import { getAllChatsForUser } from '../db/chats-repository';
+import { getMessagesFromChat, createMessage } from '../db/messages-repository';
 
 export default async function (server) {
     const socketServer = Server(server, {
@@ -27,7 +15,7 @@ export default async function (server) {
     socketServer.on('connection', (socket) => {
         socket.on(e.GET_CHATS, (data) => {
             // TODO: доставать data.userId из куки. (socket.request)
-            const userChats = chatsRepository.getAllChatsForUser(data.userId);
+            const userChats = getAllChatsForUser(data.userId);
             socket.broadcast
                 .to(socket.id)
                 .emit(e.LIST_CHATS, userChats);
@@ -38,14 +26,14 @@ export default async function (server) {
         });
 
         socket.on(e.GET_MESSAGES, (data) => {
-            const messages = messagesRepository.getMessagesFromChat(data.groupId);
+            const messages = getMessagesFromChat(data.groupId);
             socket.broadcast
                 .to(socket.id)
                 .emit(e.LIST_MESSAGES, messages);
         });
 
         socket.on(e.NEW_MESSAGE, (data) => {
-            messagesRepository.createMessage(data);
+            createMessage(data);
             socket.broadcast
                 .to(data.groupId)
                 .emit(e.MESSAGE, data);

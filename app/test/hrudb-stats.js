@@ -7,11 +7,11 @@ const createWriteStreamAsync = fileName => new Promise((resolve) => {
     stream.once('open', () => resolve(stream));
 });
 
-describe('HrudbStats', async () => {
+describe.skip('HrudbStats', async () => {
     const fileName = `./hrudb-stats-${String(new Date()).replace(/[^\d]/g, '')}.csv`;
     const testKey = '__measurements';
     const testValue = 'VALUE';
-    const times = 10;
+    const times = 1000;
     const hrudb = proxyquire('../db/hrudb-client', {
         '../config': {
             default: {
@@ -46,5 +46,7 @@ describe('HrudbStats', async () => {
         console.info(`Check logs at ${fileName}`);
         stream.end();
     });
-    stream = await createWriteStreamAsync(fileName);
+    before(async () => {
+        stream = await createWriteStreamAsync(fileName);
+    });
 });

@@ -11,7 +11,7 @@ describe('HrudbStats', async () => {
     const fileName = `./hrudb-stats-${String(new Date()).replace(/[^\d]/g, '')}.csv`;
     const testKey = '__measurements';
     const testValue = 'VALUE';
-    const times = 10;
+    const times = 100;
     const hrudb = proxyquire('../db/hrudb-client', {
         '../config': {
             default: {
@@ -23,18 +23,18 @@ describe('HrudbStats', async () => {
 
     let stream = null;
     const sends = requestType => `Sending ${times} times ${requestType}`;
-    const range = [...Array(times)];
+    const range = [...Array(times).keys()];
     const test = (requestType, getCodeAsync) => async () => {
-        const promises = range.map(async () => {
+        const promises = range.map(i => async () => {
             const currentDate = new Date();
             const code = await getCodeAsync();
             const millis = new Date() - currentDate;
             stream.write([requestType, currentDate.toISOString(), millis, code].join(','));
             stream.write('\n');
-            // console.info(requestType, currentDate, millis, code);
+            console.info(requestType, i + 1, 'out of', times);
         });
 
-        await Promise.all(promises);
+        await promises.reduce((acc, x) => acc.then(() => x()), Promise.resolve());
     };
 
     it(sends('DELETE'), test('DELETE', () => hrudb.remove(testKey).then(() => 204, x => x.statusCode)));

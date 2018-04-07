@@ -25,10 +25,34 @@ describe.skip('HrudbClient', async () => {
     });
 
     it('should post multiple values then getAll', async () => {
-        const expected = ['SanaraBoi', '}{"SanaraBoi', 'SanaraBoi2'];
-        await Promise.all(expected.map(x => hrudb.post('key', x)));
+        const [a, b, c] = ['SanaraBoi', '}{"SanaraBoi', 'SanaraBoi2'];
+        await hrudb.post('key', a);
+        await hrudb.post('key', b);
+        await hrudb.post('key', c);
         const all = await hrudb.getAll('key');
 
-        expect(all).to.be.deep.equal(expected);
+        expect(all).to.be.deep.equal([a, b, c]);
+    });
+
+    it('should sort lexicographically', async () => {
+        const [a, b, c] = ['a1', 'a2', 'b1'];
+        await hrudb.post('key', b);
+        await hrudb.post('key', a);
+        await hrudb.post('key', c);
+        const lex = await hrudb.getAll('key', { sortByAlphabet: true });
+
+        expect(lex).to.be.deep.equal([a, b, c]);
+    });
+
+    it('should limit/offset', async () => {
+        const [a, b, c] = ['a1', 'a2', 'b1'];
+        await hrudb.post('key', b);
+        await hrudb.post('key', a);
+        await hrudb.post('key', c);
+        const lex = await hrudb.getAll('key', { sortByAlphabet: true, limit: 1, offset: 1 });
+        const dated = await hrudb.getAll('key', { limit: 2, offset: 1 });
+
+        expect(lex).to.be.deep.equal([b]);
+        expect(dated).to.be.deep.equal([a, c]);
     });
 })

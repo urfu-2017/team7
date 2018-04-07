@@ -7,7 +7,7 @@ const createWriteStreamAsync = fileName => new Promise((resolve) => {
     stream.once('open', () => resolve(stream));
 });
 
-describe.skip('HrudbStats', async () => {
+describe('HrudbStats', async () => {
     const fileName = `./hrudb-stats-${String(new Date()).replace(/[^\d]/g, '')}.csv`;
     const testKey = '__measurements';
     const testValue = 'VALUE';

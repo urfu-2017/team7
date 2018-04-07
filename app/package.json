@@ -7,9 +7,10 @@
     "dev": "node .",
     "build": "next build",
     "start": "NODE_ENV=production node .",
-    "mocha": "mocha --timeout 5000 --require babel-core/register",
+    "mocha": "mocha --timeout 5000 --require babel-core/register test/*.spec.js",
     "mwatch": "npm run mocha -- --watch",
     "test": "npm run lint && npm run mocha",
+    "stats": "mocha --require babel-core/register test/*.stats.js",
     "lint": "eslint . --ext .js,.jsx",
     "deploy": "now --public -e NODE_ENV=production --token $NOW_TOKEN --npm",
     "alias": "now alias --token=$NOW_TOKEN"

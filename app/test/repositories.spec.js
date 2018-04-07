@@ -13,10 +13,10 @@ describe.skip('Repositories', async () => {
             }
         }
     });
-    const userRepo = proxyquire('../db/userIds-repository', {
+    const userRepo = proxyquire('../db/user-repository', {
         './hrudb-client': hrudb
     });
-    const chatsRepo = proxyquire('../db/chatIds-repository', {
+    const chatsRepo = proxyquire('../db/chat-repository', {
         './hrudb-client': hrudb,
         './users-repository': userRepo
     });

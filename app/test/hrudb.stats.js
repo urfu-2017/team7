@@ -11,7 +11,7 @@ describe('HrudbStats', async () => {
     const fileName = `./hrudb-stats-${String(new Date()).replace(/[^\d]/g, '')}.csv`;
     const testKey = '__measurements';
     const testValue = 'VALUE';
-    const times = 1000;
+    const times = 10;
     const hrudb = proxyquire('../db/hrudb-client', {
         '../config': {
             default: {
@@ -37,10 +37,10 @@ describe('HrudbStats', async () => {
         await Promise.all(promises);
     };
 
-    it(sends('GET'), test('GET', () => hrudb.get(testKey).then(() => 200, x => x.statusCode)));
+    it(sends('DELETE'), test('DELETE', () => hrudb.remove(testKey).then(() => 204, x => x.statusCode)));
     it(sends('PUT'), test('PUT', () => hrudb.put(testKey, testValue).then(() => 201, x => x.statusCode)));
     it(sends('POST'), test('POST', () => hrudb.post(testKey, testValue).then(() => 204, x => x.statusCode)));
-    it(sends('DELETE'), test('DELETE', () => hrudb.remove(testKey).then(() => 204, x => x.statusCode)));
+    it(sends('GET'), test('GET', () => hrudb.get(testKey).then(() => 200, x => x.statusCode)));
 
     after(async () => {
         console.info(`Check logs at ${fileName}`);

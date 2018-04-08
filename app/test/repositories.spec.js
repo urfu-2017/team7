@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import proxyquire from 'proxyquire';
-import { User, Chat } from '../db/datatypes';
+import { User, Chat, Message } from '../db/datatypes';
 
 
 describe.skip('Repositories', async () => {
@@ -13,10 +13,10 @@ describe.skip('Repositories', async () => {
             }
         }
     });
-    const userRepo = proxyquire('../db/user-repository', {
+    const userRepo = proxyquire('../db/users-repository', {
         './hrudb-client': hrudb
     });
-    const chatsRepo = proxyquire('../db/chat-repository', {
+    const chatsRepo = proxyquire('../db/chats-repository', {
         './hrudb-client': hrudb,
         './users-repository': userRepo
     });
@@ -29,7 +29,7 @@ describe.skip('Repositories', async () => {
         const user = new User(0, "Admiral", "", [0]);
         const chat = new Chat(0, "testchat", [0]);
         await chatsRepo.createChat(chat);
-        const chats = await chatsRepo.getAllChatsForUser(user.userId);
+        const chats = await chatsRepo.getAllChatsForUser(user.id);
 
         expect(chats).to.have.lengthOf(1);
         expect(chats[0]).to.be.deep.equal(chat);

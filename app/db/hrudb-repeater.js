@@ -14,6 +14,9 @@ const tryResolve = async (promise) => {
 
         const response = await promise().catch(x => x);
         if (response && response.statusCode) {
+            if (response.statusCode === 404) {
+                throw response;
+            }
             return;
         }
         resolvedValue = response;

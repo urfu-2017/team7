@@ -27,4 +27,10 @@ describe('HrudbRepeater', async () => {
 
         expect(all).to.be.deep.equal(expected);
     });
+
+    it('returns 404 http code immediately', async () => {
+        const { statusCode } = await hrudb.get('key').catch(x => x);
+
+        expect(statusCode).to.be.equal(404);
+    });
 });

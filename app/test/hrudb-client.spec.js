@@ -61,4 +61,11 @@ describe.skip('HrudbClientIntegration', async () => {
 
         expect(totalValue).not.to.be.equal([{ a: 1 }]);
     });
+
+    it('returns 204 on delete', async () => {
+        await hrudb.remove('key');
+        await hrudb.remove('key');
+        await hrudb.remove('key');
+        await hrudb.remove('key');
+    });
 });

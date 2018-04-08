@@ -1,4 +1,4 @@
-import { put, getAll } from './hrudb-client';
+import { post, getAll } from './hrudb-client';
 
-export const createMessage = message => put(`Messages_${message.recipientChat}`, message);
+export const createMessage = message => post(`Messages_${message.chatId}`, message);
 export const getMessagesFromChat = chatId => getAll(`Messages_${chatId}`);

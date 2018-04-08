@@ -1,13 +1,13 @@
 import { get, put } from './hrudb-client';
 import { getUser } from './users-repository';
 
+export const getChat = async chatId => get(`Chats_${chatId}`);
 
 export const getAllChatsForUser = async (userId) => {
     const user = await getUser(userId);
-    const chats = await Promise.all(user.chats.map(chatId => get(`Chats_${chatId}`)));
-
-    return chats;
+    return Promise.all(user.chatIds.map(getChat));
 };
 
-export const createChat = chat => put(`Chats_${chat.id}`, chat);
+
+export const upsertChat = chat => put(`Chats_${chat.chatId}`, chat);
 

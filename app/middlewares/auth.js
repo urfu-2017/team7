@@ -1,7 +1,8 @@
 import { Passport } from 'passport';
 import { Strategy } from 'passport-github';
 import config from '../config';
-import { createIfNotExists } from '../db/users-repository';
+import { upsertUser } from '../db/users-repository';
+import { User } from '../db/datatypes';
 
 const getGithubStrategy = ({ callbackUrl, clientId, clientSecret }) =>
     new Strategy({
@@ -10,7 +11,9 @@ const getGithubStrategy = ({ callbackUrl, clientId, clientSecret }) =>
         callbackURL: callbackUrl
     }, (accessToken, refreshToken, profile, done) => {
         const { username, id } = profile;
-        createIfNotExists(username, id).then(user => done(null, user.id));
+        upsertUser(new User(id, username, null, []))
+            .then(() => done(null, { userId: id }))
+            .catch(err => done(err));
     });
 
 export const passport = new Passport();

@@ -1,4 +1,5 @@
 import { expect } from 'chai';
+import { Promise } from 'bluebird';
 import proxyquire from 'proxyquire';
 import * as hrudbMock from '../db/hrudb-client.mock';
 
@@ -54,7 +55,6 @@ describe('HrudbRepeaterRace', async () => {
     };
 
     it('has no race dealing with same key', async () => {
-        for (let i of [...Array(3)].keys())
-            await raceTest();
+        await Promise.mapSeries([...Array(3)], raceTest);
     });
 });

@@ -1,14 +1,25 @@
+import { Promise } from 'bluebird';
 import * as hrudb from './hrudb-client';
 
 const repeatTimes = 5;
+const repeatRange = [...Array(repeatTimes)];
 
-const tryResolve = (depth, promise) => {
-    if (depth <= 0) {
-        return Promise.reject();
-    }
-    return new Promise((resolve) => {
-        promise().then(resolve, () => tryResolve(depth - 1, promise));
+const tryResolve = async (depth, promise) => {
+    let resolved = false;
+    let resolvedValue;
+    await Promise.mapSeries(repeatRange, async () => {
+        if (resolved) {
+            return;
+        }
+
+        resolvedValue = await promise();
+        resolved = true;
     });
+
+    if (!resolved) {
+        throw new Error('Request failed');
+    }
+    return resolvedValue;
 };
 
 export const put = (key, value) => tryResolve(repeatTimes, () => hrudb.put(key, value));

@@ -4,7 +4,7 @@ import * as hrudb from './hrudb-client';
 const repeatTimes = 5;
 const repeatRange = [...Array(repeatTimes)];
 
-const tryResolve = async (depth, promise) => {
+const tryResolve = async (promise) => {
     let resolved = false;
     let resolvedValue;
     await Promise.mapSeries(repeatRange, async () => {
@@ -12,7 +12,11 @@ const tryResolve = async (depth, promise) => {
             return;
         }
 
-        resolvedValue = await promise();
+        const response = await promise().catch(x => x);
+        if (response && response.statusCode) {
+            return;
+        }
+        resolvedValue = response;
         resolved = true;
     });
 
@@ -22,9 +26,9 @@ const tryResolve = async (depth, promise) => {
     return resolvedValue;
 };
 
-export const put = (key, value) => tryResolve(repeatTimes, () => hrudb.put(key, value));
+export const put = (key, value) => tryResolve(() => hrudb.put(key, value));
 
-export const post = (key, value) => tryResolve(repeatTimes, () => hrudb.post(key, value));
+export const post = (key, value) => tryResolve(() => hrudb.post(key, value));
 
 /*
     from           - моложе указанного таймстемпа (new Date().getTime())
@@ -34,9 +38,9 @@ export const post = (key, value) => tryResolve(repeatTimes, () => hrudb.post(key
     offset         – с отступ от начала выборки (по умолчанию, 0)
 */
 export const getAll = (key, options = {}) =>
-    tryResolve(repeatTimes, () => hrudb.getAll(key, options));
+    tryResolve(() => hrudb.getAll(key, options));
 
-export const get = key => tryResolve(repeatTimes, () => hrudb.get(key));
+export const get = key => tryResolve(() => hrudb.get(key));
 
-export const remove = key => tryResolve(repeatTimes, () => hrudb.remove(key));
+export const remove = key => tryResolve(() => hrudb.remove(key));
 

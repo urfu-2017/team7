@@ -1,13 +1,13 @@
 import React from 'react';
 import moment from 'moment';
-import { observer } from 'mobx-react';
+import { observer, inject } from 'mobx-react';
 import { Comment, Header, Segment, Transition } from 'semantic-ui-react';
-import messagesStore from '../../stores/messages';
-import usersStore from '../../stores/users';
-import mainStore from '../../stores/main';
 import { onMessagesList, onMessage, getUser, onUser } from '../../../../sockets/client';
 
 
+@inject('chats')
+@inject('users')
+@inject('messages')
 @observer
 class MessageList extends React.Component {
     componentDidMount() {
@@ -18,25 +18,27 @@ class MessageList extends React.Component {
         });
 
         onUser((user) => {
-            usersStore.usersById.set(user.userId, user);
+            this.props.users.usersById.set(user.userId, user);
         });
     }
 
     onMessage = (message) => {
-        messagesStore.addMessage(message);
-        if (!usersStore.usersById.has(message.authorUserId)) {
+        this.props.messages.addMessage(message);
+        const { usersById } = this.props.users;
+        if (!usersById.has(message.authorUserId)) {
             getUser({ userId: message.authorUserId });
         }
     };
 
     render() {
-        if (mainStore.activeChat === null) {
+        const { chats, messages, users } = this.props;
+        if (!chats.activeChat) {
             return <Segment textAlign="center" size="big">Выберите чат</Segment>;
         }
         return (
             <Comment.Group>
-                <Header as="h3">{mainStore.activeChat.name}</Header>
-                {messagesStore.activeMessages.map(message => (
+                <Header as="h3">{chats.activeChat.name}</Header>
+                {messages.getChatMessages(chats.activeChat.chatId).map(message => (
                     <Transition.Group
                         key={message.chatId}
                         duration={200}
@@ -45,7 +47,7 @@ class MessageList extends React.Component {
                         <Comment.Avatar src="https://react.semantic-ui.com/assets/images/avatar/small/matt.jpg" />
                         <Comment.Content>
                             <Comment.Author as="a">
-                                {usersStore.getUsername(message.authorUserId) || 'Чебурашка'}
+                                {users.getUsername(message.authorUserId) || 'Чебурашка'}
                             </Comment.Author>
                             <Comment.Metadata>
                                 <div>{moment(message.timestamp).format('hh:mm')}</div>

@@ -1,6 +1,6 @@
 import { expect } from 'chai';
 import proxyquire from 'proxyquire';
-import { User, Chat, Message } from '../db/datatypes';
+import { User, Chat } from '../db/datatypes';
 
 
 describe.skip('Repositories', async () => {

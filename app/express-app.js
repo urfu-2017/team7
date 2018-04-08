@@ -3,7 +3,7 @@ import cookieParser from 'cookie-parser';
 import cookieSession from 'cookie-session';
 
 import config from './config';
-import loginController from './controllers/login-controller';
+import loginController from './controllers/login';
 import { installPassport } from './middlewares/auth';
 
 function installAllMiddlewares(app) {

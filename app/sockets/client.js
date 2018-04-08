@@ -1,7 +1,6 @@
 import connect from 'socket.io-client';
 import { clientNames, serverNames } from './eventNames';
 
-const isBrowser = typeof window !== 'undefined';
 const socketOptions = {
     transports: ['websocket'],
     reconnection: true,
@@ -9,7 +8,7 @@ const socketOptions = {
     reconnectionDelayMax: 5000,
     reconnectionAttempts: Infinity
 };
-const socket = isBrowser
+const socket = process.browser
     ? connect(socketOptions)
     : { emit: () => { }, on: () => { } };
 

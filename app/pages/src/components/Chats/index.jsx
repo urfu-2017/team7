@@ -1,39 +1,40 @@
 import React from 'react';
-import { observer } from 'mobx-react';
+import { observer, inject } from 'mobx-react';
 import { List, Image } from 'semantic-ui-react';
-import mainStore from '../../stores/main';
-import messagesStore from '../../stores/messages';
 import { getChats, getMessages, onChatsList } from '../../../../sockets/client';
 
 
+@inject('chats')
+@inject('messages')
 @observer
 class ChatList extends React.Component {
     componentDidMount() {
         let chatsNeverReceived = true;
         onChatsList((chats) => {
             chatsNeverReceived = false;
-            this.setState({ chats });
+            this.props.chats.setAllChats(chats);
         });
 
         (function askForChats() {
             getChats();
             if (chatsNeverReceived) {
-                setTimeout(askForChats, 200);
+                setTimeout(askForChats, 1000);
             }
         }());
     }
 
     render() {
-        if (!this.state) {
+        const { chats, messages } = this.props;
+        if (chats.allChats.length === 0) {
             return <div>Идёт загрузка списка чатов...</div>;
         }
         return (
             <List>
-                {this.state.chats.map(chat => (
+                {chats.allChats.map(chat => (
                     <List.Item
                         key={chat.chatId}
                         onClick={() => {
-                            mainStore.activeChat = chat;
+                            chats.setActiveChat(chat);
                             getMessages({ chatId: chat.chatId });
                         }}
                     >
@@ -41,7 +42,7 @@ class ChatList extends React.Component {
                         <List.Content>
                             <List.Header as="a">{chat.name}</List.Header>
                             <List.Description>
-                                {messagesStore.getLastMessageTextFor(chat.chatId)}
+                                {messages.getLastMessageText(chat.chatId)}
                             </List.Description>
                         </List.Content>
                     </List.Item>))}

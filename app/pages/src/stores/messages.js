@@ -1,5 +1,4 @@
-import { observable, computed, action } from 'mobx';
-import mainStore from './main';
+import { observable, action } from 'mobx';
 
 class MessagesStore {
     @observable messagesByChatId = observable.map();
@@ -15,7 +14,7 @@ class MessagesStore {
         }
     }
 
-    getLastMessageTextFor(chatId) {
+    getLastMessageText(chatId) {
         if (!this.messagesByChatId.has(chatId)) {
             return '';
         }
@@ -26,9 +25,11 @@ class MessagesStore {
         return messages[messages.length - 1].content;
     }
 
-    @computed get activeMessages() {
-        return this.messagesByChatId.get(mainStore.activeChat.chatId) || [];
+    getChatMessages(chatId) {
+        return this.messagesByChatId.get(chatId) || [];
     }
 }
 
-export default new MessagesStore();
+const messagesStore = new MessagesStore();
+export default messagesStore;
+export { MessagesStore };

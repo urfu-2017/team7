@@ -1,5 +1,5 @@
 import connect from 'socket.io-client';
-import { clientNames, serverNames } from './eventNames';
+import * as eventNames from './eventNames';
 
 const socketOptions = {
     transports: ['websocket'],
@@ -14,11 +14,11 @@ const socket = process.browser
 
 
 export function sendMessage(message) {
-    socket.emit(clientNames.NEW_MESSAGE, message);
+    socket.emit(eventNames.client.NEW_MESSAGE, message);
 }
 
 export function getChats() {
-    socket.emit(clientNames.GET_CHATS);
+    socket.emit(eventNames.client.GET_CHATS);
 }
 
 /**
@@ -30,7 +30,7 @@ export function getChats() {
  * @param {onChatsListCallback} handler
  */
 export function onChatsList(handler) {
-    socket.on(serverNames.LIST_CHATS, handler);
+    socket.on(eventNames.server.LIST_CHATS, handler);
 }
 
 
@@ -39,15 +39,15 @@ export function onChatsList(handler) {
  * @param {string} payload.chatId
  */
 export function getMessages(payload) {
-    socket.emit(clientNames.GET_MESSAGES, payload);
+    socket.emit(eventNames.client.GET_MESSAGES, payload);
 }
 
 export function onMessagesList(handler) {
-    socket.on(serverNames.LIST_MESSAGES, handler);
+    socket.on(eventNames.server.LIST_MESSAGES, handler);
 }
 
 export function onMessage(handler) {
-    socket.on(serverNames.MESSAGE, handler);
+    socket.on(eventNames.server.MESSAGE, handler);
 }
 
 /**
@@ -55,11 +55,11 @@ export function onMessage(handler) {
  * @param {string} payload.userId
  */
 export function getUser(payload) {
-    socket.emit(clientNames.GET_USER, payload);
+    socket.emit(eventNames.client.GET_USER, payload);
 }
 
 export function onUser(handler) {
-    socket.on(serverNames.USER, handler);
+    socket.on(eventNames.server.USER, handler);
 }
 
 export function onError(handler) {

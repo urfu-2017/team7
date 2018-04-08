@@ -1,6 +1,6 @@
 import Server from 'socket.io';
 import uuidv4 from 'uuid/v4';
-import { clientNames, serverNames } from './eventNames';
+import * as eventNames from './eventNames';
 import * as usersRepository from '../db/users-repository';
 import * as messagesRepository from '../db/messages-repository';
 import * as chatsRepository from '../db/chats-repository';
@@ -8,26 +8,26 @@ import * as userInfoProvider from './user-info-provider';
 import { Chat, Message } from '../db/datatypes';
 
 function registerMessageHandlers(socketServer, socket, userId) {
-    socket.on(clientNames.GET_CHATS, async () => {
+    socket.on(eventNames.client.GET_CHATS, async () => {
         const userChats = await chatsRepository.getAllChatsForUser(userId);
-        socket.emit(serverNames.LIST_CHATS, userChats);
+        socket.emit(eventNames.server.LIST_CHATS, userChats);
 
         userChats
             .map(x => x.chatId)
             .forEach(chatId => socket.join(chatId));
     });
 
-    socket.on(clientNames.GET_MESSAGES, async ({ chatId }) => {
+    socket.on(eventNames.client.GET_MESSAGES, async ({ chatId }) => {
         const messages = await messagesRepository.getMessagesFromChat(chatId);
-        socket.emit(serverNames.LIST_MESSAGES, messages);
+        socket.emit(eventNames.server.LIST_MESSAGES, messages);
     });
 
-    socket.on(clientNames.GET_USER, async (payload) => {
+    socket.on(eventNames.client.GET_USER, async (payload) => {
         const user = await usersRepository.getUser(payload.userId);
-        socket.emit(serverNames.USER, user);
+        socket.emit(eventNames.server.USER, user);
     });
 
-    socket.on(clientNames.NEW_MESSAGE, async ({ chatId, text }) => {
+    socket.on(eventNames.client.NEW_MESSAGE, async ({ chatId, text }) => {
         const message = new Message(
             uuidv4(),
             new Date(),
@@ -38,7 +38,7 @@ function registerMessageHandlers(socketServer, socket, userId) {
         );
         await messagesRepository.createMessage(message);
         socketServer.to(message.chatId)
-            .emit(serverNames.MESSAGE, message);
+            .emit(eventNames.server.MESSAGE, message);
     });
 }
 
@@ -63,9 +63,10 @@ export default async function (server) {
             await usersRepository.joinChat(userId, commonChat.chatId);
 
             registerMessageHandlers(socketServer, socket, userId);
-            console.info('Incoming socket connected.');
+            // TODO: втащить нормальный логгер
+            console.info('Incoming socket connected.'); // eslint-disable-line no-console
         } catch (e) {
-            console.error('Incoming socket connection failed.', e);
+            console.error('Incoming socket connection failed.', e); // eslint-disable-line no-console
             socket.disconnect(true);
         }
     });

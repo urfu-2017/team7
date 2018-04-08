@@ -1,9 +1,10 @@
 import { post, getAll } from './hrudb-client';
 import { User } from './datatypes';
 
+export const getAllUsers = () => getAll('Users');
 export const saveUser = user => post('Users', user);
 export const getUser = async (userId) => {
-    const users = await getAll('Users');
+    const users = await getAllUsers();
 
     return users.find(user => user.id === userId);
 };

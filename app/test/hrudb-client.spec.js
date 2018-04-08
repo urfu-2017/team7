@@ -3,11 +3,10 @@ import proxyquire from 'proxyquire';
 
 
 describe.skip('HrudbClient', async () => {
-    const testToken = '8f92d8b92cffc5d2c4ddb2af9959dfa9391b6f43';
     const hrudb = proxyquire('../db/hrudb-client', {
         '../config': {
             default: {
-                HRUDB_TOKEN: testToken,
+                HRUDB_TOKEN: '8f92d8b92cffc5d2c4ddb2af9959dfa9391b6f43',
                 HRUDB_URL: 'https://hrudb.herokuapp.com'
             }
         }
@@ -55,4 +54,4 @@ describe.skip('HrudbClient', async () => {
         expect(lex).to.be.deep.equal([b]);
         expect(dated).to.be.deep.equal([a, c]);
     });
-})
+});

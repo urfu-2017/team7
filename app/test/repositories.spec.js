@@ -1,17 +1,13 @@
 import { expect } from 'chai';
+import { Promise } from 'bluebird';
 import proxyquire from 'proxyquire';
 import { User, Chat, Message } from '../db/datatypes';
+import * as hrudbMock from '../db/hrudb-client.mock';
 
 
-describe.skip('Repositories', async () => {
-    const testToken = '8f92d8b92cffc5d2c4ddb2af9959dfa9391b6f43';
-    const hrudb = proxyquire('../db/hrudb-client', {
-        '../config': {
-            default: {
-                HRUDB_TOKEN: testToken,
-                HRUDB_URL: 'https://hrudb.herokuapp.com'
-            }
-        }
+describe('Repositories', async () => {
+    const hrudb = proxyquire('../db/hrudb-repeater', {
+        './hrudb-client': hrudbMock
     });
     const userRepo = proxyquire('../db/users-repository', {
         './hrudb-client': hrudb
@@ -21,17 +17,25 @@ describe.skip('Repositories', async () => {
         './users-repository': userRepo
     });
 
-    beforeEach(async () => {
-        await hrudb.remove('Chats_0');
-    });
-
-    it('can do somthing', async () => {
-        const user = new User(0, "Admiral", "", [0]);
-        const chat = new Chat(0, "testchat", [0]);
+    it('can create chat for user', async () => {
+        const user = new User(0, 'Admiral', null, [0]);
+        const chat = new Chat(0, 'testchat', [0]);
+        await userRepo.saveUser(user);
         await chatsRepo.createChat(chat);
         const chats = await chatsRepo.getAllChatsForUser(user.id);
 
-        expect(chats).to.have.lengthOf(1);
-        expect(chats[0]).to.be.deep.equal(chat);
+        expect(chats).to.be.deep.equal([chat]);
+    });
+
+    it('has no race while creating multiple users', async () => {
+        const [a, b, c] = [
+            new User(0, 'user1', '', []),
+            new User(0, 'user2', '', []),
+            new User(0, 'user3', '', [])
+        ];
+        await Promise.mapSeries([a, b, c], user => userRepo.createIfNotExists(user.name, user.id));
+        const users = await userRepo.getAllUsers();
+
+        expect(users).to.be.deep.equal([a, b, c]);
     });
 });

@@ -3,7 +3,7 @@ const db = {};
 
 class Response extends Error {
     constructor(statusCode) {
-        super(`Response ${statusCode}`);
+        super(`Fake response ${statusCode}`);
         this.statusCode = statusCode;
     }
 }
@@ -22,7 +22,7 @@ const tryFailRequest = () => {
 
 export const put = async (key, value) => {
     tryFailRequest();
-    db[key] = value;
+    db[key] = [value];
 };
 
 export const post = async (key, value) => {

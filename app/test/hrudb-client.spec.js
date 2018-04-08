@@ -31,4 +31,4 @@ describe.skip('HrudbClient', async () => {
 
         expect(all).to.be.deep.equal(expected);
     });
-})
+});

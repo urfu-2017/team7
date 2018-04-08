@@ -1,5 +1,8 @@
-let shouldFailRequest = false;
-const db = {};
+let db = {};
+
+export const clearDb = () => {
+    db = {};
+};
 
 class Response extends Error {
     constructor(statusCode) {
@@ -8,25 +11,23 @@ class Response extends Error {
     }
 }
 
-const throwStatus = (statusCode) => {
-    throw new Response(statusCode);
-};
-
-const tryFailRequest = () => {
-    if (shouldFailRequest) {
-        shouldFailRequest = false;
-        throwStatus(418);
-    }
-    shouldFailRequest = true;
-};
+const simulateRequest = () => new Promise((resolve, reject) => {
+    setTimeout(() => {
+        if (Math.random() > 0.5) {
+            reject(new Response(418));
+            return;
+        }
+        resolve();
+    }, 1);
+});
 
 export const put = async (key, value) => {
-    tryFailRequest();
+    await simulateRequest();
     db[key] = [value];
 };
 
 export const post = async (key, value) => {
-    tryFailRequest();
+    await simulateRequest();
     if (!db[key]) {
         db[key] = [];
     }
@@ -41,7 +42,7 @@ export const post = async (key, value) => {
     offset         – с отступ от начала выборки (по умолчанию, 0)
 */
 export const getAll = async (key, options = {}) => {
-    tryFailRequest();
+    await simulateRequest();
     const query = Object.assign({}, options);
     Object.keys(options).forEach((x) => {
         if (query[x] === undefined) {
@@ -59,9 +60,9 @@ export const getAll = async (key, options = {}) => {
 };
 
 export const get = async (key) => {
-    tryFailRequest();
+    await simulateRequest();
     if (!db[key]) {
-        throwStatus(404);
+        throw new Response(404);
     }
 
     const values = db[key];
@@ -69,7 +70,7 @@ export const get = async (key) => {
 };
 
 export const remove = async (key) => {
-    tryFailRequest();
+    await simulateRequest();
     delete db[key];
 };
 

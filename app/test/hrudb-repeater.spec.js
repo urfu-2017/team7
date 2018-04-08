@@ -10,7 +10,7 @@ describe('HrudbRepeater', async () => {
     });
 
     beforeEach(async () => {
-        await hrudb.remove('key');
+        hrudbMock.clearDb();
     });
 
     it('should put/get key-value', async () => {
@@ -21,12 +21,10 @@ describe('HrudbRepeater', async () => {
     });
 
     it('should post multiple values then getAll', async () => {
-        const [a, b, c] = ['SanaraBoi', '}{"SanaraBoi', 'SanaraBoi2'];
-        await hrudb.post('key', a);
-        await hrudb.post('key', b);
-        await hrudb.post('key', c);
+        const expected = ['SanaraBoi', '}{"SanaraBoi', 'SanaraBoi2'];
+        await Promise.mapSeries(expected, value => hrudb.post('key', value));
         const all = await hrudb.getAll('key');
 
-        expect(all).to.be.deep.equal([a, b, c]);
+        expect(all).to.be.deep.equal(expected);
     });
 });

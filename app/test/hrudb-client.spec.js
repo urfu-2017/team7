@@ -2,7 +2,7 @@ import { expect } from 'chai';
 import proxyquire from 'proxyquire';
 
 
-describe.skip('HrudbClient', async () => {
+describe.skip('HrudbClientIntegration', async () => {
     const hrudb = proxyquire('../db/hrudb-client', {
         '../config': {
             default: {
@@ -53,5 +53,12 @@ describe.skip('HrudbClient', async () => {
 
         expect(lex).to.be.deep.equal([b]);
         expect(dated).to.be.deep.equal([a, c]);
+    });
+
+    it('can\'t replace by put', async () => {
+        await hrudb.put('key', [{ a: 1 }]);
+        const totalValue = await hrudb.getAll('key');
+
+        expect(totalValue).not.to.be.equal([{ a: 1 }]);
     });
 });

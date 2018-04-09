@@ -56,10 +56,11 @@ describe.skip('HrudbClientIntegration', async () => {
     });
 
     it('can\'t replace by put', async () => {
-        await hrudb.put('key', [{ a: 1 }]);
+        const usersLikeValue = [{ a: 1 }];
+        await hrudb.put('key', usersLikeValue);
         const totalValue = await hrudb.getAll('key');
 
-        expect(totalValue).not.to.be.equal([{ a: 1 }]);
+        expect(totalValue).to.be.deep.equal([usersLikeValue]);
     });
 
     it('returns 204 on delete', async () => {

@@ -9,10 +9,10 @@ describe('Repositories', async () => {
         './hrudb-client': hrudbMock
     });
     const userRepo = proxyquire('../db/users-repository', {
-        './hrudb-client': hrudb
+        './hrudb-repeater': hrudb
     });
     const chatsRepo = proxyquire('../db/chats-repository', {
-        './hrudb-client': hrudb,
+        './hrudb-repeater': hrudb,
         './users-repository': userRepo
     });
 

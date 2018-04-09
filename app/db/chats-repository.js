@@ -1,4 +1,4 @@
-import { get, put } from './hrudb-client';
+import { get, put } from './hrudb-repeater';
 import { getUser } from './users-repository';
 
 export const getChat = async chatId => get(`Chats_${chatId}`);

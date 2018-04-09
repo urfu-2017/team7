@@ -1,4 +1,4 @@
-import { getAll, put } from './hrudb-client';
+import { getAll, put } from './hrudb-repeater';
 import * as chatsRepository from './chats-repository';
 
 export const upsertUser = async (updatedUser) => {

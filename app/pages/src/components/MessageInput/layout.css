@@ -1,0 +1,18 @@
+.layout
+{
+    display: grid;
+    grid-template-areas: 'input button';
+    grid-template-columns: 1fr auto;
+    grid-gap: 1rem;
+}
+
+.layout__button
+{
+    grid-area: button;
+}
+
+.layout__input
+{
+    grid-area: input;
+    height: 5vh;
+}

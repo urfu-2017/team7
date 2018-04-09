@@ -1,8 +1,8 @@
 import React from 'react';
 import { observer, inject } from 'mobx-react';
-import { Form } from 'semantic-ui-react';
+import { Input, Button } from 'semantic-ui-react';
 import { sendMessage } from '../../../../sockets/client';
-
+import css from './layout.css';
 
 @inject('chatsStore')
 @observer
@@ -14,23 +14,24 @@ class MessageInput extends React.Component {
     render() {
         const { activeChat } = this.props.chatsStore;
         return (
-            <Form>
-                <Form.Group>
-                    <Form.Input
-                        name="text"
-                        value={this.state.text}
-                        onChange={this.handleChange}
-                    />
-                    <Form.Button
-                        disabled={!activeChat || this.state.text === ''}
-                        content="Отправить"
-                        onClick={() => {
-                            sendMessage({ text: this.state.text, chatId: activeChat.chatId });
-                            this.setState({ text: '' });
-                        }}
-                    />
-                </Form.Group>
-            </Form>
+            <div className={css.layout}>
+                <Input
+                    name="text"
+                    value={this.state.text}
+                    onChange={this.handleChange}
+                    className={css.layout__input}
+                />
+                <Button
+                    disabled={!activeChat || this.state.text === ''}
+                    className={css.layout__button}
+                    content="Отправить"
+                    onClick={() => {
+                        sendMessage({ text: this.state.text, chatId: activeChat.chatId });
+                        this.setState({ text: '' });
+                    }}
+                />
+            </div>
+
         );
     }
 }

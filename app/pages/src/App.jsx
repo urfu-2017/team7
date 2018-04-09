@@ -22,7 +22,15 @@ class App extends React.Component {
             <Provider {...stores}>
                 <React.Fragment>
                     <Head>
+                        <title>team7chat</title>
                         <link rel="stylesheet" href={semanticUiStyles} />
+                        <link rel="stylesheet" href="/_next/static/style.css" />
+                        <style jsx global>{`
+                          body, html {
+                            overflow: hidden;
+                          }
+                        `}
+                        </style>
                     </Head>
                     {/* <Header /> */}
                     {/* <Menu /> */}

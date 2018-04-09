@@ -1,11 +1,10 @@
 import React from 'react';
 import { observer, inject } from 'mobx-react';
-import { List, Image } from 'semantic-ui-react';
+import { List, Image, Menu, Label, Input } from 'semantic-ui-react';
 import { getChats, getMessages, onChatsList } from '../../../../sockets/client';
 
 
-@inject('chatsStore')
-@inject('messagesStore')
+@inject('chatsStore', 'messagesStore')
 @observer
 class ChatList extends React.Component {
     componentDidMount() {
@@ -25,29 +24,36 @@ class ChatList extends React.Component {
 
     render() {
         const { chatsStore, messagesStore } = this.props;
-        if (chatsStore.allChats.length === 0) {
-            return <div>Идёт загрузка списка чатов...</div>;
-        }
         return (
-            <List>
+            <Menu as={List} size="large" style={{ margin: '0', boxShadow: 'none', border: 'none' }} vertical>
+                <Menu.Item style={{ padding: 0 }} >
+                    <Image src="https://help.github.com/assets/images/help/profile/identicon.png" size="medium" rounded />
+                </Menu.Item>
+                <Menu.Item>
+                    <Input icon="search" placeholder="Поиск..." />
+                </Menu.Item>
                 {chatsStore.allChats.map(chat => (
-                    <List.Item
+                    <Menu.Item
                         key={chat.chatId}
+                        active={chat === chatsStore.activeChat}
+                        style={{ height: '62px' }}
                         onClick={() => {
                             chatsStore.setActiveChat(chat);
                             getMessages({ chatId: chat.chatId });
                         }}
                     >
+                        <Label color="teal" style={{ marginTop: '8px' }}>1</Label>
                         <Image avatar src={chat.avatarUrl} />
                         <List.Content>
-                            <List.Header as="a">{chat.name}</List.Header>
+                            <List.Header as="span">{chat.name}</List.Header>
                             <List.Description>
                                 {messagesStore.getLastMessageText(chat.chatId)}
                             </List.Description>
                         </List.Content>
-                    </List.Item>))}
-
-            </List>);
+                    </Menu.Item>))}
+                <Menu.Item style={{ padding: 0 }} />
+            </Menu>
+        );
     }
 }
 

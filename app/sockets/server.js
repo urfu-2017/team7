@@ -1,4 +1,5 @@
 import Server from 'socket.io';
+import urlMetadata from 'url-metadata';
 import uuidv4 from 'uuid/v4';
 import * as eventNames from './eventNames';
 import * as usersRepository from '../db/users-repository';
@@ -40,6 +41,11 @@ function registerMessageHandlers(socketServer, socket, userId) {
         socketServer.to(message.chatId)
             .emit(eventNames.server.MESSAGE, message);
     });
+
+    socket.on(eventNames.client.GET_URL_META, async (url) => {
+        const meta = await urlMetadata(url);
+        socket.emit(eventNames.server.URL_META, meta);
+    });
 }
 
 export default async function (server) {
@@ -64,9 +70,9 @@ export default async function (server) {
 
             registerMessageHandlers(socketServer, socket, userId);
             // TODO: втащить нормальный логгер
-            console.info('Incoming socket connected.'); // eslint-disable-line no-console
+            console.info('Socket connected. ID: ', socket.id); // eslint-disable-line no-console
         } catch (e) {
-            console.error('Incoming socket connection failed.', e); // eslint-disable-line no-console
+            console.error('Socket connection failed.', e.message); // eslint-disable-line no-console
             socket.disconnect(true);
         }
     });

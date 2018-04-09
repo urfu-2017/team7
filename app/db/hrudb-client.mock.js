@@ -6,10 +6,10 @@ export const clearDb = () => {
     db = {};
 };
 
-class Response extends Error {
+class Response {
     constructor(statusCode, description) {
-        super(`Fake response ${statusCode}, ${description}`);
         this.statusCode = statusCode;
+        this.description = description;
     }
 }
 
@@ -30,9 +30,7 @@ export const put = async (key, value) => {
 
 export const post = async (key, value) => {
     await simulateRequest();
-    if (!db[key]) {
-        db[key] = [];
-    }
+    db[key] = db[key] || [];
     db[key].push(value);
 };
 
@@ -55,10 +53,7 @@ export const getAll = async (key, options = {}) => {
         query.sort = 'alph';
     }
     delete query.sortByAlphabet;
-    if (!db[key]) {
-        return [];
-    }
-    return db[key];
+    return db[key] || [];
 };
 
 export const get = async (key) => {

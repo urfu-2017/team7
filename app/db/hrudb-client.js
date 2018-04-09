@@ -13,7 +13,7 @@ const sendRequest = async (relativeUrl, method, body, query) => {
     if (body !== undefined) {
         options.body = JSON.stringify(body);
     }
-    if (query !== undefined) {
+    if (query) {
         options.query = query;
     }
 

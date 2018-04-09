@@ -30,7 +30,7 @@ describe('Repositories', async () => {
 
         expect(chats).to.be.deep.equal([chat]);
         expect(hrudbMock.getDb()).to.be.deep.equal({
-            Users: [[user]],
+            Users_0: [user],
             Chats_0: [chat]
         });
     });
@@ -42,7 +42,7 @@ describe('Repositories', async () => {
 
         expect(user).to.be.deep.equal(expected);
         expect(hrudbMock.getDb()).to.be.deep.equal({
-            Users: [[user]]
+            Users_0: [user]
         });
     });
 
@@ -54,7 +54,7 @@ describe('Repositories', async () => {
 
         expect(user).to.be.deep.equal(expected);
         expect(hrudbMock.getDb()).to.be.deep.equal({
-            Users: [[user]]
+            Users_0: [user]
         });
     });
 
@@ -68,7 +68,7 @@ describe('Repositories', async () => {
 
         expect(chats).to.be.deep.equal([chat]);
         expect(hrudbMock.getDb()).to.be.deep.equal({
-            Users: [[user]],
+            Users_0: [user],
             Chats_0: [chat]
         });
     });

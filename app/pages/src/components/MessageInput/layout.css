@@ -3,6 +3,7 @@
     display: grid;
     grid-template-areas: 'input button';
     grid-template-columns: 1fr auto;
+    grid-template-rows: auto;
     grid-gap: 1rem;
 }
 
@@ -14,5 +15,4 @@
 .layout__input
 {
     grid-area: input;
-    height: 5vh;
 }

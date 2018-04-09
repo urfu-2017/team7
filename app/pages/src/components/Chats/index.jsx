@@ -26,8 +26,12 @@ class ChatList extends React.Component {
         const { chatsStore, messagesStore } = this.props;
         return (
             <Menu as={List} size="large" style={{ margin: '0', boxShadow: 'none', border: 'none' }} vertical>
-                <Menu.Item style={{ padding: 0 }} >
-                    <Image src="https://help.github.com/assets/images/help/profile/identicon.png" size="medium" rounded />
+                <Menu.Item style={{ padding: 0 }}>
+                    <Image
+                        src="http://identicon.net/img/identicon.png"
+                        size="medium"
+                        rounded
+                    />
                 </Menu.Item>
                 <Menu.Item>
                     <Input icon="search" placeholder="Поиск..." />
@@ -46,7 +50,13 @@ class ChatList extends React.Component {
                         <Image avatar src={chat.avatarUrl} />
                         <List.Content>
                             <List.Header as="span">{chat.name}</List.Header>
-                            <List.Description>
+                            <List.Description style={{
+                                whiteSpace: 'nowrap',
+                                overflow: 'hidden',
+                                textOverflow: 'ellipsis',
+                                width: '140px'
+                            }}
+                            >
                                 {messagesStore.getLastMessageText(chat.chatId)}
                             </List.Description>
                         </List.Content>

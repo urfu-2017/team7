@@ -1,32 +1,46 @@
-import React, { Component } from 'react';
+import React from 'react';
+import { Item } from 'semantic-ui-react';
 import { inject, observer } from 'mobx-react';
-import { onUrlMeta } from '../../../../sockets/client';
+import { getUrlMeta } from '../../../../sockets/client';
+import urlRegex from './url-regex';
+import css from './meta.css';
 
 @inject('urlMetaStore')
 @observer
-class UrlMeta extends Component {
-    componentDidMount() {
-        const { url, urlMetaStore } = this.props;
-
-        onUrlMeta(meta => urlMetaStore.metaByUrl.set(url, meta));
-
-        urlMetaStore.fetchUrlMeta(url);
+class UrlMeta extends React.Component {
+    componentWillMount() {
+        const { text } = this.props;
+        const match = text.match(urlRegex);
+        if (match !== null) {
+            [this.url] = match;
+            getUrlMeta(this.url);
+        }
     }
 
     render() {
-        const { url, urlMetaStore } = this.props;
-        const meta = urlMetaStore.metaByUrl.get(url);
+        if (!this.url) {
+            return '';
+        }
+        const { urlMetaStore } = this.props;
+        const meta = urlMetaStore.metaByUrl.get(this.url);
         if (!meta) {
-            return <div>{ url }</div>;
+            return <a href={this.url}>{this.url}</a>;
         }
 
         const imageUrl = meta['og:image'] || meta.image;
         return (
-            <div>
-                <p>{ meta['og:title'] || meta.title }</p>
-                { imageUrl ? <img src={imageUrl} alt="img" /> : ''}
-                <p>{ meta['og:description'] || meta.description }</p>
-            </div>
+            <Item.Group className={css.meta}>
+                <Item>
+                    {imageUrl ? <Item.Image src={imageUrl} size="small" /> : ''}
+                    <Item.Content>
+                        <Item.Header as="a" content={meta['og:title'] || meta.title} />
+                        <Item.Meta>
+                            <a href={meta.source}>{meta.source}</a>
+                        </Item.Meta>
+                        <Item.Description content={meta['og:description'] || meta.description} />
+                    </Item.Content>
+                </Item>
+            </Item.Group>
         );
     }
 }

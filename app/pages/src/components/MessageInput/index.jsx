@@ -24,6 +24,7 @@ class MessageInput extends React.Component {
                 <Button
                     disabled={!activeChat || this.state.text === ''}
                     className={css.layout__button}
+                    color="red"
                     content="Отправить"
                     onClick={() => {
                         sendMessage({ text: this.state.text, chatId: activeChat.chatId });

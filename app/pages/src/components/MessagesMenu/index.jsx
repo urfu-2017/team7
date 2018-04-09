@@ -14,7 +14,7 @@ class MessagesMenu extends React.Component {
                     ? <Menu.Item header content={activeChat.name} />
                     : ''}
                 <Menu.Item position="right">
-                    <Icon size="large" name="setting" />
+                    <Icon size="large" color="grey" name="setting" />
                 </Menu.Item>
             </Menu>
         );

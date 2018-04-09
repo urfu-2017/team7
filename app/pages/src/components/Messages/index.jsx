@@ -3,7 +3,7 @@ import moment from 'moment';
 import { observer, inject } from 'mobx-react';
 import { Comment } from 'semantic-ui-react';
 import { onMessagesList, onMessage, getUser, onUser } from '../../../../sockets/client';
-
+import UrlMeta from '../UrlMeta';
 
 @inject('chatsStore', 'messagesStore', 'usersStore')
 @observer
@@ -45,7 +45,10 @@ class MessageList extends React.Component {
                             <Comment.Metadata>
                                 <div>{moment(message.timestamp).format('hh:mm')}</div>
                             </Comment.Metadata>
-                            <Comment.Text>{message.content}</Comment.Text>
+                            <Comment.Text>
+                                {message.content}
+                            </Comment.Text>
+                            <UrlMeta text={message.content} />
                         </Comment.Content>
                     </Comment>))}
             </Comment.Group>);

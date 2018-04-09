@@ -7,13 +7,15 @@
             'chats input';
 
     grid-template-rows: auto 1fr auto;
-    grid-template-columns: auto 1fr;
+    grid-template-columns: auto 550px;
     position: fixed;
-    padding: 1rem;
+    padding: 2rem 1rem;
     overflow: hidden;
     grid-gap: 1rem;
     width: 100vw;
     height: 100vh;
+    justify-content: center;
+    min-width: 850px;
 }
 
 .layout .layout__chats
@@ -37,6 +39,7 @@
     grid-area: messages;
     margin-top: 0;
     margin-bottom: 0;
+    padding: 2rem;
     position: relative;
     overflow-x: hidden;
     overflow-y: auto;

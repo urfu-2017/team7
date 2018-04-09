@@ -25,9 +25,11 @@ class App extends React.Component {
                         <title>team7chat</title>
                         <link rel="stylesheet" href={semanticUiStyles} />
                         <link rel="stylesheet" href="/_next/static/style.css" />
+                        <link rel="icon" type="image/png" href="/static/logo.png" />
                         <style jsx global>{`
                           body, html {
                             overflow: hidden;
+                            background-color: #E7EBF0;
                           }
                         `}
                         </style>

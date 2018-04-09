@@ -28,7 +28,6 @@ function registerMessageHandlers(socketServer, socket, userId) {
         if (user) {
             socket.emit(eventNames.server.USER, user);
         }
-
     });
 
     socket.on(eventNames.client.NEW_MESSAGE, async ({ chatId, text }) => {

@@ -1,13 +1,7 @@
-import cookieSession from 'cookie-session';
 import { OutgoingMessage } from 'http';
-import config from '../config';
+import cookieSession from '../utils/cookie-session';
 
-
-const session = cookieSession({
-    secure: config.COOKIE_HTTPS,
-    httpOnly: true,
-    secret: config.EXPRESS_SESSION_SECRET
-});
+const session = cookieSession();
 
 // eslint-disable-next-line import/prefer-default-export
 export async function getUserId(req) {
@@ -16,7 +10,7 @@ export async function getUserId(req) {
         session(req, res, () => {
             const { passport } = req.session;
             if (!passport || !passport.user || !passport.user.userId) {
-                reject(new Error("Can't get user id from request.")); // SSR or unauthorised bot
+                reject(new Error("Can't get user id from request. Please login.")); // SSR, bot or unauthorized user.
             } else {
                 resolve(passport.user.userId);
             }

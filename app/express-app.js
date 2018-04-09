@@ -1,19 +1,15 @@
 import express from 'express';
 import cookieParser from 'cookie-parser';
-import cookieSession from 'cookie-session';
-
+import cookieSession from './utils/cookie-session';
 import config from './config';
 import loginController from './controllers/login';
 import { installPassport } from './middlewares/auth';
 
 function installAllMiddlewares(app) {
     app.use(cookieParser());
-    app.use(cookieSession({
-        secure: config.COOKIE_HTTPS,
-        httpOnly: true,
-        secret: config.EXPRESS_SESSION_SECRET
-    }));
+    app.use(cookieSession());
     installPassport(app);
+    app.set('trust proxy', config.IS_PRODUCTION);
 }
 
 export default (nextHandler) => {

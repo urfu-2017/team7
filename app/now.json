@@ -1,0 +1,14 @@
+{
+  "type": "npm",
+  "name": "team7chat",
+  "alias": "team7chat",
+  "env": {
+    "HTTP_SCHEME": "https",
+    "GITHUB_CLIENT_ID": "@github-client-id",
+    "GITHUB_CLIENT_SECRET": "@github-client-secret",
+    "EXPRESS_SESSION_SECRET": "@session-secret",
+    "HRUDB_TOKEN": "@hrudb-token",
+    "NODE_ENV": "production",
+    "SITE_URL": "https://team7chat.now.sh"
+  }
+}

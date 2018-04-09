@@ -70,9 +70,9 @@ export default async function (server) {
 
             registerMessageHandlers(socketServer, socket, userId);
             // TODO: втащить нормальный логгер
-            console.info('Incoming socket connected.'); // eslint-disable-line no-console
+            console.info('Socket connected. ID: ', socket.id); // eslint-disable-line no-console
         } catch (e) {
-            console.error('Incoming socket connection failed.', e); // eslint-disable-line no-console
+            console.error('Socket connection failed.', e.message); // eslint-disable-line no-console
             socket.disconnect(true);
         }
     });

@@ -13,8 +13,8 @@ class MessageList extends React.Component {
     componentDidMount() {
         onMessage(this.onMessage);
 
-        onMessagesList((messagesStore) => {
-            messagesStore.forEach(this.onMessage);
+        onMessagesList((messages) => {
+            messages.forEach(this.onMessage);
         });
 
         onUser((user) => {

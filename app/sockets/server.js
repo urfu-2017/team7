@@ -1,4 +1,5 @@
 import Server from 'socket.io';
+import urlMetadata from 'url-metadata';
 import uuidv4 from 'uuid/v4';
 import * as eventNames from './eventNames';
 import * as usersRepository from '../db/users-repository';
@@ -39,6 +40,11 @@ function registerMessageHandlers(socketServer, socket, userId) {
         await messagesRepository.createMessage(message);
         socketServer.to(message.chatId)
             .emit(eventNames.server.MESSAGE, message);
+    });
+
+    socket.on(eventNames.client.GET_URL_META, async (url) => {
+        const meta = await urlMetadata(url);
+        socket.emit(eventNames.server.URL_META, meta);
     });
 }
 

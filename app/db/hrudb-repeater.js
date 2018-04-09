@@ -1,7 +1,7 @@
 import { Promise } from 'bluebird';
 import * as hrudb from './hrudb-client';
 
-const repeatTimes = 5;
+const repeatTimes = 10;
 const repeatRange = [...Array(repeatTimes)];
 
 const tryResolve = async (promise) => {

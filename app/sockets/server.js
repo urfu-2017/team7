@@ -60,7 +60,7 @@ export default async function (server) {
     socketServer.on('connection', async (socket) => {
         try {
             const userId = await userInfoProvider.getUserId(socket.handshake);
-            await usersRepository.joinChat(userId, commonChat.chatId);
+            await chatsRepository.joinChat(userId, commonChat.chatId);
 
             registerMessageHandlers(socketServer, socket, userId);
             // TODO: втащить нормальный логгер

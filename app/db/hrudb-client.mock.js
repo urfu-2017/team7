@@ -1,12 +1,14 @@
 let db = {};
 
+export const getDb = () => db;
+
 export const clearDb = () => {
     db = {};
 };
 
 class Response extends Error {
-    constructor(statusCode) {
-        super(`Fake response ${statusCode}`);
+    constructor(statusCode, description) {
+        super(`Fake response ${statusCode}, ${description}`);
         this.statusCode = statusCode;
     }
 }
@@ -14,7 +16,7 @@ class Response extends Error {
 const simulateRequest = () => new Promise((resolve, reject) => {
     setTimeout(() => {
         if (Math.random() > 0.5) {
-            reject(new Response(418));
+            reject(new Response(418), 'simulated error');
             return;
         }
         resolve();
@@ -62,7 +64,7 @@ export const getAll = async (key, options = {}) => {
 export const get = async (key) => {
     await simulateRequest();
     if (!db[key]) {
-        throw new Response(404);
+        throw new Response(404, `no '${key}' key`);
     }
 
     const values = db[key];

@@ -28,5 +28,47 @@ describe('Repositories', async () => {
         const chats = await chatsRepo.getAllChatsForUser(user.userId);
 
         expect(chats).to.be.deep.equal([chat]);
+        expect(hrudbMock.getDb()).to.be.deep.equal({
+            Users: [[user]],
+            Chats_0: [chat]
+        });
+    });
+
+    it('can create user', async () => {
+        const expected = new User(0, 'Admiral', null, [0]);
+        await userRepo.upsertUser(expected);
+        const user = await userRepo.getUser(expected.userId);
+
+        expect(user).to.be.deep.equal(expected);
+        expect(hrudbMock.getDb()).to.be.deep.equal({
+            Users: [[user]]
+        });
+    });
+
+    it('can update user', async () => {
+        await userRepo.upsertUser(new User(0, 'Admiral', null, [0]));
+        const expected = new User(0, 'NewAdmiral', null, [0]);
+        await userRepo.upsertUser(expected);
+        const user = await userRepo.getUser(expected.userId);
+
+        expect(user).to.be.deep.equal(expected);
+        expect(hrudbMock.getDb()).to.be.deep.equal({
+            Users: [[user]]
+        });
+    });
+
+    it('can join chat', async () => {
+        const user = new User(0, 'Admiral', null, []);
+        const chat = new Chat(0, 'testchat', []);
+        await userRepo.upsertUser(user);
+        await chatsRepo.upsertChat(chat);
+        await chatsRepo.joinChat(user.userId, chat.chatId);
+        const chats = await chatsRepo.getAllChatsForUser(user.userId);
+
+        expect(chats).to.be.deep.equal([chat]);
+        expect(hrudbMock.getDb()).to.be.deep.equal({
+            Users: [[user]],
+            Chats_0: [chat]
+        });
     });
 });

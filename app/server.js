@@ -17,7 +17,7 @@ function listen(server) {
 }
 
 export default async () => {
-    const nextApp = next({ dev: config.IS_PRODUCTION });
+    const nextApp = next({ dev: !config.IS_PRODUCTION });
     await nextApp.prepare();
     const expressApp = buildExpressApp(nextApp.getRequestHandler());
     const server = Server(expressApp);

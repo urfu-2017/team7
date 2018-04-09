@@ -4,25 +4,23 @@ import config from '../config';
 import { upsertUser } from '../db/users-repository';
 import { User } from '../db/datatypes';
 
-const getGithubStrategy = ({ callbackUrl, clientId, clientSecret }) =>
-    new Strategy({
-        clientID: clientId,
-        clientSecret,
-        callbackURL: callbackUrl
-    }, (accessToken, refreshToken, profile, done) => {
-        const { username, id } = profile;
-        upsertUser(new User(id, username, null, []))
-            .then(() => done(null, { userId: id }))
-            .catch(err => done(err));
-    });
+export const CALLBACK_PATH = '/login/return';
+
+const strategyOptions = {
+    clientID: config.GITHUB_CLIENT_ID,
+    clientSecret: config.GITHUB_CLIENT_SECRET,
+    callbackURL: config.SITE_URL + CALLBACK_PATH
+};
+const githubStrategy = new Strategy(strategyOptions, (accessToken, refreshToken, profile, done) => {
+    const { username, id } = profile;
+    upsertUser(new User(id, username, null, []))
+        .then(() => done(null, { userId: id }))
+        .catch(err => done(err));
+});
 
 export const passport = new Passport();
 
-passport.use(getGithubStrategy({
-    callbackUrl: config.PASSPORT_CALLBACK_URL,
-    clientId: config.GITHUB_CLIENT_ID,
-    clientSecret: config.GITHUB_CLIENT_SECRET
-}));
+passport.use(githubStrategy);
 
 // Определяем функцию для сохранения данных пользователя в сессию
 passport.serializeUser((user, done) => {

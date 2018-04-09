@@ -8,16 +8,14 @@ class UrlMeta extends Component {
     componentDidMount() {
         const { url, urlMetaStore } = this.props;
 
-        onUrlMeta((meta) => {
-            urlMetaStore.meta.set(url, meta);
-        });
+        onUrlMeta(meta => urlMetaStore.metaByUrl.set(url, meta));
 
         urlMetaStore.fetchUrlMeta(url);
     }
 
     render() {
         const { url, urlMetaStore } = this.props;
-        const meta = urlMetaStore.meta.get(url);
+        const meta = urlMetaStore.metaByUrl.get(url);
         if (!meta) {
             return <div>{ url }</div>;
         }

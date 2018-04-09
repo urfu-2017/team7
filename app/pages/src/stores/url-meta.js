@@ -3,7 +3,7 @@ import { getUrlMeta } from '../../../sockets/client';
 
 
 class UrlMetaStore {
-    @observable meta = observable.map();
+    @observable metaByUrl = observable.map();
 
     @action
     /* eslint-disable-next-line class-methods-use-this */

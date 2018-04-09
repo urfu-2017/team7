@@ -1,7 +1,7 @@
 import { Passport } from 'passport';
 import { Strategy } from 'passport-github';
 import config from '../config';
-import { upsertUser } from '../db/users-repository';
+import { upsertUserWithIndex } from '../db/users-repository';
 import { User } from '../db/datatypes';
 
 export const CALLBACK_PATH = '/login/return';
@@ -13,7 +13,7 @@ const strategyOptions = {
 };
 const githubStrategy = new Strategy(strategyOptions, (accessToken, refreshToken, profile, done) => {
     const { username, id } = profile;
-    upsertUser(new User(id, username, null, []))
+    upsertUserWithIndex(new User(id, username, null, []))
         .then(() => done(null, { userId: id }))
         .catch(err => done(err));
 });

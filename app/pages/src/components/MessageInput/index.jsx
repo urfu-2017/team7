@@ -4,7 +4,7 @@ import { Form } from 'semantic-ui-react';
 import { sendMessage } from '../../../../sockets/client';
 
 
-@inject('chats')
+@inject('chatsStore')
 @observer
 class MessageInput extends React.Component {
     state = { text: '' };
@@ -12,7 +12,7 @@ class MessageInput extends React.Component {
     handleChange = (e, { name, value }) => this.setState({ [name]: value });
 
     render() {
-        const { activeChat } = this.props.chats;
+        const { activeChat } = this.props.chatsStore;
         return (
             <Form>
                 <Form.Group>

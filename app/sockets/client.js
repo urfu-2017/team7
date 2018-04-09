@@ -21,6 +21,10 @@ export function getChats() {
     socket.emit(eventNames.client.GET_CHATS);
 }
 
+export function getUrlMeta(url) {
+    socket.emit(eventNames.client.GET_URL_META, url);
+}
+
 /**
  * @callback onChatsListCallback
  * @param {Chat[]} chats
@@ -64,5 +68,9 @@ export function onUser(handler) {
 
 export function onError(handler) {
     socket.on('error', handler);
+}
+
+export function onUrlMeta(handler) {
+    socket.on(eventNames.server.URL_META, handler);
 }
 

@@ -4,15 +4,15 @@ import { List, Image } from 'semantic-ui-react';
 import { getChats, getMessages, onChatsList } from '../../../../sockets/client';
 
 
-@inject('chats')
-@inject('messages')
+@inject('chatsStore')
+@inject('messagesStore')
 @observer
 class ChatList extends React.Component {
     componentDidMount() {
         let chatsNeverReceived = true;
         onChatsList((chats) => {
             chatsNeverReceived = false;
-            this.props.chats.setAllChats(chats);
+            this.props.chatsStore.setAllChats(chats);
         });
 
         (function askForChats() {
@@ -24,17 +24,17 @@ class ChatList extends React.Component {
     }
 
     render() {
-        const { chats, messages } = this.props;
-        if (chats.allChats.length === 0) {
+        const { chatsStore, messagesStore } = this.props;
+        if (chatsStore.allChats.length === 0) {
             return <div>Идёт загрузка списка чатов...</div>;
         }
         return (
             <List>
-                {chats.allChats.map(chat => (
+                {chatsStore.allChats.map(chat => (
                     <List.Item
                         key={chat.chatId}
                         onClick={() => {
-                            chats.setActiveChat(chat);
+                            chatsStore.setActiveChat(chat);
                             getMessages({ chatId: chat.chatId });
                         }}
                     >
@@ -42,7 +42,7 @@ class ChatList extends React.Component {
                         <List.Content>
                             <List.Header as="a">{chat.name}</List.Header>
                             <List.Description>
-                                {messages.getLastMessageText(chat.chatId)}
+                                {messagesStore.getLastMessageText(chat.chatId)}
                             </List.Description>
                         </List.Content>
                     </List.Item>))}

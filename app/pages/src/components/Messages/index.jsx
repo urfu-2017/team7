@@ -5,9 +5,9 @@ import { Comment, Header, Segment, Transition } from 'semantic-ui-react';
 import { onMessagesList, onMessage, getUser, onUser } from '../../../../sockets/client';
 
 
-@inject('chats')
-@inject('users')
-@inject('messages')
+@inject('chatsStore')
+@inject('usersStore')
+@inject('messagesStore')
 @observer
 class MessageList extends React.Component {
     componentDidMount() {
@@ -18,27 +18,27 @@ class MessageList extends React.Component {
         });
 
         onUser((user) => {
-            this.props.users.usersById.set(user.userId, user);
+            this.props.usersStore.usersById.set(user.userId, user);
         });
     }
 
     onMessage = (message) => {
-        this.props.messages.addMessage(message);
-        const { usersById } = this.props.users;
+        this.props.messagesStore.addMessage(message);
+        const { usersById } = this.props.usersStore;
         if (!usersById.has(message.authorUserId)) {
             getUser({ userId: message.authorUserId });
         }
     };
 
     render() {
-        const { chats, messages, users } = this.props;
-        if (!chats.activeChat) {
+        const { chatsStore, messagesStore, usersStore } = this.props;
+        if (!chatsStore.activeChat) {
             return <Segment textAlign="center" size="big">Выберите чат</Segment>;
         }
         return (
             <Comment.Group>
-                <Header as="h3">{chats.activeChat.name}</Header>
-                {messages.getChatMessages(chats.activeChat.chatId).map(message => (
+                <Header as="h3">{chatsStore.activeChat.name}</Header>
+                {messagesStore.getChatMessages(chatsStore.activeChat.chatId).map(message => (
                     <Transition.Group
                         key={message.chatId}
                         duration={200}
@@ -47,7 +47,7 @@ class MessageList extends React.Component {
                         <Comment.Avatar src="https://react.semantic-ui.com/assets/images/avatar/small/matt.jpg" />
                         <Comment.Content>
                             <Comment.Author as="a">
-                                {users.getUsername(message.authorUserId) || 'Чебурашка'}
+                                {usersStore.getUsername(message.authorUserId) || 'Чебурашка'}
                             </Comment.Author>
                             <Comment.Metadata>
                                 <div>{moment(message.timestamp).format('hh:mm')}</div>

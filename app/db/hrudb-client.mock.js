@@ -1,4 +1,9 @@
+import { optionsToQuery } from './hrudb-client';
+
 let db = {};
+let fakeResponses = [];
+
+export const setResponses = (responses) => { fakeResponses = responses; };
 
 export const getDb = () => db;
 
@@ -6,7 +11,7 @@ export const clearDb = () => {
     db = {};
 };
 
-class Response {
+export class Response {
     constructor(statusCode, description) {
         this.statusCode = statusCode;
         this.description = description;
@@ -15,11 +20,11 @@ class Response {
 
 const simulateRequest = () => new Promise((resolve, reject) => {
     setTimeout(() => {
-        if (Math.random() > 0.5) {
-            reject(new Response(418), 'simulated error');
-            return;
+        const response = fakeResponses.pop();
+        if (response.statusCode === 418) {
+            reject(response);
         }
-        resolve();
+        resolve(response);
     }, 1);
 });
 
@@ -43,16 +48,10 @@ export const post = async (key, value) => {
 */
 export const getAll = async (key, options = {}) => {
     await simulateRequest();
-    const query = Object.assign({}, options);
-    Object.keys(options).forEach((x) => {
-        if (query[x] === undefined) {
-            delete query[x];
-        }
-    });
-    if (query.sortByAlphabet) {
-        query.sort = 'alph';
-    }
-    delete query.sortByAlphabet;
+    // TODO: допилить если надо
+    // eslint-disable-next-line no-unused-vars
+    const query = optionsToQuery(options);
+
     return db[key] || [];
 };
 

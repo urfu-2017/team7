@@ -18,6 +18,7 @@ describe('Repositories', async () => {
 
     beforeEach(async () => {
         hrudbMock.clearDb();
+        hrudbMock.setResponses([...Array(500).keys()].map(x => new hrudbMock.Response(x % 2 ? 200 : 418, x % 2 ? 'ok' : 'teapot')));
     });
 
     it('can create chat for user', async () => {

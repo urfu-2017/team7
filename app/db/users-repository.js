@@ -5,10 +5,9 @@ export const upsertUser = async (updatedUser) => {
     if (users.length) {
         [users] = users;
     }
-    const userInDb = users.find(x => x.userId === updatedUser.userId);
-    if (userInDb) {
-        const index = users.indexOf(userInDb);
-        users[index] = updatedUser;
+    const userIndex = users.findIndex(x => x.userId === updatedUser.userId);
+    if (userIndex >= 0) {
+        users[userIndex] = updatedUser;
         await put('Users', users);
     } else {
         users.push(updatedUser);

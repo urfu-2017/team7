@@ -2,11 +2,14 @@
 
 [![Travis CI Build Status](https://api.travis-ci.org/urfu-2017/team7.svg?branch=master)](https://travis-ci.org/urfu-2017/team7)
 
-https://tracker.yandex.ru/dashboard/85
+## Deployment
+[team7chat](https://team7chat.now.sh)
 
-https://urfu-2017.github.io/webdev-slides/hackatone-01/index.html
+## Tracker
+https://tracker.yandex.ru/TEAMSEVEN/order:assignee:true/filter?resolution=empty()
 
+## HruDB API Docs
 https://github.com/urfu-2017/hrudb-docs
 
-
-git remote add upstream https://github.com/urfu-2017/team7.git
+### Manual deploy (if needed)
+Check out `deploy.sh`

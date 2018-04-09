@@ -23,9 +23,9 @@ describe('Repositories', async () => {
     it('can create chat for user', async () => {
         const user = new User(0, 'Admiral', null, [0]);
         const chat = new Chat(0, 'testchat', [0]);
-        await userRepo.saveUser(user);
-        await chatsRepo.createChat(chat);
-        const chats = await chatsRepo.getAllChatsForUser(user.id);
+        await userRepo.upsertUser(user);
+        await chatsRepo.upsertChat(chat);
+        const chats = await chatsRepo.getAllChatsForUser(user.userId);
 
         expect(chats).to.be.deep.equal([chat]);
     });

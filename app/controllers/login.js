@@ -1,7 +1,6 @@
 import Router from 'express-promise-router';
 import connectEnsureLogin from 'connect-ensure-login';
-import { passport } from '../middlewares/auth';
-
+import { passport, CALLBACK_PATH } from '../middlewares/auth';
 
 export default Router()
     .get('/login', passport.authenticate('github'))
@@ -10,12 +9,11 @@ export default Router()
         res.redirect('/');
     })
     .get(
-        '/login/return',
-        passport.authenticate('github', { failureRedirect: '/' }),
-        (req, res) => res.redirect('/profile')
+        CALLBACK_PATH,
+        passport.authenticate('github', { failureRedirect: '/login', successRedirect: '/' })
     )
     .get(
         '/profile',
-        connectEnsureLogin.ensureLoggedIn('/'),
+        connectEnsureLogin.ensureLoggedIn('/login'),
         (req, res) => res.json({ user: req.user })
     );

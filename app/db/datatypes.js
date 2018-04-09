@@ -1,27 +1,28 @@
 export class User {
-    constructor(id, name, avatarUrl, chats) {
-        this.id = id;
-        this.name = name;
+    constructor(userId, username, avatarUrl, chatIds) {
+        this.userId = userId;
+        this.username = username;
         this.avatarUrl = avatarUrl;
-        this.chats = chats;
+        this.chatIds = chatIds;
     }
 }
 
 export class Chat {
-    constructor(id, name, users) {
-        this.id = id;
+    constructor(id, name, userIds, avatarUrl) {
+        this.chatId = id;
         this.name = name;
-        this.users = users;
+        this.userIds = userIds;
+        this.avatarUrl = avatarUrl;
     }
 }
 
 export class Message {
-    constructor(id, timestamp, author, content, originalContent, recipientChat) {
-        this.id = id;
+    constructor(messageId, timestamp, authorUserId, content, originalContent, chatId) {
+        this.messageId = messageId;
         this.timestamp = timestamp;
-        this.author = author;
+        this.authorUserId = authorUserId;
         this.content = content;
         this.originalContent = originalContent;
-        this.recipientChat = recipientChat;
+        this.chatId = chatId;
     }
 }

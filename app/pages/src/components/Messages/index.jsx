@@ -50,7 +50,9 @@ class MessageList extends React.Component {
                                 <div>{moment(message.timestamp).format('hh:mm')}</div>
                             </Comment.Metadata>
                             <Comment.Text>
-                                {message.content}
+                                {message.content
+                                    ? message.content.trim() || '\u00A0'
+                                    : '\u00A0'}
                             </Comment.Text>
                             <UrlMeta text={message.content} />
                         </Comment.Content>

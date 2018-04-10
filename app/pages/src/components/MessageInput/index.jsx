@@ -10,7 +10,7 @@ class MessageInput extends React.Component {
     state = { text: '' };
 
     get isValid() {
-        return this.props.chatsStore.activeChat && this.state.text !== '';
+        return this.props.chatsStore.activeChat && this.state.text;
     }
 
 

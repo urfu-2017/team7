@@ -30,7 +30,7 @@ class UrlMeta extends React.Component {
         return (
             <Item.Group className={css.meta}>
                 <Item>
-                    {imageUrl ? <Item.Image src={imageUrl} size="small" /> : ''}
+                    {imageUrl ? <Item.Image src={imageUrl} size="small" style={{ height: '150px' }} /> : ''}
                     <Item.Content>
                         <Item.Header as="a" href={meta.url} content={meta['og:title'] || meta.title} />
                         <Item.Meta>

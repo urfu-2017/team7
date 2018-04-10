@@ -1,3 +1,4 @@
+/* eslint-disable no-console */
 import proxyquire from 'proxyquire';
 import { createWriteStream } from 'fs';
 

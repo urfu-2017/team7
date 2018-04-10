@@ -1,23 +1,19 @@
-import { getAll, put } from './hrudb-repeater';
+import { put, get } from './hrudb-repeater';
 
-export const upsertUser = async (updatedUser) => {
-    let users = await getAll('Users');
-    if (users.length) {
-        [users] = users;
+export const upsertUser = async updatedUser => put(`Users_${updatedUser.userId}`, updatedUser);
+
+export const getAllUsers = () => get('AllUsers').catch(() => ({}));
+
+export const getUser = async userId => get(`Users_${userId}`);
+
+export const upsertUserWithIndex = async (updatedUser) => {
+    const allUsers = await getAllUsers();
+    const user = allUsers[updatedUser.userId] || {};
+    const nameChanged = user.username !== updatedUser.username;
+    if (nameChanged) {
+        allUsers[updatedUser.userId] = updatedUser.username;
+        await put('AllUsers', allUsers);
     }
-    const userIndex = users.findIndex(x => x.userId === updatedUser.userId);
-    if (userIndex >= 0) {
-        users[userIndex] = updatedUser;
-        await put('Users', users);
-    } else {
-        users.push(updatedUser);
-        await put('Users', users);
-    }
+    await upsertUser(updatedUser);
 };
 
-export const getUser = async (userId) => {
-    const users = await getAll('Users');
-    return users.length
-        ? users[0].find(user => user.userId === userId) || null
-        : null;
-};

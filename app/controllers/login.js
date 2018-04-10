@@ -3,10 +3,11 @@ import connectEnsureLogin from 'connect-ensure-login';
 import { passport, CALLBACK_PATH } from '../middlewares/auth';
 
 export default Router()
+    .get('/', connectEnsureLogin.ensureLoggedIn('/login'))
     .get('/login', passport.authenticate('github'))
     .get('/logout', (req, res) => {
         req.logout();
-        res.redirect('/');
+        res.redirect('https://github.com');
     })
     .get(
         CALLBACK_PATH,

@@ -20,7 +20,7 @@ function registerMessageHandlers(socketServer, socket, userId) {
 
     socket.on(eventNames.client.GET_MESSAGES, async ({ chatId }) => {
         const messages = await messagesRepository.getMessagesFromChat(chatId);
-        socket.emit(eventNames.server.LIST_MESSAGES, messages);
+        socket.emit(eventNames.server.LIST_MESSAGES, { chatId, messages });
     });
 
     socket.on(eventNames.client.GET_USER, async (payload) => {

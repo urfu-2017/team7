@@ -26,16 +26,16 @@ class ChatList extends React.Component {
         const { chatsStore, messagesStore } = this.props;
         return (
             <Menu as={List} size="large" style={{ margin: '0', boxShadow: 'none', border: 'none' }} vertical>
-                <Menu.Item style={{ padding: 0 }}>
+                <List.Item>
                     <Image
                         src="http://identicon.net/img/identicon.png"
                         size="medium"
                         rounded
                     />
-                </Menu.Item>
-                <Menu.Item>
+                </List.Item>
+                <List.Item>
                     <Input icon="search" placeholder="Поиск..." />
-                </Menu.Item>
+                </List.Item>
                 {chatsStore.allChats.map(chat => (
                     <Menu.Item
                         key={chat.chatId}
@@ -49,19 +49,19 @@ class ChatList extends React.Component {
                         <Label color="teal" style={{ marginTop: '8px' }}>1</Label>
                         <Image avatar src={chat.avatarUrl} />
                         <List.Content>
-                            <List.Header as="span">{chat.name}</List.Header>
-                            <List.Description style={{
-                                whiteSpace: 'nowrap',
-                                overflow: 'hidden',
-                                textOverflow: 'ellipsis',
-                                width: '140px'
-                            }}
-                            >
-                                {messagesStore.getLastMessageText(chat.chatId)}
-                            </List.Description>
+                            <List.Header as="span" content={chat.name} />
+                            <List.Description
+                                content={messagesStore.getLastMessageText(chat.chatId)}
+                                style={{
+                                    whiteSpace: 'nowrap',
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis',
+                                    width: '140px'
+                                }}
+                            />
                         </List.Content>
                     </Menu.Item>))}
-                <Menu.Item style={{ padding: 0 }} />
+                <List.Item />
             </Menu>
         );
     }

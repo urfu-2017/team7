@@ -1,8 +1,8 @@
 import React from 'react';
 import moment from 'moment';
 import { observer, inject } from 'mobx-react';
-import { Comment } from 'semantic-ui-react';
-import { onMessagesList, onMessage, getUser, onUser } from '../../../../sockets/client';
+import { Comment, Dimmer, Loader } from 'semantic-ui-react';
+import { onMessage, getUser, onUser } from '../../../../sockets/client';
 import UrlMeta from '../UrlMeta';
 
 @inject('chatsStore', 'messagesStore', 'usersStore')
@@ -10,10 +10,6 @@ import UrlMeta from '../UrlMeta';
 class MessageList extends React.Component {
     componentDidMount() {
         onMessage(this.onMessage);
-
-        onMessagesList((messages) => {
-            messages.forEach(this.onMessage);
-        });
 
         onUser((user) => {
             this.props.usersStore.usersById.set(user.userId, user);
@@ -33,9 +29,17 @@ class MessageList extends React.Component {
         if (!chatsStore.activeChat) {
             return '';
         }
+        const chatMessages = messagesStore.getChatMessagesOrNull(chatsStore.activeChat.chatId);
+
+        if (!chatMessages) {
+            return (
+                <Dimmer active inverted>
+                    <Loader size="large">Загружаем сообщения</Loader>
+                </Dimmer>);
+        }
         return (
             <Comment.Group>
-                {messagesStore.getChatMessages(chatsStore.activeChat.chatId).map(message => (
+                {chatMessages.map(message => (
                     <Comment key={message.messageId}>
                         <Comment.Avatar src="https://react.semantic-ui.com/assets/images/avatar/small/matt.jpg" />
                         <Comment.Content>

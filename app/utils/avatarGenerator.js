@@ -6,7 +6,7 @@ const TOTAL_BLOCKS = 5;
 const BLOCK_SIZE = IMAGE_SIZE / TOTAL_BLOCKS;
 
 
-export class AvatarGenerator {
+export default class AvatarGenerator {
     constructor() {
         this.backgroundColor = AvatarGenerator.createColor(50, 50, 50);
         this.colorList = [
@@ -22,18 +22,18 @@ export class AvatarGenerator {
         AvatarGenerator.fillBackground(image, this.backgroundColor);
 
         const pictureColor = this.colorList[rng(0, this.colorList.length)];
-        const blocks = this.generateBlocks(rng);
+        const blocks = AvatarGenerator.generateBlocks(rng);
 
         for (let i = 0; i < blocks.length; i++) {
             const block = blocks[i];
-            this.drawBlock(image, block[0], block[1], pictureColor);
-            this.drawBlock(image, TOTAL_BLOCKS - 1 - block[0], block[1], pictureColor);
+            AvatarGenerator.drawBlock(image, block[0], block[1], pictureColor);
+            AvatarGenerator.drawBlock(image, TOTAL_BLOCKS - 1 - block[0], block[1], pictureColor);
         }
 
         return image;
     }
 
-    generateBlocks(rng) {
+    static generateBlocks(rng) {
         const hashesSet = new Set();
         const result = [];
 
@@ -51,7 +51,7 @@ export class AvatarGenerator {
         return result;
     }
 
-    drawBlock(image, x, y, color) {
+    static drawBlock(image, x, y, color) {
         for (let i = x * BLOCK_SIZE; i < (x + 1) * BLOCK_SIZE; i++) {
             for (let j = y * BLOCK_SIZE; j < (y + 1) * BLOCK_SIZE; j++) {
                 image.setAt(i, j, color);

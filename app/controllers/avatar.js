@@ -1,7 +1,7 @@
 import seedrandom from 'seedrandom';
 
 
-export class AvatarController {
+export default class AvatarController {
     constructor(generator) {
         this.generator = generator;
     }

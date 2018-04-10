@@ -1,7 +1,6 @@
 import React from 'react';
 import { Item } from 'semantic-ui-react';
 import { inject, observer } from 'mobx-react';
-import { getUrlMeta } from '../../../../sockets/client';
 import urlRegex from './url-regex';
 import css from './meta.css';
 
@@ -9,11 +8,11 @@ import css from './meta.css';
 @observer
 class UrlMeta extends React.Component {
     componentWillMount() {
-        const { text } = this.props;
+        const { text, urlMetaStore } = this.props;
         const match = text.match(urlRegex);
         if (match !== null) {
             [this.url] = match;
-            getUrlMeta(this.url);
+            urlMetaStore.getUrlMeta(this.url);
         }
     }
 

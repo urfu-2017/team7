@@ -1,14 +1,17 @@
-import { observable, action } from 'mobx';
-import { getUrlMeta } from '../../../sockets/client';
+import { observable } from 'mobx';
+import { getUrlMeta, onUrlMeta } from '../../../sockets/client';
 
 
 class UrlMetaStore {
     @observable metaByUrl = observable.map();
 
-    @action
-    /* eslint-disable-next-line class-methods-use-this */
-    fetchUrlMeta(url) {
+    // eslint-disable-next-line class-methods-use-this
+    getUrlMeta(url) {
         getUrlMeta(url);
+    }
+
+    constructor() {
+        onUrlMeta(meta => this.metaByUrl.set(meta.url, meta));
     }
 }
 

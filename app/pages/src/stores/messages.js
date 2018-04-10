@@ -1,4 +1,5 @@
 import { observable, action } from 'mobx';
+import { onMessagesList } from '../../../sockets/client';
 
 class MessagesStore {
     @observable messagesByChatId = observable.map();
@@ -14,6 +15,10 @@ class MessagesStore {
         }
     }
 
+    @action setAllMessages(chatId, messages) {
+        this.messagesByChatId.set(chatId, messages);
+    }
+
     getLastMessageText(chatId) {
         if (!this.messagesByChatId.has(chatId)) {
             return '';
@@ -25,8 +30,14 @@ class MessagesStore {
         return messages[messages.length - 1].content;
     }
 
-    getChatMessages(chatId) {
-        return this.messagesByChatId.get(chatId) || [];
+    getChatMessagesOrNull(chatId) {
+        return this.messagesByChatId.get(chatId);
+    }
+
+    constructor() {
+        onMessagesList(({ messages, chatId }) => {
+            this.setAllMessages(chatId, messages);
+        });
     }
 }
 

@@ -1,21 +1,15 @@
 import React from 'react';
 import moment from 'moment';
 import { observer, inject } from 'mobx-react';
-import { Comment, Header, Segment, Transition } from 'semantic-ui-react';
-import { onMessagesList, onMessage, getUser, onUser } from '../../../../sockets/client';
+import { Comment, Dimmer, Loader } from 'semantic-ui-react';
+import { onMessage, getUser, onUser } from '../../../../sockets/client';
+import UrlMeta from '../UrlMeta';
 
-
-@inject('chatsStore')
-@inject('usersStore')
-@inject('messagesStore')
+@inject('chatsStore', 'messagesStore', 'usersStore')
 @observer
 class MessageList extends React.Component {
     componentDidMount() {
         onMessage(this.onMessage);
-
-        onMessagesList((messages) => {
-            messages.forEach(this.onMessage);
-        });
 
         onUser((user) => {
             this.props.usersStore.usersById.set(user.userId, user);
@@ -33,17 +27,20 @@ class MessageList extends React.Component {
     render() {
         const { chatsStore, messagesStore, usersStore } = this.props;
         if (!chatsStore.activeChat) {
-            return <Segment textAlign="center" size="big">Выберите чат</Segment>;
+            return '';
+        }
+        const chatMessages = messagesStore.getChatMessagesOrNull(chatsStore.activeChat.chatId);
+
+        if (!chatMessages) {
+            return (
+                <Dimmer active inverted>
+                    <Loader size="large">Загружаем сообщения</Loader>
+                </Dimmer>);
         }
         return (
             <Comment.Group>
-                <Header as="h3">{chatsStore.activeChat.name}</Header>
-                {messagesStore.getChatMessages(chatsStore.activeChat.chatId).map(message => (
-                    <Transition.Group
-                        key={message.chatId}
-                        duration={200}
-                        as={Comment}
-                    >
+                {chatMessages.map(message => (
+                    <Comment key={message.messageId}>
                         <Comment.Avatar src="https://react.semantic-ui.com/assets/images/avatar/small/matt.jpg" />
                         <Comment.Content>
                             <Comment.Author as="a">
@@ -52,9 +49,14 @@ class MessageList extends React.Component {
                             <Comment.Metadata>
                                 <div>{moment(message.timestamp).format('hh:mm')}</div>
                             </Comment.Metadata>
-                            <Comment.Text>{message.content}</Comment.Text>
+                            <Comment.Text>
+                                {message.content
+                                    ? message.content.trim() || '\u00A0'
+                                    : '\u00A0'}
+                            </Comment.Text>
+                            <UrlMeta text={message.content} />
                         </Comment.Content>
-                    </Transition.Group>))}
+                    </Comment>))}
             </Comment.Group>);
     }
 }

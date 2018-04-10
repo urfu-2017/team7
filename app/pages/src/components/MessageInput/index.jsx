@@ -1,36 +1,53 @@
 import React from 'react';
 import { observer, inject } from 'mobx-react';
-import { Form } from 'semantic-ui-react';
+import { Input, Button } from 'semantic-ui-react';
 import { sendMessage } from '../../../../sockets/client';
-
+import css from './layout.css';
 
 @inject('chatsStore')
 @observer
 class MessageInput extends React.Component {
     state = { text: '' };
 
+    get isValid() {
+        return this.props.chatsStore.activeChat && this.state.text;
+    }
+
+
     handleChange = (e, { name, value }) => this.setState({ [name]: value });
+    handleKeyPress = (e) => {
+        if (e.key === 'Enter') {
+            this.trySend();
+        }
+    };
+    trySend = () => {
+        if (this.isValid) {
+            const { chatId } = this.props.chatsStore.activeChat;
+            const { text } = this.state;
+            sendMessage({ text, chatId });
+            this.setState({ text: '' });
+        }
+    };
 
     render() {
-        const { activeChat } = this.props.chatsStore;
         return (
-            <Form>
-                <Form.Group>
-                    <Form.Input
-                        name="text"
-                        value={this.state.text}
-                        onChange={this.handleChange}
-                    />
-                    <Form.Button
-                        disabled={!activeChat || this.state.text === ''}
-                        content="Отправить"
-                        onClick={() => {
-                            sendMessage({ text: this.state.text, chatId: activeChat.chatId });
-                            this.setState({ text: '' });
-                        }}
-                    />
-                </Form.Group>
-            </Form>
+            <div className={css.layout}>
+                <Input
+                    name="text"
+                    value={this.state.text}
+                    onChange={this.handleChange}
+                    className={css.layout__input}
+                    onKeyPress={this.handleKeyPress}
+                />
+                <Button
+                    disabled={!this.isValid}
+                    className={css.layout__button}
+                    color="red"
+                    content="Отправить"
+                    onClick={this.trySend}
+                />
+            </div>
+
         );
     }
 }

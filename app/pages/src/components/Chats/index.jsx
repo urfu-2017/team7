@@ -1,11 +1,10 @@
 import React from 'react';
 import { observer, inject } from 'mobx-react';
-import { List, Image } from 'semantic-ui-react';
+import { List, Image, Menu, Label, Input } from 'semantic-ui-react';
 import { getChats, getMessages, onChatsList } from '../../../../sockets/client';
 
 
-@inject('chatsStore')
-@inject('messagesStore')
+@inject('chatsStore', 'messagesStore')
 @observer
 class ChatList extends React.Component {
     componentDidMount() {
@@ -25,29 +24,46 @@ class ChatList extends React.Component {
 
     render() {
         const { chatsStore, messagesStore } = this.props;
-        if (chatsStore.allChats.length === 0) {
-            return <div>Идёт загрузка списка чатов...</div>;
-        }
         return (
-            <List>
+            <Menu as={List} size="large" style={{ margin: '0', boxShadow: 'none', border: 'none' }} vertical>
+                <List.Item>
+                    <Image
+                        src="http://identicon.net/img/identicon.png"
+                        size="medium"
+                        rounded
+                    />
+                </List.Item>
+                <List.Item>
+                    <Input icon="search" placeholder="Поиск..." />
+                </List.Item>
                 {chatsStore.allChats.map(chat => (
-                    <List.Item
+                    <Menu.Item
                         key={chat.chatId}
+                        active={chat === chatsStore.activeChat}
+                        style={{ height: '62px' }}
                         onClick={() => {
                             chatsStore.setActiveChat(chat);
                             getMessages({ chatId: chat.chatId });
                         }}
                     >
+                        <Label color="teal" style={{ marginTop: '8px' }}>1</Label>
                         <Image avatar src={chat.avatarUrl} />
                         <List.Content>
-                            <List.Header as="a">{chat.name}</List.Header>
-                            <List.Description>
-                                {messagesStore.getLastMessageText(chat.chatId)}
-                            </List.Description>
+                            <List.Header as="span" content={chat.name} />
+                            <List.Description
+                                content={messagesStore.getLastMessageText(chat.chatId)}
+                                style={{
+                                    whiteSpace: 'nowrap',
+                                    overflow: 'hidden',
+                                    textOverflow: 'ellipsis',
+                                    width: '140px'
+                                }}
+                            />
                         </List.Content>
-                    </List.Item>))}
-
-            </List>);
+                    </Menu.Item>))}
+                <List.Item />
+            </Menu>
+        );
     }
 }
 

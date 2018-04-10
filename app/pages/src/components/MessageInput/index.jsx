@@ -9,10 +9,27 @@ import css from './layout.css';
 class MessageInput extends React.Component {
     state = { text: '' };
 
+    get isValid() {
+        return this.props.chatsStore.activeChat && this.state.text !== '';
+    }
+
+
     handleChange = (e, { name, value }) => this.setState({ [name]: value });
+    handleKeyPress = (e) => {
+        if (e.key === 'Enter') {
+            this.trySend();
+        }
+    };
+    trySend = () => {
+        if (this.isValid) {
+            const { chatId } = this.props.chatsStore.activeChat;
+            const { text } = this.state;
+            sendMessage({ text, chatId });
+            this.setState({ text: '' });
+        }
+    };
 
     render() {
-        const { activeChat } = this.props.chatsStore;
         return (
             <div className={css.layout}>
                 <Input
@@ -20,16 +37,14 @@ class MessageInput extends React.Component {
                     value={this.state.text}
                     onChange={this.handleChange}
                     className={css.layout__input}
+                    onKeyPress={this.handleKeyPress}
                 />
                 <Button
-                    disabled={!activeChat || this.state.text === ''}
+                    disabled={!this.isValid}
                     className={css.layout__button}
                     color="red"
                     content="Отправить"
-                    onClick={() => {
-                        sendMessage({ text: this.state.text, chatId: activeChat.chatId });
-                        this.setState({ text: '' });
-                    }}
+                    onClick={this.trySend}
                 />
             </div>
 

@@ -1,10 +1,11 @@
-import React from 'react'
-import { Grid, Button} from 'semantic-ui-react'
-import UserCard from '../UserCard'
-import css from './styles.css'
+import React from 'react';
+import { Grid, Button } from 'semantic-ui-react';
+import UserCard from '../UserCard';
+import css from './styles.css';
 
 class User extends React.Component {
-    render(){
+    render() {
+
         return(
             <Grid className={css.profileBox}>
                 <Grid.Row centered columns={7}>
@@ -21,7 +22,7 @@ class User extends React.Component {
                 <Grid.Row centered columns={5}>
                     <Grid.Column />
                     <Grid.Column />
-                    <Grid.Column />  
+                    <Grid.Column />
                     <Grid.Column>
                         <form action="/logout">
                             <Button secondary type="submit">
@@ -29,12 +30,12 @@ class User extends React.Component {
                             </Button>
                         </form>
                     </Grid.Column>
-                    
-                    <Grid.Column /> 
+
+                    <Grid.Column />
                 </Grid.Row>
             </Grid>
         );
     }
 }
 
-export default User
+export default User;

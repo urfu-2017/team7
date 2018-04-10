@@ -1,13 +1,14 @@
-import React from 'react'
-import { Card, Icon, Image } from 'semantic-ui-react'
+import React from 'react';
+import { Card, Image } from 'semantic-ui-react';
 import { observer, inject } from 'mobx-react';
 
 @inject('usersStore')
 @observer
 class UserCard extends React.Component {
-    render(){
+    render() {
         // const { usersStore } = this.props;
         // const pathToAvatar = '/avatar/' + usersStore.me.id;
+
         return(
             <Card>
                 <Image src='http://identicon.net/img/identicon.png' /> {/* src={pathToAvatar} */}
@@ -17,8 +18,8 @@ class UserCard extends React.Component {
                     </Card.Header>
                 </Card.Content>
             </Card>
-        )
+        );
     }
 }
 
-export default UserCard
+export default UserCard;

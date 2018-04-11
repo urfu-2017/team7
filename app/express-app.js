@@ -8,11 +8,18 @@ import loginController from './controllers/login';
 import AvatarController from './controllers/avatar';
 import AvatarGenerator from './utils/avatarGenerator';
 import { installPassport } from './middlewares/auth';
+import getLogger from './utils/logger';
+
+const logger = getLogger('express');
 
 function installAllMiddlewares(app) {
     app.use(cookieParser());
     app.use(cookieSession());
     installPassport(app);
+    app.use((req, res, next) => {
+        logger.info({ req });
+        next();
+    });
     app.set('trust proxy', config.IS_PRODUCTION);
 }
 
@@ -23,6 +30,10 @@ export default (nextHandler) => {
     app.use('/', loginController);
     app.use('/avatar/:userId', apicache.middleware('5 minutes'), (req, res) => avatarController.getAvatar(req, res));
     app.get('*', (req, res) => nextHandler(req, res));
+    app.use((err, req, res, next) => {
+        logger.error({ err, req });
+        next();
+    });
 
     return app;
 };

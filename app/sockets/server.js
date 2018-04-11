@@ -7,6 +7,9 @@ import * as messagesRepository from '../db/messages-repository';
 import * as chatsRepository from '../db/chats-repository';
 import * as userInfoProvider from './user-info-provider';
 import { Chat, Message } from '../db/datatypes';
+import getLogger from '../utils/logger';
+
+const logger = getLogger('socket-server');
 
 const registerMessageHandlers = (socketServer, socket, userId) => {
     socket.on(eventNames.client.GET_CHATS, async () => {
@@ -57,9 +60,9 @@ const trySendUserInfo = async (socket, userId) => {
     try {
         const user = await usersRepository.getUser(userId);
         socket.emit(eventNames.server.CURRENT_USER, user);
-        // send more information
+        // TODO: send more information
     } catch (e) {
-        console.warn('Failed to send user info');
+        logger.error(e, 'Failed to send user info');
     }
 };
 
@@ -84,12 +87,10 @@ export default async (server) => {
             await chatsRepository.joinChat(userId, commonChat.chatId);
 
             registerMessageHandlers(socketServer, socket, userId);
-
             await trySendUserInfo(socket, userId);
-            // TODO: втащить нормальный логгер
-            console.info('Socket connected. ID: ', socket.id); // eslint-disable-line no-console
+            logger.info('Socket connected. ID: ', socket.id);
         } catch (e) {
-            console.error('Socket connection failed.', e.message); // eslint-disable-line no-console
+            logger.error(e, 'Socket connection failed.');
             socket.disconnect(true);
         }
     });

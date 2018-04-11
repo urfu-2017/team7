@@ -5,33 +5,24 @@ import css from './styles.css';
 
 class User extends React.Component {
     render() {
-
-        return(
+        return (
             <Grid className={css.profileBox}>
-                <Grid.Row centered columns={7}>
-                    <Grid.Column />
-                    <Grid.Column />
-                    <Grid.Column />
-                    <Grid.Column>
+                <Grid.Row centered columns={3}>
+                    <Grid.Column width={3} />
+                    <Grid.Column width={2}>
                         <UserCard />
                     </Grid.Column>
-                    <Grid.Column />
-                    <Grid.Column />
-                    <Grid.Column />
+                    <Grid.Column width={3} />
                 </Grid.Row>
-                <Grid.Row centered columns={5}>
-                    <Grid.Column />
-                    <Grid.Column />
-                    <Grid.Column />
-                    <Grid.Column>
+                <Grid.Row centered columns={2}>
+                    <Grid.Column width={3} />
+                    <Grid.Column width={1}>
                         <form action="/logout">
                             <Button secondary type="submit">
                                 LOGOUT
                             </Button>
                         </form>
                     </Grid.Column>
-
-                    <Grid.Column />
                 </Grid.Row>
             </Grid>
         );

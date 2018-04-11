@@ -9,11 +9,11 @@ class UserCard extends React.Component {
         // const { usersStore } = this.props;
         // const pathToAvatar = '/avatar/' + usersStore.me.id;
 
-        return(
+        return (
             <Card>
-                <Image src='http://identicon.net/img/identicon.png' /> {/* src={pathToAvatar} */}
+                <Image src="http://identicon.net/img/identicon.png" /> {/* src={pathToAvatar} */}
                 <Card.Content>
-                    <Card.Header textAlign='center'>
+                    <Card.Header textAlign="center">
                         ProfileName {/* usersStore.me.name */}
                     </Card.Header>
                 </Card.Content>

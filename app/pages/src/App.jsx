@@ -7,13 +7,16 @@ import chatsStore from './stores/chats';
 import messagesStore from './stores/messages';
 import usersStore from './stores/users';
 import urlMetaStore from './stores/url-meta';
+import currentUserStore from './stores/current-user';
 
 const stores = {
     chatsStore,
     messagesStore,
     usersStore,
-    urlMetaStore
+    urlMetaStore,
+    currentUserStore
 };
+
 const semanticUiStyles = 'https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.12/semantic.min.css';
 
 class App extends React.Component {

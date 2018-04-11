@@ -74,3 +74,10 @@ export function onUrlMeta(handler) {
     socket.on(eventNames.server.URL_META, handler);
 }
 
+export function getCurrentUser() {
+    socket.emit(eventNames.client.GET_CURRENT_USER);
+}
+
+export function onCurrentUser(handler) {
+    socket.on(eventNames.server.CURRENT_USER, handler);
+}

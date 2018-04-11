@@ -29,6 +29,8 @@ class ChatList extends React.Component {
             <Menu as={List} size="large" style={{ margin: '0', boxShadow: 'none', border: 'none' }} vertical>
                 <List.Item>
                     <Image
+                        as={Link}
+                        to="/user"
                         src="http://identicon.net/img/identicon.png"
                         size="medium"
                         rounded

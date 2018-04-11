@@ -4,7 +4,9 @@ import { Segment } from 'semantic-ui-react';
 import Chats from '../../components/Chats/index';
 import css from './layout.css';
 import MessagesActivity from '../Messages';
-import ChatCreationActivity from '../ChatCreation/index';
+import SegmentActivity from '../Segment';
+import ChatCreation from '../../components/ChatCreation/index';
+import User from '../../components/User';
 
 
 const MainActivity = () => (
@@ -15,7 +17,16 @@ const MainActivity = () => (
         <div className={css.layout__main_activity}>
             <Switch>
                 <Route exact path="/" component={MessagesActivity} />
-                <Route exact path="/new-chat" component={ChatCreationActivity} />
+                <Route exact path="/new-chat">
+                    <SegmentActivity>
+                        <ChatCreation />
+                    </SegmentActivity>
+                </Route>
+                <Route exact path="/user">
+                    <SegmentActivity>
+                        <User />
+                    </SegmentActivity>
+                </Route>
             </Switch>
         </div>
     </div>

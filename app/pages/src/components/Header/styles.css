@@ -1,0 +1,4 @@
+.header__image{
+    background-image: url('/static/logo.png');
+    background-size: cover;
+}

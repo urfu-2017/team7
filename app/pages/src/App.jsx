@@ -16,7 +16,7 @@ const stores = {
     urlMetaStore, 
     currentUserStore
 };
-console.log(currentUserStore);
+
 const semanticUiStyles = 'https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.12/semantic.min.css';
 
 class App extends React.Component {

@@ -81,4 +81,3 @@ export function getCurrentUser() {
 export function onCurrentUser(handler) {
     socket.on(eventNames.server.CURRENT_USER, handler);
 }
-

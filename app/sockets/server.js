@@ -53,10 +53,14 @@ const registerMessageHandlers = (socketServer, socket, userId) => {
     });
 };
 
-const sendUserInfo = async (socket, userId) => {
-    const user = await usersRepository.getUser(userId);
-    socket.emit(eventNames.server.CURRENT_USER, user);
-    // send more information
+const trySendUserInfo = async (socket, userId) => {
+    try {
+        const user = await usersRepository.getUser(userId);
+        socket.emit(eventNames.server.CURRENT_USER, user);
+        // send more information
+    } catch (e) {
+        console.warn('Failed to send user info');
+    }
 };
 
 export default async (server) => {
@@ -81,7 +85,7 @@ export default async (server) => {
 
             registerMessageHandlers(socketServer, socket, userId);
 
-            await sendUserInfo(socket, userId);
+            await trySendUserInfo(socket, userId);
             // TODO: втащить нормальный логгер
             console.info('Socket connected. ID: ', socket.id); // eslint-disable-line no-console
         } catch (e) {

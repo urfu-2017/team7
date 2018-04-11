@@ -3,7 +3,8 @@ export const client = Object.freeze({
     GET_MESSAGES: 'GET_MESSAGES',
     NEW_MESSAGE: 'NEW_MESSAGE',
     GET_USER: 'GET_USER',
-    GET_URL_META: 'GET_URL_META'
+    GET_URL_META: 'GET_URL_META',
+    GET_CURRENT_USER: 'GET_CURRENT_USER'
 });
 
 export const server = Object.freeze({
@@ -11,5 +12,6 @@ export const server = Object.freeze({
     LIST_MESSAGES: 'LIST_MESSAGES',
     MESSAGE: 'MESSAGE',
     USER: 'USER',
-    URL_META: 'URL_META'
+    URL_META: 'URL_META',
+    CURRENT_USER: 'CURRENT_USER'
 });

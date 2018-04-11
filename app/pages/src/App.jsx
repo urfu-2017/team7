@@ -1,12 +1,13 @@
 import React from 'react';
 import Head from 'next/head';
 import { Provider } from 'mobx-react';
-import Router from './Router';
-
+import { HashRouter } from 'react-router-dom';
 import chatsStore from './stores/chats';
 import messagesStore from './stores/messages';
 import usersStore from './stores/users';
 import urlMetaStore from './stores/url-meta';
+import MainActivity from './activities/Main';
+
 
 const stores = {
     chatsStore,
@@ -34,9 +35,9 @@ class App extends React.Component {
                         `}
                         </style>
                     </Head>
-                    {/* <Header /> */}
-                    {/* <Menu /> */}
-                    <Router />
+                    <HashRouter>
+                        <MainActivity />
+                    </HashRouter>
                 </React.Fragment>
             </Provider>
         ) : null;

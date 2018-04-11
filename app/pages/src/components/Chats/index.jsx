@@ -1,6 +1,7 @@
 import React from 'react';
 import { observer, inject } from 'mobx-react';
-import { List, Image, Menu, Label, Input } from 'semantic-ui-react';
+import { Link } from 'react-router-dom';
+import { List, Image, Menu, Label, Input, Button } from 'semantic-ui-react';
 import { getChats, getMessages, onChatsList } from '../../../../sockets/client';
 
 
@@ -34,10 +35,15 @@ class ChatList extends React.Component {
                     />
                 </List.Item>
                 <List.Item>
-                    <Input icon="search" placeholder="Поиск..." />
+                    <Input icon="search" placeholder="Поиск..." style={{ width: '175px' }}>
+                        <Link to="/new-chat"><Button icon="plus" /></Link>
+                        <input />
+                    </Input>
                 </List.Item>
                 {chatsStore.allChats.map(chat => (
                     <Menu.Item
+                        as={Link}
+                        to="/"
                         key={chat.chatId}
                         active={chat === chatsStore.activeChat}
                         style={{ height: '62px' }}

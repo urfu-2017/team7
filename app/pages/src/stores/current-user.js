@@ -8,7 +8,7 @@ class CurrentUserStore {
     get avatarUrl() {
         return this.user
             ? this.user.avatarUrl
-            : 'http://identicon.net/img/identicon.png'
+            : 'http://identicon.net/img/identicon.png';
     }
 
     constructor() {

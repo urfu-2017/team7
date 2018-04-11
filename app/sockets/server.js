@@ -59,6 +59,7 @@ const trySendUserInfo = async (socket, userId) => {
         socket.emit(eventNames.server.CURRENT_USER, user);
         // send more information
     } catch (e) {
+        // eslint-disable-next-line no-console
         console.warn('Failed to send user info');
     }
 };

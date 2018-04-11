@@ -8,7 +8,7 @@ const BLOCK_SIZE = IMAGE_SIZE / TOTAL_BLOCKS;
 
 export default class AvatarGenerator {
     constructor() {
-        this.backgroundColor = AvatarGenerator.createColor(50, 50, 50);
+        this.backgroundColor = AvatarGenerator.createColor(255, 255, 255);
         this.colorList = [
             AvatarGenerator.createColor(255, 0, 0),
             AvatarGenerator.createColor(0, 255, 0),

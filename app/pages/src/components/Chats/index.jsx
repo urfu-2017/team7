@@ -5,7 +5,7 @@ import { List, Image, Menu, Label, Input, Button } from 'semantic-ui-react';
 import { getChats, getMessages, onChatsList } from '../../../../sockets/client';
 
 
-@inject('chatsStore', 'messagesStore')
+@inject('chatsStore', 'messagesStore', 'currentUserStore')
 @observer
 class ChatList extends React.Component {
     componentDidMount() {
@@ -24,14 +24,15 @@ class ChatList extends React.Component {
     }
 
     render() {
-        const { chatsStore, messagesStore } = this.props;
+        const { chatsStore, messagesStore, currentUserStore } = this.props;
         return (
-            <Menu as={List} size="large" style={{ margin: '0', boxShadow: 'none', border: 'none' }} vertical>
-                <List.Item>
+            <Menu as={List} size="large" style={{ boxShadow: 'none', border: 'none' }} vertical>
+                {/* note: Перебиваем padding:0 для первого элемента списка. */}
+                <List.Item style={{ paddingTop: '0.928571em' }}>
                     <Image
                         as={Link}
                         to="/user"
-                        src="http://identicon.net/img/identicon.png"
+                        src={currentUserStore.avatarUrl}
                         size="medium"
                         rounded
                     />

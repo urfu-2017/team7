@@ -10,9 +10,9 @@ class UrlMeta extends React.Component {
     componentWillMount() {
         const { text, urlMetaStore } = this.props;
         const match = text.match(urlRegex);
-        if (match !== null) {
+        if (match) {
             [this.url] = match;
-            urlMetaStore.getUrlMeta(this.url);
+            urlMetaStore.fetchUrlMeta(this.url);
         }
     }
 

@@ -1,5 +1,5 @@
 import Server from 'socket.io';
-import urlMetadata from 'url-metadata';
+import urlMetadata from 'url-metadata2';
 import uuidv4 from 'uuid/v4';
 import * as eventNames from './eventNames';
 import * as usersRepository from '../db/users-repository';
@@ -8,7 +8,7 @@ import * as chatsRepository from '../db/chats-repository';
 import * as userInfoProvider from './user-info-provider';
 import { Chat, Message } from '../db/datatypes';
 
-function registerMessageHandlers(socketServer, socket, userId) {
+const registerMessageHandlers = (socketServer, socket, userId) => {
     socket.on(eventNames.client.GET_CHATS, async () => {
         const userChats = await chatsRepository.getAllChatsForUser(userId);
         socket.emit(eventNames.server.LIST_CHATS, userChats);
@@ -46,11 +46,20 @@ function registerMessageHandlers(socketServer, socket, userId) {
 
     socket.on(eventNames.client.GET_URL_META, async (url) => {
         const meta = await urlMetadata(url);
-        socket.emit(eventNames.server.URL_META, meta);
+        socket.emit(eventNames.server.URL_META, {
+            ...meta,
+            url
+        });
     });
-}
+};
 
-export default async function (server) {
+const sendUserInfo = async (socket, userId) => {
+    const user = await usersRepository.getUser(userId);
+    socket.emit(eventNames.server.CURRENT_USER, user);
+    // send more information
+};
+
+export default async (server) => {
     const commonChat = new Chat(
         '6584f174-0ce1-43bd-88ac-026cfe879022',
         'Общий чат', [],
@@ -71,6 +80,8 @@ export default async function (server) {
             await chatsRepository.joinChat(userId, commonChat.chatId);
 
             registerMessageHandlers(socketServer, socket, userId);
+
+            await sendUserInfo(socket, userId);
             // TODO: втащить нормальный логгер
             console.info('Socket connected. ID: ', socket.id); // eslint-disable-line no-console
         } catch (e) {
@@ -78,5 +89,4 @@ export default async function (server) {
             socket.disconnect(true);
         }
     });
-}
-
+};

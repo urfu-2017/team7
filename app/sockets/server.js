@@ -1,5 +1,5 @@
 import Server from 'socket.io';
-import urlMetadata from 'url-metadata';
+import urlMetadata from 'url-metadata2';
 import uuidv4 from 'uuid/v4';
 import * as eventNames from './eventNames';
 import * as usersRepository from '../db/users-repository';

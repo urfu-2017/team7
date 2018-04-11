@@ -10,8 +10,8 @@ class UserCard extends React.Component {
         // const pathToAvatar = '/avatar/' + usersStore.me.id;
 
         return (
-            <Card>
-                <Image src="http://identicon.net/img/identicon.png" /> {/* src={pathToAvatar} */}
+            <Card className={this.props.className}>
+                <Image src="http://identicon.net/img/identicon.png" centered size="large" /> {/* src={pathToAvatar} */}
                 <Card.Content>
                     <Card.Header textAlign="center">
                         ProfileName {/* usersStore.me.name */}

@@ -1,9 +1,14 @@
 import React from 'react';
-import moment from 'moment';
 import { observer, inject } from 'mobx-react';
-import { Comment, Dimmer, Loader } from 'semantic-ui-react';
+import { Dimmer, Loader } from 'semantic-ui-react';
 import { onMessage, getUser, onUser } from '../../../../sockets/client';
-import UrlMeta from '../UrlMeta';
+import Messages from './Messages';
+
+const MessageLoader = () => (
+    <Dimmer active inverted>
+        <Loader size="large">Загружаем сообщения</Loader>
+    </Dimmer>
+);
 
 @inject('chatsStore', 'messagesStore', 'usersStore')
 @observer
@@ -25,39 +30,15 @@ class MessageList extends React.Component {
     };
 
     render() {
-        const { chatsStore, messagesStore, usersStore } = this.props;
+        const { chatsStore, messagesStore } = this.props;
         if (!chatsStore.activeChat) {
-            return '';
+            return null;
         }
         const chatMessages = messagesStore.getChatMessagesOrNull(chatsStore.activeChat.chatId);
 
-        if (!chatMessages) {
-            return (
-                <Dimmer active inverted>
-                    <Loader size="large">Загружаем сообщения</Loader>
-                </Dimmer>);
-        }
-        return (
-            <Comment.Group>
-                {chatMessages.map(message => (
-                    <Comment key={message.messageId}>
-                        <Comment.Avatar src="https://react.semantic-ui.com/assets/images/avatar/small/matt.jpg" />
-                        <Comment.Content>
-                            <Comment.Author as="a">
-                                {usersStore.getUsername(message.authorUserId) || 'Чебурашка'}
-                            </Comment.Author>
-                            <Comment.Metadata>
-                                <div>{moment(message.timestamp).format('hh:mm')}</div>
-                            </Comment.Metadata>
-                            <Comment.Text>
-                                {message.content
-                                    ? message.content.trim() || '\u00A0'
-                                    : '\u00A0'}
-                            </Comment.Text>
-                            <UrlMeta text={message.content} />
-                        </Comment.Content>
-                    </Comment>))}
-            </Comment.Group>);
+        return !chatMessages
+            ? <MessageLoader />
+            : <Messages messages={chatMessages} />;
     }
 }
 

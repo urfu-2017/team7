@@ -46,7 +46,10 @@ const registerMessageHandlers = (socketServer, socket, userId) => {
 
     socket.on(eventNames.client.GET_URL_META, async (url) => {
         const meta = await urlMetadata(url);
-        socket.emit(eventNames.server.URL_META, meta);
+        socket.emit(eventNames.server.URL_META, {
+            ...meta,
+            url
+        });
     });
 };
 

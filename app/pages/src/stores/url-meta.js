@@ -6,7 +6,7 @@ class UrlMetaStore {
     @observable metaByUrl = observable.map();
 
     // eslint-disable-next-line class-methods-use-this
-    getUrlMeta(url) {
+    fetchUrlMeta(url) {
         getUrlMeta(url);
     }
 

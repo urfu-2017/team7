@@ -13,7 +13,7 @@ const stores = {
     chatsStore,
     messagesStore,
     usersStore,
-    urlMetaStore, 
+    urlMetaStore,
     currentUserStore
 };
 

@@ -37,7 +37,7 @@ class ChatList extends React.Component {
                     />
                 </List.Item>
                 <List.Item>
-                    <Input icon="search" placeholder="Поиск..." style={{ width: '175px' }}>
+                    <Input placeholder="Поиск..." style={{ width: '175px' }}>
                         <Link to="/new-chat"><Button icon="plus" /></Link>
                         <input />
                     </Input>

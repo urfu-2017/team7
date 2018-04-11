@@ -1,15 +1,12 @@
 import React from 'react';
-import { Segment, Icon } from 'semantic-ui-react';
-import { Link } from 'react-router-dom';
+import { Segment } from 'semantic-ui-react';
 import css from './layout.css';
+import BackButton from '../../components/BackButton/index';
 
-const ChatCreationActivity = props => (
+const ChatCreationActivity = ({ children }) => (
     <Segment className={css.layout}>
-        <Link to="/">
-            <Icon name="left arrow" />
-            Назад
-        </Link>
-        {props.children}
+        <BackButton />
+        {children}
     </Segment>
 );
 

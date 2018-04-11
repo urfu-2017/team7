@@ -35,7 +35,7 @@ class App extends React.Component {
                         `}
                         </style>
                     </Head>
-                    <HashRouter>
+                    <HashRouter hashType="noslash">
                         <MainActivity />
                     </HashRouter>
                 </React.Fragment>

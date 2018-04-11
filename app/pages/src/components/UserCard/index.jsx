@@ -2,6 +2,7 @@ import React from 'react';
 import { Card, Image } from 'semantic-ui-react';
 import { observer, inject } from 'mobx-react';
 
+
 @inject('usersStore', 'currentUserStore')
 @observer
 class UserCard extends React.Component {
@@ -10,10 +11,10 @@ class UserCard extends React.Component {
 
         return (
             <Card className={className}>
-                <Image src={currentUserStore.avatarUrl} centered size="large" /> {/* src={pathToAvatar} */}
+                <Image src={currentUserStore.user.avatarUrl} centered size="large" /> {/* src={pathToAvatar} */}
                 <Card.Content>
                     <Card.Header textAlign="center">
-                        ProfileName {/* usersStore.me.name */}
+                        {currentUserStore.user.username}
                     </Card.Header>
                 </Card.Content>
             </Card>

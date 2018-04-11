@@ -72,6 +72,9 @@ export default async function (server) {
 
             registerMessageHandlers(socketServer, socket, userId);
             // TODO: втащить нормальный логгер
+            const user = await usersRepository.getUser(userId);
+            socket.emit(eventNames.server.CURRENT_USER, user);
+            console.log('send user', user);
             console.info('Socket connected. ID: ', socket.id); // eslint-disable-line no-console
         } catch (e) {
             console.error('Socket connection failed.', e.message); // eslint-disable-line no-console
@@ -79,4 +82,3 @@ export default async function (server) {
         }
     });
 }
-

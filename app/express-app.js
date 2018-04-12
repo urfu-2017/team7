@@ -16,10 +16,6 @@ function installAllMiddlewares(app) {
     app.use(cookieParser());
     app.use(cookieSession());
     installPassport(app);
-    app.use((req, res, next) => {
-        logger.trace({ request: req, res });
-        next();
-    });
     app.set('trust proxy', config.IS_PRODUCTION);
 }
 

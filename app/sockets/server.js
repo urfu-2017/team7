@@ -96,11 +96,15 @@ const registerMessageHandlers = (socketServer, socket, currentUserId) => {
         const joinChatPromises = userIds.map(userId => chatsRepository.joinChat(userId, chatId));
         await Promise.all(joinChatPromises);
 
-        const sockets = await getAllSockets();
-        sockets.forEach((otherSocket) => {
-            otherSocket.join(chatId);
-            otherSocket.emit(eventNames.server.CHAT, chat);
-        });
+        const joinRoomPromises = _.chain(await getAllSockets())
+            .map(async (otherSocket) => {
+                const otherUserId = await userInfoProvider.getUserId(otherSocket.handshake);
+                if (userIds.includes(otherUserId)) {
+                    otherSocket.join(chatId);
+                    otherSocket.emit(eventNames.server.CHAT, chat);
+                }
+            }).value();
+        await Promise.all(joinRoomPromises);
     });
 };
 

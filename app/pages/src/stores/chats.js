@@ -33,7 +33,6 @@ class ChatsStore {
             if (this.activeChat) {
                 this.activeChat = this.allChats.find(x => this.activeChat.chatId === x.chatId);
             }
-
         });
     }
 }

@@ -2,26 +2,12 @@ import React from 'react';
 import { observer, inject } from 'mobx-react';
 import { Link } from 'react-router-dom';
 import { List, Image, Menu, Label, Input, Button } from 'semantic-ui-react';
-import { getChats, getMessages, onChatsList } from '../../../../sockets/client';
+import { getMessages } from '../../../../sockets/client';
 
 
 @inject('chatsStore', 'messagesStore', 'currentUserStore')
 @observer
 class ChatList extends React.Component {
-    componentDidMount() {
-        let chatsNeverReceived = true;
-        onChatsList((chats) => {
-            chatsNeverReceived = false;
-            this.props.chatsStore.setAllChats(chats);
-        });
-
-        (function askForChats() {
-            getChats();
-            if (chatsNeverReceived) {
-                setTimeout(askForChats, 1000);
-            }
-        }());
-    }
 
     render() {
         const { chatsStore, messagesStore, currentUserStore } = this.props;

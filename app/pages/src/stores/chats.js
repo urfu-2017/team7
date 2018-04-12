@@ -1,5 +1,5 @@
 import { observable, action } from 'mobx';
-import { onChat } from '../../../sockets/client';
+import { onChat, onChatsList } from '../../../sockets/client';
 
 class ChatsStore {
     @observable activeChat = null;
@@ -19,6 +19,11 @@ class ChatsStore {
             if (!this.allChats.find(x => x.chatId === chat.chatId)) {
                 this.allChats.push(chat);
             }
+        });
+
+        onChatsList((chats) => {
+            this.allChats.replace(chats);
+            this.activeChat = this.allChats.find(x => this.activeChat.chatId === x.chatId);
         });
     }
 }

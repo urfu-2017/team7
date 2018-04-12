@@ -121,6 +121,7 @@ export default async (server) => {
 
             registerMessageHandlers(socketServer, socket, userId);
             await trySendUserInfo(socket, userId);
+            await trySendUserChats(socket, userId);
             logger.info('Socket connected. ID: ', socket.id);
         } catch (e) {
             logger.error(e, 'Socket connection failed.');

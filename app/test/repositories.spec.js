@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import proxyquire from 'proxyquire';
 import { User, Chat } from '../db/datatypes';
-import { rotateResponses } from '../utils/test';
+import { rotateResponses } from './helpers';
 import * as hrudbMock from '../db/hrudb-client.mock';
 
 

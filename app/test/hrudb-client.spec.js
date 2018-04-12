@@ -1,7 +1,7 @@
 import { expect } from 'chai';
 import { Promise } from 'bluebird';
 import * as hrudb from '../db/hrudb-client.mock';
-import { okResponses } from '../utils/test';
+import { okResponses } from './helpers';
 
 
 describe('HrudbClient', async () => {

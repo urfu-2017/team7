@@ -1,5 +1,8 @@
 import { get, put } from './hrudb-repeater';
 import { getUser, upsertUser } from './users-repository';
+import getLogger from '../utils/logger';
+
+const logger = getLogger('chats-repo');
 
 export const getChat = async chatId => get(`Chats_${chatId}`);
 
@@ -21,7 +24,12 @@ export const joinChat = async (userId, chatId) => {
         chat.userIds.push(userId);
     }
 
-    // TODO: если что-то одно зафейлится, будет плохо
-    return Promise.all([upsertUser(user), upsertChat(chat)]);
+    try {
+        // TODO: если что-то одно зафейлится, будет плохо
+        return Promise.all([upsertUser(user), upsertChat(chat)]);
+    } catch (e) {
+        logger.fatal(e, `Failed to maintain consistency while joining user(${userId}) into chat(${chatId})! Data will be corrupt!`);
+        throw e;
+    }
 };
 

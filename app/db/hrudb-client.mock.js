@@ -11,6 +11,10 @@ export const clearDb = () => {
     db = {};
 };
 
+export const setDb = (newDb) => {
+    db = newDb;
+};
+
 export class Response {
     constructor(statusCode, description) {
         this.statusCode = statusCode;

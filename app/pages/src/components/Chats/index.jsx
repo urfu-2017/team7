@@ -32,13 +32,13 @@ class ChatList extends React.Component {
                     <Image
                         as={Link}
                         to="/user"
-                        src={currentUserStore.avatarUrl}
+                        src={currentUserStore.avatarUrl || '/static/logo.png'}
                         size="medium"
                         rounded
                     />
                 </List.Item>
                 <List.Item>
-                    <Input placeholder="Поиск..." style={{ width: '175px' }}>
+                    <Input placeholder="Поиск..." fluid style={{ height: '36px' }}>
                         <Link to="/new-chat"><Button icon="plus" /></Link>
                         <input />
                     </Input>

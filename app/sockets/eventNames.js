@@ -2,7 +2,9 @@ export const client = Object.freeze({
     GET_CHATS: 'GET_CHATS',
     GET_MESSAGES: 'GET_MESSAGES',
     NEW_MESSAGE: 'NEW_MESSAGE',
+    CREATE_CHAT: 'CREATE_CHAT',
     GET_USER: 'GET_USER',
+    SEARCH_USER: 'SEARCH_USER',
     GET_URL_META: 'GET_URL_META',
     GET_CURRENT_USER: 'GET_CURRENT_USER'
 });
@@ -10,6 +12,7 @@ export const client = Object.freeze({
 export const server = Object.freeze({
     LIST_CHATS: 'LIST_CHATS',
     LIST_MESSAGES: 'LIST_MESSAGES',
+    CHAT: 'CHAT',
     MESSAGE: 'MESSAGE',
     USER: 'USER',
     URL_META: 'URL_META',

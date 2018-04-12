@@ -1,4 +1,6 @@
+/* eslint-disable no-console */
 import Server from 'socket.io';
+import _ from 'lodash';
 import urlMetadata from 'url-metadata2';
 import uuidv4 from 'uuid/v4';
 import * as eventNames from './eventNames';
@@ -7,51 +9,91 @@ import * as messagesRepository from '../db/messages-repository';
 import * as chatsRepository from '../db/chats-repository';
 import * as userInfoProvider from './user-info-provider';
 import { Chat, Message } from '../db/datatypes';
+import { getOwlUrl } from '../utils/owl-provider';
 import getLogger from '../utils/logger';
 
 const logger = getLogger('socket-server');
 
-const registerMessageHandlers = (socketServer, socket, userId) => {
-    socket.on(eventNames.client.GET_CHATS, async () => {
+const trySendUserChats = async (socket, userId) => {
+    try {
         const userChats = await chatsRepository.getAllChatsForUser(userId);
         socket.emit(eventNames.server.LIST_CHATS, userChats);
 
-        userChats
-            .map(x => x.chatId)
-            .forEach(chatId => socket.join(chatId));
-    });
+        userChats.forEach(x => socket.join(x.chatId));
+    } catch (e) {
+        logger.warn('Failed to send user chats');
+    }
+};
+
+const registerMessageHandlers = (socketServer, socket, currentUserId) => {
+    async function sendUser(userId) {
+        const user = await usersRepository.getUser(userId);
+        if (user) {
+            socket.emit(eventNames.server.USER, user);
+        }
+    }
+
+    function getAllSockets() {
+        return new Promise((resolve, reject) =>
+            socketServer.sockets.clients((error, clients) => (error
+                ? reject(error)
+                : resolve(clients.map(id => socketServer.sockets.connected[id])))));
+    }
+
+    socket.on(eventNames.client.GET_CHATS, () => trySendUserChats(socket, currentUserId));
 
     socket.on(eventNames.client.GET_MESSAGES, async ({ chatId }) => {
         const messages = await messagesRepository.getMessagesFromChat(chatId);
         socket.emit(eventNames.server.LIST_MESSAGES, { chatId, messages });
+        const sendUserPromises = _.chain(messages)
+            .map(x => x.authorUserId)
+            .uniq()
+            .map(sendUser)
+            .value();
+        await Promise.all(sendUserPromises);
     });
 
-    socket.on(eventNames.client.GET_USER, async (payload) => {
-        const user = await usersRepository.getUser(payload.userId);
-        if (user) {
-            socket.emit(eventNames.server.USER, user);
-        }
+    socket.on(eventNames.client.GET_USER, ({ userId }) => sendUser(userId));
+
+    socket.on(eventNames.client.SEARCH_USER, async ({ query }) => {
+        const usersFromIndex = await usersRepository.getAllUsers();
+        const re = new RegExp(_.escapeRegExp(query), 'i');
+        const sendUserPromises = _.chain(usersFromIndex)
+            .map((username, userId) => ({ username, userId }))
+            .filter(x => re.test(x.username))
+            .map(x => x.userId)
+            .map(sendUser)
+            .value();
+        await Promise.all(sendUserPromises);
     });
 
     socket.on(eventNames.client.NEW_MESSAGE, async ({ chatId, text }) => {
-        const message = new Message(
-            uuidv4(),
-            new Date(),
-            userId,
-            text,
-            text,
-            chatId,
-        );
+        const message = new Message(uuidv4(), new Date(), currentUserId, text, text, chatId);
         await messagesRepository.createMessage(message);
-        socketServer.to(message.chatId)
-            .emit(eventNames.server.MESSAGE, message);
+        socketServer.to(message.chatId).emit(eventNames.server.MESSAGE, message);
     });
 
     socket.on(eventNames.client.GET_URL_META, async (url) => {
         const meta = await urlMetadata(url);
-        socket.emit(eventNames.server.URL_META, {
-            ...meta,
-            url
+        socket.emit(eventNames.server.URL_META, { ...meta, url });
+    });
+
+    socket.on(eventNames.client.CREATE_CHAT, async ({ name, userIds }) => {
+        const chatId = uuidv4();
+        const chat = new Chat(
+            chatId,
+            name,
+            [],
+            getOwlUrl()
+        );
+        await chatsRepository.upsertChat(chat);
+        const joinChatPromises = userIds.map(userId => chatsRepository.joinChat(userId, chatId));
+        await Promise.all(joinChatPromises);
+
+        const sockets = await getAllSockets();
+        sockets.forEach((otherSocket) => {
+            otherSocket.join(chatId);
+            otherSocket.emit(eventNames.server.CHAT, chat);
         });
     });
 };
@@ -60,20 +102,12 @@ const trySendUserInfo = async (socket, userId) => {
     try {
         const user = await usersRepository.getUser(userId);
         socket.emit(eventNames.server.CURRENT_USER, user);
-        // TODO: send more information
     } catch (e) {
         logger.error(e, 'Failed to send user info');
     }
 };
 
 export default async (server) => {
-    const commonChat = new Chat(
-        '6584f174-0ce1-43bd-88ac-026cfe879022',
-        'Общий чат', [],
-        'https://image.flaticon.com/icons/png/128/167/167742.png'
-    );
-    await chatsRepository.upsertChat(commonChat);
-
     const socketServer = new Server(server, {
         serveClient: false,
         pingInterval: 10000,
@@ -84,7 +118,6 @@ export default async (server) => {
     socketServer.on('connection', async (socket) => {
         try {
             const userId = await userInfoProvider.getUserId(socket.handshake);
-            await chatsRepository.joinChat(userId, commonChat.chatId);
 
             registerMessageHandlers(socketServer, socket, userId);
             await trySendUserInfo(socket, userId);

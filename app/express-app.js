@@ -6,7 +6,7 @@ import cookieSession from './utils/cookie-session';
 import config from './config';
 import loginController from './controllers/login';
 import AvatarController from './controllers/avatar';
-import AvatarGenerator from './utils/avatarGenerator';
+import AvatarGenerator from './utils/avatar-generator';
 import { installPassport } from './middlewares/auth';
 import getLogger from './utils/logger';
 

@@ -11,7 +11,7 @@ class UserCard extends React.Component {
 
         return (
             <Card className={className}>
-                <Image src={currentUserStore.user.avatarUrl} centered size="large" /> {/* src={pathToAvatar} */}
+                <Image src={currentUserStore.user.avatarUrl} centered size="large" />
                 <Card.Content>
                     <Card.Header textAlign="center">
                         {currentUserStore.user.username}

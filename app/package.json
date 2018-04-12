@@ -13,6 +13,8 @@
     "lint": "eslint . --ext .js,.jsx"
   },
   "dependencies": {
+    "@types/bunyan": "^1.8.4",
+    "@types/lodash": "^4.14.106",
     "@zeit/next-css": "0.1.5",
     "apicache": "1.2.1",
     "babel-core": "6.26.0",
@@ -28,6 +30,7 @@
     "express": "4.16.3",
     "express-promise-router": "3.0.1",
     "got": "8.3.0",
+    "lodash": "4.17.5",
     "mobx": "4.1.1",
     "mobx-react": "5.0.0",
     "moment": "2.22.0",

@@ -22,7 +22,7 @@ const trySendUserChats = async (socket, userId) => {
 
         userChats.forEach(x => socket.join(x.chatId));
     } catch (e) {
-        logger.warn('Failed to send user chats');
+        logger.warn(e, 'Failed to send user chats');
     }
 };
 
@@ -44,6 +44,7 @@ const registerMessageHandlers = (socketServer, socket, currentUserId) => {
     socket.on(eventNames.client.GET_CHATS, () => trySendUserChats(socket, currentUserId));
 
     socket.on(eventNames.client.GET_MESSAGES, async ({ chatId }) => {
+        logger.trace('client.GET_MESSAGES', { chatId });
         const messages = await messagesRepository.getMessagesFromChat(chatId);
         socket.emit(eventNames.server.LIST_MESSAGES, { chatId, messages });
         const sendUserPromises = _.chain(messages)
@@ -57,6 +58,7 @@ const registerMessageHandlers = (socketServer, socket, currentUserId) => {
     socket.on(eventNames.client.GET_USER, ({ userId }) => sendUser(userId));
 
     socket.on(eventNames.client.SEARCH_USER, async ({ query }) => {
+        logger.trace('client.SEARCH_USER', { query });
         const usersFromIndex = await usersRepository.getAllUsers();
         const re = new RegExp(_.escapeRegExp(query), 'i');
         const sendUserPromises = _.chain(usersFromIndex)
@@ -69,6 +71,7 @@ const registerMessageHandlers = (socketServer, socket, currentUserId) => {
     });
 
     socket.on(eventNames.client.NEW_MESSAGE, async ({ chatId, text }) => {
+        logger.trace('client.NEW_MESSAGE', { chatId, text });
         const truncatedText = text.substring(0, MAX_MESSAGE_LENGTH);
         const message = new Message(
             uuidv4(), new Date(),
@@ -80,11 +83,13 @@ const registerMessageHandlers = (socketServer, socket, currentUserId) => {
     });
 
     socket.on(eventNames.client.GET_URL_META, async (url) => {
+        logger.trace('client.GET_URL_META', { url });
         const meta = await urlMetadata(url);
         socket.emit(eventNames.server.URL_META, { ...meta, url });
     });
 
     socket.on(eventNames.client.CREATE_CHAT, async ({ name, userIds }) => {
+        logger.trace('client.CREATE_CHAT', { name, userIds });
         const chatId = uuidv4();
         const chat = new Chat(
             chatId,
@@ -96,11 +101,15 @@ const registerMessageHandlers = (socketServer, socket, currentUserId) => {
         const joinChatPromises = userIds.map(userId => chatsRepository.joinChat(userId, chatId));
         await Promise.all(joinChatPromises);
 
-        const sockets = await getAllSockets();
-        sockets.forEach((otherSocket) => {
-            otherSocket.join(chatId);
-            otherSocket.emit(eventNames.server.CHAT, chat);
-        });
+        const joinRoomPromises = _.chain(await getAllSockets())
+            .map(async (otherSocket) => {
+                const otherUserId = await userInfoProvider.getUserId(otherSocket.handshake);
+                if (userIds.includes(otherUserId)) {
+                    otherSocket.join(chatId);
+                    otherSocket.emit(eventNames.server.CHAT, chat);
+                }
+            }).value();
+        await Promise.all(joinRoomPromises);
     });
 };
 
@@ -124,11 +133,10 @@ export default async (server) => {
     socketServer.on('connection', async (socket) => {
         try {
             const userId = await userInfoProvider.getUserId(socket.handshake);
-
             registerMessageHandlers(socketServer, socket, userId);
             await trySendUserInfo(socket, userId);
             await trySendUserChats(socket, userId);
-            logger.info('Socket connected. ID: ', socket.id);
+            logger.trace(`Socket connected. socket.id=${socket.id}, userId=${userId}`);
         } catch (e) {
             logger.error(e, 'Socket connection failed.');
             socket.disconnect(true);

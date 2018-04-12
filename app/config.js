@@ -9,7 +9,8 @@ const {
     HRUDB_URL,
     LOGGLY_TOKEN,
     LOGGLY_SUBDOMAIN,
-    TELEGRAM_BOT_TOKEN
+    TELEGRAM_BOT_TOKEN,
+    CONSOLE_LOG_LEVEL
 } = process.env;
 
 const HTTP_SCHEME = process.env.HTTP_SCHEME || 'http';
@@ -32,5 +33,6 @@ export default {
     LOGGLY_TOKEN,
     LOGGLY_SUBDOMAIN,
     TELEGRAM_CHAT_IDS,
-    TELEGRAM_BOT_TOKEN
+    TELEGRAM_BOT_TOKEN,
+    CONSOLE_LOG_LEVEL: CONSOLE_LOG_LEVEL || 'trace'
 };

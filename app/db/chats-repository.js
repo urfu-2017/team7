@@ -21,6 +21,7 @@ export const joinChat = async (userId, chatId) => {
         chat.userIds.push(userId);
     }
 
+    // TODO: если что-то одно зафейлится, будет плохо
     return Promise.all([upsertUser(user), upsertChat(chat)]);
 };
 

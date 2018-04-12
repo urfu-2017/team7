@@ -42,7 +42,7 @@ class ChatList extends React.Component {
                             <List.Header
                                 as="span"
                                 className={css.item__line}
-                                content={chat.name}
+                                content={`${chat.name}\ufeff`}
                             />
                             <List.Description
                                 content={messagesStore.getLastMessageText(chat.chatId)}

@@ -5,7 +5,7 @@ class UsersStore {
     @observable usersById = observable.map();
 
     @computed get allUsers() {
-        return Array.from(this.usersById.toJS().values());
+        return [...this.usersById.toJS().values()];
     }
 
     sentQueries = [];

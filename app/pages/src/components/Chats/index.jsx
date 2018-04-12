@@ -2,8 +2,7 @@ import React from 'react';
 import { observer, inject } from 'mobx-react';
 import { Link } from 'react-router-dom';
 import { List, Image, Menu, Label, Input, Button } from 'semantic-ui-react';
-import { getMessages } from '../../../../sockets/client';
-
+import css from './item.css';
 
 @inject('chatsStore', 'messagesStore', 'currentUserStore')
 @observer
@@ -34,24 +33,20 @@ class ChatList extends React.Component {
                         to="/"
                         key={chat.chatId}
                         active={chat === chatsStore.activeChat}
-                        style={{ height: '62px' }}
-                        onClick={() => {
-                            chatsStore.setActiveChat(chat);
-                            getMessages({ chatId: chat.chatId });
-                        }}
+                        className={css.item}
+                        onClick={() => chatsStore.setActiveChat(chat)}
                     >
                         <Label color="teal" style={{ marginTop: '8px' }}>1</Label>
                         <Image avatar src={chat.avatarUrl} />
                         <List.Content>
-                            <List.Header as="span" content={chat.name} />
+                            <List.Header
+                                as="span"
+                                className={css.item__line}
+                                content={chat.name}
+                            />
                             <List.Description
                                 content={messagesStore.getLastMessageText(chat.chatId)}
-                                style={{
-                                    whiteSpace: 'nowrap',
-                                    overflow: 'hidden',
-                                    textOverflow: 'ellipsis',
-                                    width: '140px'
-                                }}
+                                className={css.item__line}
                             />
                         </List.Content>
                     </Menu.Item>))}

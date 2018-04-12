@@ -11,6 +11,7 @@ import * as userInfoProvider from './user-info-provider';
 import { Chat, Message } from '../db/datatypes';
 import { getOwlUrl } from '../utils/owl-provider';
 import getLogger from '../utils/logger';
+import { MAX_CHAT_NAME_LENGTH, MAX_MESSAGE_LENGTH } from '../utils/constants';
 
 const logger = getLogger('socket-server');
 
@@ -68,7 +69,12 @@ const registerMessageHandlers = (socketServer, socket, currentUserId) => {
     });
 
     socket.on(eventNames.client.NEW_MESSAGE, async ({ chatId, text }) => {
-        const message = new Message(uuidv4(), new Date(), currentUserId, text, text, chatId);
+        const truncatedText = text.substring(0, MAX_MESSAGE_LENGTH);
+        const message = new Message(
+            uuidv4(), new Date(),
+            currentUserId, truncatedText,
+            truncatedText, chatId
+        );
         await messagesRepository.createMessage(message);
         socketServer.to(message.chatId).emit(eventNames.server.MESSAGE, message);
     });
@@ -82,7 +88,7 @@ const registerMessageHandlers = (socketServer, socket, currentUserId) => {
         const chatId = uuidv4();
         const chat = new Chat(
             chatId,
-            name,
+            name.substring(0, MAX_CHAT_NAME_LENGTH),
             [],
             getOwlUrl()
         );

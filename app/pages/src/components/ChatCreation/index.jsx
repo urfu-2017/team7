@@ -7,6 +7,7 @@ import { createChat } from '../../../../sockets/client';
 import DimmerLoader from '../DimmerLoader';
 import BackButton from '../BackButton';
 import css from './layout.css';
+import { MAX_CHAT_NAME_LENGTH } from '../../../../utils/constants';
 
 @inject('usersStore', 'currentUserStore')
 @observer
@@ -84,6 +85,7 @@ class ChatCreation extends React.Component {
                 <BackButton className={css.layout__back} />
                 <Input
                     fluid
+                    maxLength={MAX_CHAT_NAME_LENGTH}
                     className={css.layout__name}
                     placeholder="Введите название группы"
                     onChange={this.updateName}

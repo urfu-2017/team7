@@ -1,12 +1,19 @@
-import { observable, action } from 'mobx';
-import { onChat, onChatsList } from '../../../sockets/client';
+import { observable, action, computed } from 'mobx';
+import { getMessages, onChat, onChatsList } from '../../../sockets/client';
 
 class ChatsStore {
     @observable activeChat = null;
     @observable allChats = [];
 
+    @computed get activeChatName() {
+        return this.activeChat
+            ? this.activeChat.name
+            : null;
+    }
+
     @action setActiveChat(chat) {
         this.activeChat = chat;
+        getMessages({ chatId: chat.chatId });
     }
 
     @action setAllChats(chats) {

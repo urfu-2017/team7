@@ -13,8 +13,6 @@
     "lint": "eslint . --ext .js,.jsx"
   },
   "dependencies": {
-    "@types/bunyan": "^1.8.4",
-    "@types/lodash": "^4.14.106",
     "@zeit/next-css": "0.1.5",
     "apicache": "1.2.1",
     "babel-core": "6.26.0",
@@ -51,6 +49,8 @@
     "uuid": "3.2.1"
   },
   "devDependencies": {
+    "@types/bunyan": "1.8.4",
+    "@types/lodash": "4.14.106",
     "@types/express": "4.11.1",
     "@types/got": "7.1.8",
     "@types/next": "2.4.9",

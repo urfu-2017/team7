@@ -1,0 +1,11 @@
+.item
+{
+    height: 62px;
+}
+.item__line
+{
+    max-width: 140px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}

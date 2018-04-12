@@ -3,6 +3,7 @@ import { observer, inject } from 'mobx-react';
 import { Input, Button } from 'semantic-ui-react';
 import { sendMessage } from '../../../../sockets/client';
 import css from './layout.css';
+import { MAX_MESSAGE_LENGTH } from '../../../../utils/constants';
 
 @inject('chatsStore')
 @observer
@@ -38,6 +39,7 @@ class MessageInput extends React.Component {
                     onChange={this.handleChange}
                     className={css.layout__input}
                     onKeyPress={this.handleKeyPress}
+                    maxLength={MAX_MESSAGE_LENGTH}
                 />
                 <Button
                     disabled={!this.isValid}

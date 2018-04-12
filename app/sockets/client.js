@@ -17,6 +17,10 @@ export function sendMessage(message) {
     socket.emit(eventNames.client.NEW_MESSAGE, message);
 }
 
+export function createChat(chat) {
+    socket.emit(eventNames.client.CREATE_CHAT, chat);
+}
+
 export function getChats() {
     socket.emit(eventNames.client.GET_CHATS);
 }
@@ -25,23 +29,10 @@ export function getUrlMeta(url) {
     socket.emit(eventNames.client.GET_URL_META, url);
 }
 
-/**
- * @callback onChatsListCallback
- * @param {Chat[]} chats
- */
-
-/**
- * @param {onChatsListCallback} handler
- */
 export function onChatsList(handler) {
     socket.on(eventNames.server.LIST_CHATS, handler);
 }
 
-
-/**
- * @param {object} payload
- * @param {string} payload.chatId
- */
 export function getMessages(payload) {
     socket.emit(eventNames.client.GET_MESSAGES, payload);
 }
@@ -54,12 +45,16 @@ export function onMessage(handler) {
     socket.on(eventNames.server.MESSAGE, handler);
 }
 
-/**
- * @param {object} payload
- * @param {string} payload.userId
- */
+export function onChat(handler) {
+    socket.on(eventNames.server.CHAT, handler);
+}
+
 export function getUser(payload) {
     socket.emit(eventNames.client.GET_USER, payload);
+}
+
+export function searchUser(payload) {
+    socket.emit(eventNames.client.SEARCH_USER, payload);
 }
 
 export function onUser(handler) {

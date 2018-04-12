@@ -1,0 +1,45 @@
+.layout
+{
+    display: grid;
+    justify-content: center;
+    grid-template-areas:
+            ' back   name  create'
+            'seacrh seacrh seacrh'
+            ' items  items  items';
+    grid-template-rows: 36px auto 1fr;
+    grid-template-columns: auto 1fr auto;
+    grid-gap: 1em;
+    height: 100%;
+    padding: 1em;
+}
+
+.layout__back
+{
+    grid-area: back;
+    margin: 0;
+}
+
+.layout__search
+{
+    grid-area: seacrh;
+    margin: 0;
+}
+
+.layout__name
+{
+    grid-area: name;
+}
+
+.layout__create
+{
+    grid-area: create;
+    margin: 0;
+}
+
+.layout__items
+{
+    grid-area: items;
+    position: relative;
+    overflow-x: hidden;
+    overflow-y: auto;
+}

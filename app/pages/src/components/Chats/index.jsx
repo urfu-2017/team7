@@ -2,27 +2,11 @@ import React from 'react';
 import { observer, inject } from 'mobx-react';
 import { Link } from 'react-router-dom';
 import { List, Image, Menu, Label, Input, Button } from 'semantic-ui-react';
-import { getChats, getMessages, onChatsList } from '../../../../sockets/client';
-
+import css from './item.css';
 
 @inject('chatsStore', 'messagesStore', 'currentUserStore')
 @observer
 class ChatList extends React.Component {
-    componentDidMount() {
-        let chatsNeverReceived = true;
-        onChatsList((chats) => {
-            chatsNeverReceived = false;
-            this.props.chatsStore.setAllChats(chats);
-        });
-
-        (function askForChats() {
-            getChats();
-            if (chatsNeverReceived) {
-                setTimeout(askForChats, 1000);
-            }
-        }());
-    }
-
     render() {
         const { chatsStore, messagesStore, currentUserStore } = this.props;
         return (
@@ -32,13 +16,13 @@ class ChatList extends React.Component {
                     <Image
                         as={Link}
                         to="/user"
-                        src={currentUserStore.avatarUrl}
+                        src={currentUserStore.avatarUrl || '/static/logo.png'}
                         size="medium"
                         rounded
                     />
                 </List.Item>
                 <List.Item>
-                    <Input placeholder="Поиск..." style={{ width: '175px' }}>
+                    <Input placeholder="Поиск..." fluid style={{ height: '36px' }}>
                         <Link to="/new-chat"><Button icon="plus" /></Link>
                         <input />
                     </Input>
@@ -49,24 +33,20 @@ class ChatList extends React.Component {
                         to="/"
                         key={chat.chatId}
                         active={chat === chatsStore.activeChat}
-                        style={{ height: '62px' }}
-                        onClick={() => {
-                            chatsStore.setActiveChat(chat);
-                            getMessages({ chatId: chat.chatId });
-                        }}
+                        className={css.item}
+                        onClick={() => chatsStore.selectChat(chat)}
                     >
                         <Label color="teal" style={{ marginTop: '8px' }}>1</Label>
                         <Image avatar src={chat.avatarUrl} />
                         <List.Content>
-                            <List.Header as="span" content={chat.name} />
+                            <List.Header
+                                as="span"
+                                className={css.item__line}
+                                content={`${chat.name}\ufeff`}
+                            />
                             <List.Description
                                 content={messagesStore.getLastMessageText(chat.chatId)}
-                                style={{
-                                    whiteSpace: 'nowrap',
-                                    overflow: 'hidden',
-                                    textOverflow: 'ellipsis',
-                                    width: '140px'
-                                }}
+                                className={css.item__line}
                             />
                         </List.Content>
                     </Menu.Item>))}

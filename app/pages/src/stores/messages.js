@@ -1,5 +1,5 @@
 import { observable, action } from 'mobx';
-import { onMessagesList } from '../../../sockets/client';
+import { onMessage, onMessagesList } from '../../../sockets/client';
 
 class MessagesStore {
     @observable messagesByChatId = observable.map();
@@ -37,6 +37,10 @@ class MessagesStore {
     constructor() {
         onMessagesList(({ messages, chatId }) => {
             this.setAllMessages(chatId, messages);
+        });
+
+        onMessage((message) => {
+            this.addMessage(message);
         });
     }
 }

@@ -23,23 +23,22 @@ describe('LoginManager.loginUser', async () => {
 
     it('saves new user', async () => {
         await loginUser(0, 'name1');
+        const users = await userRepo.getAllUsers();
+        const user = await userRepo.getUser(0);
 
-        expect(hrudbMock.getDb()).to.be.deep.equal({
-            Users_0: [new User(0, 'name1', '/avatar/0', [])],
-            AllUsers: [{ 0: 'name1' }]
-        });
+        expect(users).to.be.deep.equal({ 0: 'name1' });
+        expect(user).to.be.deep.equal(new User(0, 'name1', '/avatar/0', []));
     });
 
     it('won\'t overwrite fields', async () => {
-        hrudbMock.setDb({
-            Users_0: [new User(0, 'name1', 'custom_avatar', ['chatik'])],
-            AllUsers: [{ 0: 'name1' }]
-        });
+        const expected = new User(0, 'name1', 'custom_avatar', ['chatik']);
         await loginUser(0, 'name1');
+        await userRepo.upsertUser(expected);
+        await loginUser(0, 'name1');
+        const users = await userRepo.getAllUsers();
+        const user = await userRepo.getUser(0);
 
-        expect(hrudbMock.getDb()).to.be.deep.equal({
-            Users_0: [new User(0, 'name1', 'custom_avatar', ['chatik'])],
-            AllUsers: [{ 0: 'name1' }]
-        });
+        expect(users).to.be.deep.equal({ 0: 'name1' });
+        expect(user).to.be.deep.equal(expected);
     });
 });

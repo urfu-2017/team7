@@ -4,9 +4,10 @@ import { User } from './datatypes';
 export default async (id, username) => {
     const allUsers = await getAllUsers();
     const userExists = Boolean(allUsers[id]);
-    const nameChanged = (allUsers[id] || {}).username !== username;
-    let user = new User(id, username, `/avatar/${id}`, []);
-    if (nameChanged) {
+    const shouldUpdateUser = (allUsers[id] || {}).username !== username;
+
+    if (shouldUpdateUser) {
+        let user = new User(id, username, `/avatar/${id}`, []);
         if (userExists) {
             user = await getUser(id);
             user.username = username;

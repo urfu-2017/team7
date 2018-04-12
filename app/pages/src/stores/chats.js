@@ -11,7 +11,7 @@ class ChatsStore {
             : null;
     }
 
-    @action setActiveChat(chat) {
+    @action selectChat(chat) {
         this.activeChat = chat;
         getMessages({ chatId: chat.chatId });
     }

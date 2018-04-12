@@ -34,7 +34,7 @@ class ChatList extends React.Component {
                         key={chat.chatId}
                         active={chat === chatsStore.activeChat}
                         className={css.item}
-                        onClick={() => chatsStore.setActiveChat(chat)}
+                        onClick={() => chatsStore.selectChat(chat)}
                     >
                         <Label color="teal" style={{ marginTop: '8px' }}>1</Label>
                         <Image avatar src={chat.avatarUrl} />

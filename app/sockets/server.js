@@ -3,7 +3,7 @@ import Server from 'socket.io';
 import _ from 'lodash';
 import urlMetadata from 'url-metadata2';
 import uuidv4 from 'uuid/v4';
-import * as eventNames from './eventNames';
+import * as eventNames from './event-names';
 import * as usersRepository from '../db/users-repository';
 import * as messagesRepository from '../db/messages-repository';
 import * as chatsRepository from '../db/chats-repository';

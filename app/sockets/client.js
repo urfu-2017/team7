@@ -1,5 +1,5 @@
 import connect from 'socket.io-client';
-import * as eventNames from './eventNames';
+import * as eventNames from './event-names';
 
 const socketOptions = {
     transports: ['websocket'],

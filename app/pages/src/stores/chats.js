@@ -30,7 +30,10 @@ class ChatsStore {
 
         onChatsList((chats) => {
             this.allChats.replace(chats);
-            this.activeChat = this.allChats.find(x => this.activeChat.chatId === x.chatId);
+            if (this.activeChat) {
+                this.activeChat = this.allChats.find(x => this.activeChat.chatId === x.chatId);
+            }
+
         });
     }
 }

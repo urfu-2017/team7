@@ -1,7 +1,7 @@
 import PNGImage from 'pngjs-image';
 
 
-const IMAGE_SIZE = 420;
+const IMAGE_SIZE = 220;
 const TOTAL_BLOCKS = 5;
 const BLOCK_SIZE = IMAGE_SIZE / TOTAL_BLOCKS;
 

@@ -1,16 +1,39 @@
-import { observable, action } from 'mobx';
+import { observable, action, computed } from 'mobx';
+import { getMessages, onChat, onChatsList } from '../../../sockets/client';
 
 class ChatsStore {
     @observable activeChat = null;
     @observable allChats = [];
 
-    @action setActiveChat(chat) {
+    @computed get activeChatName() {
+        return this.activeChat
+            ? this.activeChat.name
+            : null;
+    }
+
+    @action selectChat(chat) {
         this.activeChat = chat;
+        getMessages({ chatId: chat.chatId });
     }
 
     @action setAllChats(chats) {
         this.allChats.replace(chats);
         this.activeChat = null;
+    }
+
+    constructor() {
+        onChat((chat) => {
+            if (!this.allChats.find(x => x.chatId === chat.chatId)) {
+                this.allChats.push(chat);
+            }
+        });
+
+        onChatsList((chats) => {
+            this.allChats.replace(chats);
+            if (this.activeChat) {
+                this.activeChat = this.allChats.find(x => this.activeChat.chatId === x.chatId);
+            }
+        });
     }
 }
 

@@ -1,12 +1,8 @@
 .layout
 {
     display: grid;
-    grid-template-areas:
-            'chats messages-menu'
-            'chats messages'
-            'chats input';
+    grid-template-areas: 'chats main-activity';
 
-    grid-template-rows: auto 1fr auto;
     grid-template-columns: auto 550px;
     position: fixed;
     padding: 2rem 1rem;
@@ -34,23 +30,8 @@
     width: 0;
 }
 
-.layout .layout__messages
-{
-    grid-area: messages;
-    margin-top: 0;
-    margin-bottom: 0;
-    padding: 2rem;
-    position: relative;
-    overflow-x: hidden;
-    overflow-y: auto;
-}
 
-.layout .layout__messages_menu
+.layout__main_activity
 {
-    grid-area: messages-menu;
-}
-
-.layout__input
-{
-    grid-area: input;
+    grid-area: main-activity;
 }

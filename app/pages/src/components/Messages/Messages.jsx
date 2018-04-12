@@ -23,14 +23,15 @@ class Messages extends React.Component {
     }
 
     render() {
+        const { usersStore } = this.props;
         return (
             <Comment.Group>
                 {this.props.messages.map(message => (
                     <Comment key={message.messageId}>
-                        <Comment.Avatar src="https://react.semantic-ui.com/assets/images/avatar/small/matt.jpg" />
+                        <Comment.Avatar src={usersStore.getAvatar(message.authorUserId)} />
                         <Comment.Content>
                             <Comment.Author as="a">
-                                {this.props.usersStore.getUsername(message.authorUserId) || 'Чебурашка'}
+                                {usersStore.getUsername(message.authorUserId)}
                             </Comment.Author>
                             <Comment.Metadata>
                                 <div>{moment(message.timestamp).format('HH:mm')}</div>

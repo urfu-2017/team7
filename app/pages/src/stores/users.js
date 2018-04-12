@@ -7,7 +7,14 @@ class UsersStore {
         if (this.usersById.has(userId)) {
             return this.usersById.get(userId).username;
         }
-        return null;
+        return 'Чебурашка';
+    }
+
+    getAvatar(userId) {
+        if (this.usersById.has(userId)) {
+            return this.usersById.get(userId).avatarUrl;
+        }
+        return `/avatar/${userId}`;
     }
 }
 

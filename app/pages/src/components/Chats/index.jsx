@@ -1,10 +1,11 @@
 import React from 'react';
 import { observer, inject } from 'mobx-react';
-import { List, Image, Menu, Label, Input } from 'semantic-ui-react';
+import { Link } from 'react-router-dom';
+import { List, Image, Menu, Label, Input, Button } from 'semantic-ui-react';
 import { getChats, getMessages, onChatsList } from '../../../../sockets/client';
 
 
-@inject('chatsStore', 'messagesStore')
+@inject('chatsStore', 'messagesStore', 'currentUserStore')
 @observer
 class ChatList extends React.Component {
     componentDidMount() {
@@ -23,21 +24,29 @@ class ChatList extends React.Component {
     }
 
     render() {
-        const { chatsStore, messagesStore } = this.props;
+        const { chatsStore, messagesStore, currentUserStore } = this.props;
         return (
-            <Menu as={List} size="large" style={{ margin: '0', boxShadow: 'none', border: 'none' }} vertical>
-                <List.Item>
+            <Menu as={List} size="large" style={{ boxShadow: 'none', border: 'none' }} vertical>
+                {/* note: Перебиваем padding:0 для первого элемента списка. */}
+                <List.Item style={{ paddingTop: '0.928571em' }}>
                     <Image
-                        src="http://identicon.net/img/identicon.png"
+                        as={Link}
+                        to="/user"
+                        src={currentUserStore.avatarUrl}
                         size="medium"
                         rounded
                     />
                 </List.Item>
                 <List.Item>
-                    <Input icon="search" placeholder="Поиск..." />
+                    <Input placeholder="Поиск..." style={{ width: '175px' }}>
+                        <Link to="/new-chat"><Button icon="plus" /></Link>
+                        <input />
+                    </Input>
                 </List.Item>
                 {chatsStore.allChats.map(chat => (
                     <Menu.Item
+                        as={Link}
+                        to="/"
                         key={chat.chatId}
                         active={chat === chatsStore.activeChat}
                         style={{ height: '62px' }}

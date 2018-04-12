@@ -8,7 +8,6 @@ import { getMessages } from '../../../../sockets/client';
 @inject('chatsStore', 'messagesStore', 'currentUserStore')
 @observer
 class ChatList extends React.Component {
-
     render() {
         const { chatsStore, messagesStore, currentUserStore } = this.props;
         return (

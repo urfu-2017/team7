@@ -9,11 +9,17 @@ const bufferLength = 10;
 const bufferTimeout = 500;
 const requestSerializer = (request) => {
     const { method, url, headers } = bunyan.stdSerializers.req(request);
-    const user = request.user || {};
 
-    return {
-        method, url, userAgent: headers['user-agent'], user: user.userId || 'Not logged'
+    const result = {
+        method,
+        url,
+        userAgent: headers['user-agent'],
+        ip: request.ip
     };
+    if (request.user) {
+        result.userId = request.user.userId;
+    }
+    return result;
 };
 
 const consoleStream = {
@@ -30,6 +36,19 @@ const getLevelName = level => ({
     60: 'fatal'
 }[level]);
 
+const formatRequest = (lines, request) => {
+    const {
+        method, url, userId, ip
+    } = request;
+    lines.push(`<pre>${method} ${url}`);
+    if (userId) {
+        lines.push(`    github: https://api.github.com/user/${userId}`);
+        lines.push(`    userId: ${userId}`);
+    }
+    lines.push(`    ip: ${ip}`);
+    lines.push('</pre>');
+};
+
 const getTelegramStream = (chatId) => {
     const tg = sendMessageFor(config.TELEGRAM_BOT_TOKEN, chatId);
     const stream = {
@@ -44,7 +63,7 @@ const getTelegramStream = (chatId) => {
                 lines.push(`<code>${msg}</code>`);
             }
             if (request) {
-                lines.push(`<pre>${JSON.stringify(request, null, 2)}</pre>`);
+                formatRequest(lines, request);
             }
             tg(lines.join('\n')).catch(() => {
                 // eslint-disable-next-line no-console

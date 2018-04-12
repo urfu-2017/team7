@@ -1,9 +1,11 @@
 import { expect } from 'chai';
-import proxyquire from 'proxyquire';
 import { Promise } from 'bluebird';
+import * as hrudb from '../db/hrudb-client.mock';
+import { okResponses } from '../utils/test';
 
 
-describe.skip('HrudbClientIntegration', async () => {
+describe('HrudbClient', async () => {
+    /*  Можно проверить тесты на оригинальной хрюше
     const hrudb = proxyquire('../db/hrudb-client', {
         '../config': {
             default: {
@@ -11,9 +13,10 @@ describe.skip('HrudbClientIntegration', async () => {
                 HRUDB_URL: 'https://hrudb.herokuapp.com'
             }
         }
-    });
+    }); */
 
     beforeEach(async () => {
+        hrudb.setResponses(okResponses(500));
         await hrudb.remove('key');
     });
 
@@ -32,7 +35,7 @@ describe.skip('HrudbClientIntegration', async () => {
         expect(all).to.be.deep.equal([a, b, c]);
     });
 
-    it('should sort lexicographically and limit/offset', async () => {
+    it.skip('should sort lexicographically and limit/offset', async () => {
         const [a, b, c] = ['a1', 'a2', 'b1'];
         await Promise.mapSeries([b, a, c], value => hrudb.post('key', value));
         const sorted = await hrudb.getAll('key', { sortByAlphabet: true });
@@ -54,5 +57,11 @@ describe.skip('HrudbClientIntegration', async () => {
 
     it('returns 204 on delete', async () => {
         await Promise.mapSeries([...Array(4)], () => hrudb.remove('key'));
+    });
+
+    it('returns empty array on getAll', async () => {
+        const res = await hrudb.getAll('uniqueeeeKey');
+
+        expect(res).to.be.lengthOf(0);
     });
 });

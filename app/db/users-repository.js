@@ -13,10 +13,10 @@ export const upsertUserWithIndex = async (updatedUser) => {
     const allUsers = await getAllUsers();
     const user = allUsers[updatedUser.userId] || {};
     const nameChanged = user.username !== updatedUser.username;
+    await upsertUser(updatedUser);
     if (nameChanged) {
         allUsers[updatedUser.userId] = updatedUser.username;
         await put('AllUsers', allUsers);
     }
-    await upsertUser(updatedUser);
 };
 

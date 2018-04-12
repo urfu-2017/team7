@@ -25,6 +25,9 @@ class UrlMeta extends React.Component {
         if (!meta) {
             return <a href={this.url}>{this.url}</a>;
         }
+        const sourceUrl = meta.url.startsWith('https://')
+            ? `https://${meta.source}`
+            : `http://${meta.source}`;
 
         const imageUrl = meta['og:image'] || meta.image;
         return (
@@ -34,7 +37,7 @@ class UrlMeta extends React.Component {
                     <Item.Content>
                         <Item.Header as="a" href={meta.url} content={meta['og:title'] || meta.title} />
                         <Item.Meta>
-                            <a href={meta.source}>{meta.source}</a>
+                            <a href={sourceUrl}>{meta.source}</a>
                         </Item.Meta>
                         <Item.Description content={meta['og:description'] || meta.description} />
                     </Item.Content>

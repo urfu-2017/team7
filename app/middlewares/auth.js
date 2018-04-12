@@ -13,7 +13,7 @@ const strategyOptions = {
 };
 const githubStrategy = new Strategy(strategyOptions, (accessToken, refreshToken, profile, done) => {
     const { username, id } = profile;
-    upsertUserWithIndex(new User(id, username, null, []))
+    upsertUserWithIndex(new User(id, username, `/avatar/${id}`, []))
         .then(() => done(null, { userId: id }))
         .catch(err => done(err));
 });

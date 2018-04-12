@@ -1,0 +1,23 @@
+.layout
+{
+    display: grid;
+    grid-template-areas:
+            'user user user'
+            ' .    .    .  '
+            ' .    .   logout';
+
+    grid-template-rows: 1fr .65fr auto;
+    align-content: space-between;
+}
+
+
+.layout__logout
+{
+    grid-area: logout;
+}
+
+.layout__user
+{
+    justify-self: center;
+    grid-area: user;
+}

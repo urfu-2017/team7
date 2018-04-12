@@ -1,6 +1,7 @@
 import { expect } from 'chai';
 import proxyquire from 'proxyquire';
 import { User, Chat } from '../db/datatypes';
+import { rotateResponses, okResponses, badResponses } from '../utils/test';
 import * as hrudbMock from '../db/hrudb-client.mock';
 
 
@@ -18,7 +19,7 @@ describe('Repositories', async () => {
 
     beforeEach(async () => {
         hrudbMock.clearDb();
-        hrudbMock.setResponses([...Array(500).keys()].map(x => new hrudbMock.Response(x % 2 ? 200 : 418, x % 2 ? 'ok' : 'teapot')));
+        hrudbMock.setResponses(rotateResponses(500));
     });
 
     it('can create chat for user', async () => {
@@ -95,6 +96,23 @@ describe('Repositories', async () => {
         expect(hrudbMock.getDb()).to.be.deep.equal({
             Users_0: [user],
             AllUsers: [{ [user.userId]: user.username }]
+        });
+    });
+
+    it('won\'t rewrite index while upsertUserWithIndex', async () => {
+        const [a, b] = [
+            new User(0, 'Admiral', null, [0]),
+            new User(1, 'Misha', null, [0])
+        ];
+        await userRepo.upsertUserWithIndex(a);
+        hrudbMock.setResponses([].concat(okResponses(500), badResponses(10)));
+        await userRepo.upsertUserWithIndex(b).catch(x => x);
+
+        expect(hrudbMock.getDb()).to.be.deep.equal({
+            Users_0: [a],
+            AllUsers: [{
+                [a.userId]: a.username
+            }]
         });
     });
 });

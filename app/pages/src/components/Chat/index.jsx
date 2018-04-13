@@ -1,6 +1,7 @@
 import React from 'react';
+import moment from 'moment';
 import { Link } from 'react-router-dom';
-import { List, Image, Menu } from 'semantic-ui-react';
+import { List, Image, Menu, Label } from 'semantic-ui-react';
 
 import css from './item.css';
 
@@ -18,12 +19,12 @@ export default ({
         className={css.item}
         onClick={onClick}
     >
-        {/* { chat.lastMessageTimestamp ?
+        { lastMessage.timestamp ?
             <Label color="teal" style={{ marginTop: '8px' }}>
-                { moment(chat.lastMessageTimestamp).format('HH:mm') }
+                { moment(lastMessage.timestamp).format('HH:mm') }
             </Label>
             : ''
-        } */}
+        }
         <Image avatar src={chat.avatarUrl} />
         <List.Content>
             <List.Header
@@ -32,7 +33,7 @@ export default ({
                 content={`${chat.name}\ufeff`}
             />
             <List.Description
-                content={lastMessage}
+                content={lastMessage.text}
                 className={css.item__line}
             />
         </List.Content>

@@ -22,7 +22,7 @@ class MessagesStore {
     hasMessages(chatId) {
         const messages = this.messagesByChatId.get(chatId);
 
-        return messages && messages.length;
+        return messages && messages.length > 0;
     }
 
     getLastMessage(chatId) {

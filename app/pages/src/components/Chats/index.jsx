@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import moment from 'moment';
 import React from 'react';
 import { observer, inject } from 'mobx-react';
 import { Link } from 'react-router-dom';
@@ -42,7 +43,12 @@ class ChatList extends React.Component {
                             className={css.item}
                             onClick={() => chatsStore.selectChat(chat)}
                         >
-                            <Label color="teal" style={{ marginTop: '8px' }}>1</Label>
+                            { chat.lastMessageTimestamp ?
+                                <Label color="teal" style={{ marginTop: '8px' }}>
+                                    { moment(chat.lastMessageTimestamp).format('HH:mm') }
+                                </Label>
+                                : ''
+                            }
                             <Image avatar src={chat.avatarUrl} />
                             <List.Content>
                                 <List.Header
@@ -55,7 +61,8 @@ class ChatList extends React.Component {
                                     className={css.item__line}
                                 />
                             </List.Content>
-                        </Menu.Item>)).value()}
+                        </Menu.Item>))
+                    .value()}
                 <List.Item />
             </Menu>
         );

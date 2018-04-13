@@ -4,6 +4,7 @@ import moment from 'moment';
 import { observer, inject } from 'mobx-react';
 import { Comment } from 'semantic-ui-react';
 import { getUser, onMessage } from '../../../../sockets/client';
+import Markdown from '../Markdown';
 import UrlMeta from '../UrlMeta';
 
 @inject('usersStore', 'currentUserStore', 'chatsStore')
@@ -59,8 +60,8 @@ class Messages extends React.Component {
                             <Comment.Metadata>
                                 <div>{moment(message.timestamp).format('HH:mm')}</div>
                             </Comment.Metadata>
-                            <Comment.Text>
-                                {message.content ? message.content.trim() || '\u00A0' : '\u00A0'}
+                            <Comment.Text style={{ minHeight: '1em' }}>
+                                <Markdown source={message.content} needFormat />
                             </Comment.Text>
                             <UrlMeta text={message.content} />
                         </Comment.Content>

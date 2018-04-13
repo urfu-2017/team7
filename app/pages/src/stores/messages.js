@@ -19,6 +19,28 @@ class MessagesStore {
         this.messagesByChatId.set(chatId, messages);
     }
 
+    hasMessages(chatId) {
+        const messages = this.messagesByChatId.get(chatId);
+
+        return messages && messages.length > 0;
+    }
+
+    getLastMessage(chatId) {
+        const messages = this.messagesByChatId.get(chatId);
+
+        return messages ? messages[messages.length - 1] : null;
+    }
+
+    getLastMessageTimestamp(chatId) {
+        if (!this.messagesByChatId.has(chatId)) {
+            return null;
+        }
+
+        const messages = this.messagesByChatId.get(chatId);
+
+        return messages.length ? messages[messages.length - 1].timestamp : null;
+    }
+
     getLastMessageText(chatId) {
         if (!this.messagesByChatId.has(chatId)) {
             return '';

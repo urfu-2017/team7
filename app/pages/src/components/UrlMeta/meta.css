@@ -5,7 +5,7 @@
     padding-left: .5em;
 }
 
-.meta-header
+.meta__header
 {
     white-space: nowrap;
     text-overflow: ellipsis;
@@ -13,7 +13,7 @@
     width: 100%;
 }
 
-.meta-description
+.meta__description
 {
     overflow: hidden;
     position: relative;
@@ -24,7 +24,7 @@
     padding-right: 1em;
 }
 
-.meta-description:before
+.meta__description:before
 {
     content: '...';
     position: absolute;
@@ -33,7 +33,7 @@
 }
 
 
-.meta-description:after {
+.meta__description:after {
     content: '';
     position: absolute;
     right: 0;

@@ -92,8 +92,16 @@ const registerMessageHandlers = (socketServer, socket, currentUserId) => {
             currentUserId, truncatedText,
             truncatedText, chatId
         );
-        await messagesRepository.createMessage(message);
-        socketServer.to(message.chatId).emit(eventNames.server.MESSAGE, message);
+        socket.emit(eventNames.server.MESSAGE_SENT, message);
+
+        try {
+            await messagesRepository.createMessage(message);
+            socket.broadcast.to(message.chatId).emit(eventNames.server.MESSAGE, message);
+            socket.emit(eventNames.server.MESSAGE_RECEIVED, message);
+        } catch (e) {
+            logger.warn(e, `Failed to save message '${message.content}' in db`);
+            socket.emit(eventNames.server.MESSAGE_REVOKED, message);
+        }
     });
 
     on(eventNames.client.GET_URL_META, async (url) => {
@@ -153,7 +161,6 @@ export default async (server) => {
         try {
             const userId = await userInfoProvider.getUserId(socket.handshake);
             registerMessageHandlers(socketServer, socket, userId);
-
             trySendUserInfo(socket, userId);
             trySendUserChats(socket, userId);
 

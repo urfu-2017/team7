@@ -17,10 +17,8 @@ const logger = getLogger('socket-server');
 
 const trySendUserChats = async (socket, userId) => {
     try {
-        console.time('chats');
         const userChats = await chatsRepository.getAllChatsForUser(userId);
         socket.emit(eventNames.server.LIST_CHATS, userChats);
-        console.timeEnd('chats');
 
         userChats.forEach(x => socket.join(x.chatId));
 

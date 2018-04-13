@@ -19,12 +19,12 @@ export default ({
         className={css.item}
         onClick={onClick}
     >
-        { chat.lastMessageTimestamp ?
+        {/* { chat.lastMessageTimestamp ?
             <Label color="teal" style={{ marginTop: '8px' }}>
                 { moment(chat.lastMessageTimestamp).format('HH:mm') }
             </Label>
             : ''
-        }
+        } */}
         <Image avatar src={chat.avatarUrl} />
         <List.Content>
             <List.Header

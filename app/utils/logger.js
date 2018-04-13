@@ -54,27 +54,28 @@ const getTelegramStream = (chatId) => {
     const stream = {
         write(obj) {
             const {
-                name, hostname, pid, level, err, request, msg
+                name, pid, level, err, request, msg
             } = obj;
-            const lines = [`[${getLevelName(level)}] <i>${name}/${pid} on ${hostname}:</i>`];
+            const lines = [`[<b>${getLevelName(level)}</b>] <i>on ${name}/${pid}:</i>`];
+            if ((err || {}).message !== msg) {
+                lines.push(`<pre>${msg}</pre>`);
+            }
             if (err) {
                 lines.push(`<code>${err.name}</code> was thrown: <code>${err.message}</code>`);
-            } else {
-                lines.push(`<code>${msg}</code>`);
             }
             if (request) {
                 formatRequest(lines, request);
             }
-            tg(lines.join('\n')).catch(() => {
+            tg(lines.join('\n')).catch((x) => {
                 // eslint-disable-next-line no-console
-                console.error(`Failed to send telegram log (chatId=${chatId})`);
+                console.error(`Failed to send telegram log (chatId=${chatId}) (code=${x.statusCode})`);
             });
         }
     };
 
     return {
         type: 'raw',
-        level: 'error',
+        level: 'info',
         stream
     };
 };
@@ -83,6 +84,7 @@ const getTelegramStreams = () => config.TELEGRAM_CHAT_IDS.map(getTelegramStream)
 
 const getLogglyStream = name => ({
     type: 'raw',
+    level: 'info',
     stream: new Bunyan2Loggly({
         token: config.LOGGLY_TOKEN,
         subdomain: config.LOGGLY_SUBDOMAIN,

@@ -8,13 +8,15 @@ import messagesStore from './stores/messages';
 import usersStore from './stores/users';
 import urlMetaStore from './stores/url-meta';
 import currentUserStore from './stores/current-user';
+import weatherStore from './stores/weather';
 
 const stores = {
     chatsStore,
     messagesStore,
     usersStore,
     urlMetaStore,
-    currentUserStore
+    currentUserStore,
+    weatherStore
 };
 
 const semanticUiStyles = 'https://cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.12/semantic.min.css';

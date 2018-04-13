@@ -81,3 +81,11 @@ export function getCurrentUser() {
 export function onCurrentUser(handler) {
     socket.on(eventNames.server.CURRENT_USER, handler);
 }
+
+export function getWeather(city) {
+    socket.emit(eventNames.client.GET_WEATHER, city);
+}
+
+export function onWeather(handler) {
+    socket.on(eventNames.server.WEATHER, handler);
+}

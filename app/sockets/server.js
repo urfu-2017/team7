@@ -7,6 +7,7 @@ import * as messagesRepository from '../db/messages-repository';
 import * as chatsRepository from '../db/chats-repository';
 import * as userInfoProvider from './user-info-provider';
 import { Chat, Message } from '../db/datatypes';
+import getWeather from '../utils/weather';
 
 const registerMessageHandlers = (socketServer, socket, userId) => {
     socket.on(eventNames.client.GET_CHATS, async () => {
@@ -50,6 +51,12 @@ const registerMessageHandlers = (socketServer, socket, userId) => {
             ...meta,
             url
         });
+    });
+
+    socket.on(eventNames.client.GET_WEATHER, async (city) => {
+        const response = await getWeather(city);
+        response.city = city;
+        socket.emit(eventNames.server.WEATHER, response);
     });
 };
 

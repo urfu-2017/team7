@@ -5,6 +5,7 @@ import { observer, inject } from 'mobx-react';
 import { Comment } from 'semantic-ui-react';
 import { getUser } from '../../../../sockets/client';
 import UrlMeta from '../UrlMeta';
+import Weather from '../Weather';
 
 @inject('usersStore')
 @observer
@@ -39,6 +40,7 @@ class Messages extends React.Component {
                                 {message.content ? message.content.trim() || '\u00A0' : '\u00A0'}
                             </Comment.Text>
                             <UrlMeta text={message.content} />
+                            <Weather text={message.content} />
                         </Comment.Content>
                     </Comment>
                 ))}

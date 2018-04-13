@@ -40,6 +40,7 @@ class ChatList extends React.Component {
                     .map(chat => (
                         <Chat
                             chat={chat}
+                            key={chat.chatId}
                             isActive={chat === chatsStore.activeChat}
                             lastMessage={{
                                 text: messagesStore.getLastMessageText(chat.chatId),

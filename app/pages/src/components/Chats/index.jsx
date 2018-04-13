@@ -1,10 +1,9 @@
 import _ from 'lodash';
-import moment from 'moment';
 import React from 'react';
 import { observer, inject } from 'mobx-react';
 import { Link } from 'react-router-dom';
-import { List, Image, Menu, Label, Input, Button } from 'semantic-ui-react';
-import css from './item.css';
+import { List, Image, Menu, Input, Button } from 'semantic-ui-react';
+import Chat from '../Chat';
 
 @inject('chatsStore', 'messagesStore', 'currentUserStore')
 @observer
@@ -35,33 +34,13 @@ class ChatList extends React.Component {
                     .orderBy(['lastMessageTimestamp'], ['desc'])
                     .concat(_.filter(chats, chat => !chat.lastMessageTimestamp))
                     .map(chat => (
-                        <Menu.Item
-                            as={Link}
-                            to="/"
-                            key={chat.chatId}
-                            active={chat === chatsStore.activeChat}
-                            className={css.item}
+                        <Chat
+                            chat={chat}
+                            isActive={chat === chatsStore.activeChat}
+                            lastMessage={messagesStore.getLastMessageText(chat.chatId)}
                             onClick={() => chatsStore.selectChat(chat)}
-                        >
-                            { chat.lastMessageTimestamp ?
-                                <Label color="teal" style={{ marginTop: '8px' }}>
-                                    { moment(chat.lastMessageTimestamp).format('HH:mm') }
-                                </Label>
-                                : ''
-                            }
-                            <Image avatar src={chat.avatarUrl} />
-                            <List.Content>
-                                <List.Header
-                                    as="span"
-                                    className={css.item__line}
-                                    content={`${chat.name}\ufeff`}
-                                />
-                                <List.Description
-                                    content={messagesStore.getLastMessageText(chat.chatId)}
-                                    className={css.item__line}
-                                />
-                            </List.Content>
-                        </Menu.Item>))
+                        />
+                    ))
                     .value()}
                 <List.Item />
             </Menu>

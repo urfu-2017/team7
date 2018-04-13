@@ -87,7 +87,6 @@ const registerMessageHandlers = (socketServer, socket, currentUserId) => {
 
         const chat = await chatsRepository.getChat(chatId);
         const updatedChat = { ...chat, lastMessageTimestamp: message.timestamp };
-        console.log(updatedChat);
         await chatsRepository.upsertChat(updatedChat);
         socket.emit(eventNames.server.CHAT, updatedChat);
     });

@@ -119,7 +119,7 @@ class ChatCreation extends React.Component {
                         >
                             <Image
                                 avatar
-                                circullar="true"
+                                style={{ borderRadius: '.25rem' }}
                                 src={user.avatarUrl || `/avatar/${user.userId}`}
                             />
                             <List.Content verticalAlign="middle">

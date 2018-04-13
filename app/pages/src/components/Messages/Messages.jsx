@@ -12,17 +12,20 @@ import UrlMeta from '../UrlMeta';
 class Messages extends React.Component {
     componentDidMount() {
         this.scroll();
+        const { usersStore, currentUserStore } = this.props;
+
         const users = [];
         this.props.messages.forEach(({ authorUserId }) => {
-            if (!this.props.usersStore.getUsername(authorUserId) && !users.includes(authorUserId)) {
+            if (!usersStore.getUsername(authorUserId) && !users.includes(authorUserId)) {
                 users.push(authorUserId);
                 getUser({ userId: authorUserId });
             }
         });
 
         onMessage((message) => {
-            if (message.authorUserId === this.props.currentUserStore.user.userId
-                && this.props.chatId === message.chatId) {
+            const { chatId } = this.props;
+            if (message.authorUserId === currentUserStore.user.userId
+                && chatId === message.chatId) {
                 this.scroll();
             }
         });
@@ -37,7 +40,7 @@ class Messages extends React.Component {
 
     componentDidUpdate(props) {
         if (props.chatId !== this.props.chatId) {
-            this.scroll(this.props.chatsStore.chatsById.get(this.props.chatId).scrollHeight);
+            this.scroll(this.props.chatsStore.getScrollHeight(this.props.chatId));
         }
     }
 

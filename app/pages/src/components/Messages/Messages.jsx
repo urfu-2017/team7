@@ -39,6 +39,9 @@ class Messages extends React.Component {
                             <Comment.Text>
                                 {message.content ? message.content.trim() || '\u00A0' : '\u00A0'}
                             </Comment.Text>
+                            {
+                                message.status ? <Comment.Text>{message.status || ''}</Comment.Text> : null
+                            }
                             <UrlMeta text={message.content} />
                         </Comment.Content>
                     </Comment>

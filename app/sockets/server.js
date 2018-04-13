@@ -32,12 +32,11 @@ const trySendUserChats = async (socket, userId) => {
 };
 
 const getAsyncSocketHandler = (socket, currentUserId) => (eventName, asyncMessageHandler) => {
-    socket.on(eventName, async () => {
+    socket.on(eventName, async (...args) => {
         try {
-            await asyncMessageHandler();
+            await asyncMessageHandler(...args);
         } catch (e) {
-            // TODO: после фикса большинства ошибок перевести на logger.warn/logger.error
-            logger.debug(e, `Socket error (event=${eventName}, user=${currentUserId})`);
+            logger.warn(e, `Socket error (event=${eventName}, user=${currentUserId})`);
         }
     });
 };
@@ -100,8 +99,13 @@ const registerMessageHandlers = (socketServer, socket, currentUserId) => {
 
     on(eventNames.client.GET_URL_META, async (url) => {
         logger.trace('client.GET_URL_META', { url });
-        const meta = await urlMetadata(url);
-        socket.emit(eventNames.server.URL_META, { ...meta, url });
+        try {
+            const meta = await urlMetadata(url);
+            socket.emit(eventNames.server.URL_META, { ...meta, url });
+        } catch (e) {
+            // TODO: фикс регулярки на клиенте
+            logger.debug(e, `No metadata for url=${url}`);
+        }
     });
 
     on(eventNames.client.CREATE_CHAT, async ({ name, userIds }) => {

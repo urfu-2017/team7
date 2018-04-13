@@ -25,9 +25,6 @@ class UrlMeta extends React.Component {
         if (!meta) {
             return '';
         }
-        const sourceUrl = this.url.startsWith('https://')
-            ? `https://${meta.source}`
-            : `http://${meta.source}`;
 
         return (
             <Item.Group className={css.meta}>
@@ -40,13 +37,14 @@ class UrlMeta extends React.Component {
                             background: `#ddd url(${meta.image}) no-repeat`,
                             backgroundSize: 'cover'
                         }}
+                        title={meta.title}
                     />
                     <Item.Content>
-                        <Item.Header as="a" href={this.url} content={meta.title} />
+                        <Item.Header className={css.meta__header} as="a" href={meta.url} content={meta.title} />
                         <Item.Meta>
-                            <a href={sourceUrl}>{meta.source}</a>
+                            <a href={meta.url}>{meta.url}</a>
                         </Item.Meta>
-                        <Item.Description content={meta.description} />
+                        <Item.Description className={css.meta__description} as="p" content={meta.description} />
                     </Item.Content>
                 </Item>
             </Item.Group>

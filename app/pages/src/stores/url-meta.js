@@ -11,7 +11,11 @@ class UrlMetaStore {
     }
 
     constructor() {
-        onUrlMeta(meta => this.metaByUrl.set(meta.url, meta));
+        onUrlMeta(({ url, ...meta }) => {
+            if (Object.keys(meta).length) {
+                this.metaByUrl.set(url, meta);
+            }
+        });
     }
 }
 

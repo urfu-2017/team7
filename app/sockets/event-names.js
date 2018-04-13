@@ -10,10 +10,12 @@ export const client = Object.freeze({
 });
 
 export const server = Object.freeze({
-    LIST_CHATS: 'LIST_CHATS',
     LIST_MESSAGES: 'LIST_MESSAGES',
     CHAT: 'CHAT',
     MESSAGE: 'MESSAGE',
+    MESSAGE_SENT: 'MESSAGE_SENT',
+    MESSAGE_RECEIVED: 'MESSAGE_RECEIVED',
+    MESSAGE_REVOKED: 'MESSAGE_REVOKED',
     USER: 'USER',
     URL_META: 'URL_META',
     CURRENT_USER: 'CURRENT_USER'

@@ -1,7 +1,5 @@
-/* eslint-disable no-console */
 import Server from 'socket.io';
 import _ from 'lodash';
-import urlMetadata from 'url-metadata2';
 import uuidv4 from 'uuid/v4';
 import * as eventNames from './event-names';
 import * as usersRepository from '../db/users-repository';
@@ -12,43 +10,54 @@ import { Chat, Message } from '../db/datatypes';
 import { getOwlUrl } from '../utils/owl-provider';
 import getLogger from '../utils/logger';
 import { MAX_CHAT_NAME_LENGTH, MAX_MESSAGE_LENGTH } from '../utils/constants';
+import getMetadata from '../utils/url-metadata';
 
 const logger = getLogger('socket-server');
 
 const trySendUserChats = async (socket, userId) => {
     try {
-        const userChats = await chatsRepository.getAllChatsForUser(userId);
-        socket.emit(eventNames.server.LIST_CHATS, userChats);
-
-        userChats.forEach(x => socket.join(x.chatId));
-
-        userChats.forEach(async ({ chatId }) => {
+        const user = await usersRepository.getUser(userId);
+        const sendChatInfoPromises = user.chatIds.map(async (chatId) => {
+            const chat = await chatsRepository.getChat(chatId);
+            socket.emit(eventNames.server.CHAT, chat);
+            socket.join(chat.chatId);
             const messages = await messagesRepository.getMessagesFromChat(chatId);
             socket.emit(eventNames.server.LIST_MESSAGES, { messages, chatId });
         });
+        await Promise.all(sendChatInfoPromises);
     } catch (e) {
         logger.warn(e, 'Failed to send user chats');
     }
 };
 
+const getAsyncSocketHandler = (socket, currentUserId) => (eventName, asyncMessageHandler) => {
+    socket.on(eventName, async (...args) => {
+        try {
+            await asyncMessageHandler(...args);
+        } catch (e) {
+            logger.warn(e, `Socket error (event=${eventName}, user=${currentUserId})`);
+        }
+    });
+};
+
 const registerMessageHandlers = (socketServer, socket, currentUserId) => {
-    async function sendUser(userId) {
+    const sendUser = async (userId) => {
         const user = await usersRepository.getUser(userId);
         if (user) {
             socket.emit(eventNames.server.USER, user);
         }
-    }
+    };
 
-    function getAllSockets() {
-        return new Promise((resolve, reject) =>
-            socketServer.sockets.clients((error, clients) => (error
-                ? reject(error)
-                : resolve(clients.map(id => socketServer.sockets.connected[id])))));
-    }
+    const getAllSockets = () => new Promise((resolve, reject) =>
+        socketServer.sockets.clients((error, clients) => (error
+            ? reject(error)
+            : resolve(clients.map(id => socketServer.sockets.connected[id])))));
 
-    socket.on(eventNames.client.GET_CHATS, () => trySendUserChats(socket, currentUserId));
+    const on = getAsyncSocketHandler(socket, currentUserId);
 
-    socket.on(eventNames.client.GET_MESSAGES, async ({ chatId }) => {
+    on(eventNames.client.GET_CHATS, () => trySendUserChats(socket, currentUserId));
+
+    on(eventNames.client.GET_MESSAGES, async ({ chatId }) => {
         logger.trace('client.GET_MESSAGES', { chatId });
         const messages = await messagesRepository.getMessagesFromChat(chatId);
         socket.emit(eventNames.server.LIST_MESSAGES, { chatId, messages });
@@ -60,9 +69,9 @@ const registerMessageHandlers = (socketServer, socket, currentUserId) => {
         await Promise.all(sendUserPromises);
     });
 
-    socket.on(eventNames.client.GET_USER, ({ userId }) => sendUser(userId));
+    on(eventNames.client.GET_USER, ({ userId }) => sendUser(userId));
 
-    socket.on(eventNames.client.SEARCH_USER, async ({ query }) => {
+    on(eventNames.client.SEARCH_USER, async ({ query }) => {
         logger.trace('client.SEARCH_USER', { query });
         const usersFromIndex = await usersRepository.getAllUsers();
         const re = new RegExp(_.escapeRegExp(query), 'i');
@@ -75,7 +84,7 @@ const registerMessageHandlers = (socketServer, socket, currentUserId) => {
         await Promise.all(sendUserPromises);
     });
 
-    socket.on(eventNames.client.NEW_MESSAGE, async ({ chatId, text }) => {
+    on(eventNames.client.NEW_MESSAGE, async ({ chatId, text }) => {
         logger.trace('client.NEW_MESSAGE', { chatId, text });
         const truncatedText = text.substring(0, MAX_MESSAGE_LENGTH);
         const message = new Message(
@@ -83,17 +92,30 @@ const registerMessageHandlers = (socketServer, socket, currentUserId) => {
             currentUserId, truncatedText,
             truncatedText, chatId
         );
-        await messagesRepository.createMessage(message);
-        socketServer.to(message.chatId).emit(eventNames.server.MESSAGE, message);
+        socket.emit(eventNames.server.MESSAGE_SENT, message);
+
+        try {
+            await messagesRepository.createMessage(message);
+            socket.broadcast.to(message.chatId).emit(eventNames.server.MESSAGE, message);
+            socket.emit(eventNames.server.MESSAGE_RECEIVED, message);
+        } catch (e) {
+            logger.warn(e, `Failed to save message '${message.content}' in db`);
+            socket.emit(eventNames.server.MESSAGE_REVOKED, message);
+        }
     });
 
-    socket.on(eventNames.client.GET_URL_META, async (url) => {
+    on(eventNames.client.GET_URL_META, async (url) => {
         logger.trace('client.GET_URL_META', { url });
-        const meta = await urlMetadata(url);
-        socket.emit(eventNames.server.URL_META, { ...meta, url });
+        try {
+            const meta = await getMetadata(url);
+            logger.debug('Got meta:', meta);
+            socket.emit(eventNames.server.URL_META, { meta, url });
+        } catch (e) {
+            logger.debug(e, `No metadata for url=${url}`);
+        }
     });
 
-    socket.on(eventNames.client.CREATE_CHAT, async ({ name, userIds }) => {
+    on(eventNames.client.CREATE_CHAT, async ({ name, userIds }) => {
         logger.trace('client.CREATE_CHAT', { name, userIds });
         const chatId = uuidv4();
         const chat = new Chat(
@@ -123,7 +145,7 @@ const trySendUserInfo = async (socket, userId) => {
         const user = await usersRepository.getUser(userId);
         socket.emit(eventNames.server.CURRENT_USER, user);
     } catch (e) {
-        logger.error(e, 'Failed to send user info');
+        logger.warn(e, 'Failed to send user info');
     }
 };
 
@@ -139,7 +161,6 @@ export default async (server) => {
         try {
             const userId = await userInfoProvider.getUserId(socket.handshake);
             registerMessageHandlers(socketServer, socket, userId);
-
             trySendUserInfo(socket, userId);
             trySendUserChats(socket, userId);
 

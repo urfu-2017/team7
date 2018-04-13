@@ -25,6 +25,12 @@ class MessagesStore {
         return messages && messages.length;
     }
 
+    getLastMessage(chatId) {
+        const messages = this.messagesByChatId.get(chatId);
+
+        return messages ? messages[messages.length - 1] : null;
+    }
+
     getLastMessageTimestamp(chatId) {
         if (!this.messagesByChatId.has(chatId)) {
             return null;

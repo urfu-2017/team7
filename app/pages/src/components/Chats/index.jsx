@@ -30,9 +30,13 @@ class ChatList extends React.Component {
                     </Input>
                 </List.Item>
                 {_.chain(chats)
-                    .filter(chat => chat.lastMessageTimestamp)
+                    .filter(chat => messagesStore.hasMessages(chat.chatId))
+                    .map(chat => ({
+                        ...chat,
+                        lastMessageTimestamp: messagesStore.getLastMessageTimestamp(chat.chatId)
+                    }))
                     .orderBy(['lastMessageTimestamp'], ['desc'])
-                    .concat(_.filter(chats, chat => !chat.lastMessageTimestamp))
+                    .concat(_.filter(chats, chat => !messagesStore.hasMessages(chat.chatId)))
                     .map(chat => (
                         <Chat
                             chat={chat}
@@ -41,7 +45,8 @@ class ChatList extends React.Component {
                             onClick={() => chatsStore.selectChat(chat)}
                         />
                     ))
-                    .value()}
+                    .value()
+                }
                 <List.Item />
             </Menu>
         );

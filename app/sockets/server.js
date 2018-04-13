@@ -85,11 +85,6 @@ const registerMessageHandlers = (socketServer, socket, currentUserId) => {
         );
         await messagesRepository.createMessage(message);
         socketServer.to(message.chatId).emit(eventNames.server.MESSAGE, message);
-
-        const chat = await chatsRepository.getChat(chatId);
-        const updatedChat = { ...chat, lastMessageTimestamp: message.timestamp };
-        await chatsRepository.upsertChat(updatedChat);
-        socket.emit(eventNames.server.CHAT, updatedChat);
     });
 
     socket.on(eventNames.client.GET_URL_META, async (url) => {

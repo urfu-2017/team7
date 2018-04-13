@@ -31,24 +31,35 @@ const trySendUserChats = async (socket, userId) => {
     }
 };
 
+const getAsyncSocketHandler = (socket, currentUserId) => (eventName, asyncMessageHandler) => {
+    socket.on(eventName, async () => {
+        try {
+            await asyncMessageHandler();
+        } catch (e) {
+            // TODO: после фикса большинства ошибок перевести на logger.warn/logger.error
+            logger.debug(e, `Socket error (event=${eventName}, user=${currentUserId})`);
+        }
+    });
+};
+
 const registerMessageHandlers = (socketServer, socket, currentUserId) => {
-    async function sendUser(userId) {
+    const sendUser = async (userId) => {
         const user = await usersRepository.getUser(userId);
         if (user) {
             socket.emit(eventNames.server.USER, user);
         }
-    }
+    };
 
-    function getAllSockets() {
-        return new Promise((resolve, reject) =>
-            socketServer.sockets.clients((error, clients) => (error
-                ? reject(error)
-                : resolve(clients.map(id => socketServer.sockets.connected[id])))));
-    }
+    const getAllSockets = () => new Promise((resolve, reject) =>
+        socketServer.sockets.clients((error, clients) => (error
+            ? reject(error)
+            : resolve(clients.map(id => socketServer.sockets.connected[id])))));
 
-    socket.on(eventNames.client.GET_CHATS, () => trySendUserChats(socket, currentUserId));
+    const on = getAsyncSocketHandler(socket, currentUserId);
 
-    socket.on(eventNames.client.GET_MESSAGES, async ({ chatId }) => {
+    on(eventNames.client.GET_CHATS, () => trySendUserChats(socket, currentUserId));
+
+    on(eventNames.client.GET_MESSAGES, async ({ chatId }) => {
         logger.trace('client.GET_MESSAGES', { chatId });
         const messages = await messagesRepository.getMessagesFromChat(chatId);
         socket.emit(eventNames.server.LIST_MESSAGES, { chatId, messages });
@@ -60,9 +71,9 @@ const registerMessageHandlers = (socketServer, socket, currentUserId) => {
         await Promise.all(sendUserPromises);
     });
 
-    socket.on(eventNames.client.GET_USER, ({ userId }) => sendUser(userId));
+    on(eventNames.client.GET_USER, ({ userId }) => sendUser(userId));
 
-    socket.on(eventNames.client.SEARCH_USER, async ({ query }) => {
+    on(eventNames.client.SEARCH_USER, async ({ query }) => {
         logger.trace('client.SEARCH_USER', { query });
         const usersFromIndex = await usersRepository.getAllUsers();
         const re = new RegExp(_.escapeRegExp(query), 'i');
@@ -75,7 +86,7 @@ const registerMessageHandlers = (socketServer, socket, currentUserId) => {
         await Promise.all(sendUserPromises);
     });
 
-    socket.on(eventNames.client.NEW_MESSAGE, async ({ chatId, text }) => {
+    on(eventNames.client.NEW_MESSAGE, async ({ chatId, text }) => {
         logger.trace('client.NEW_MESSAGE', { chatId, text });
         const truncatedText = text.substring(0, MAX_MESSAGE_LENGTH);
         const message = new Message(
@@ -87,13 +98,13 @@ const registerMessageHandlers = (socketServer, socket, currentUserId) => {
         socketServer.to(message.chatId).emit(eventNames.server.MESSAGE, message);
     });
 
-    socket.on(eventNames.client.GET_URL_META, async (url) => {
+    on(eventNames.client.GET_URL_META, async (url) => {
         logger.trace('client.GET_URL_META', { url });
         const meta = await urlMetadata(url);
         socket.emit(eventNames.server.URL_META, { ...meta, url });
     });
 
-    socket.on(eventNames.client.CREATE_CHAT, async ({ name, userIds }) => {
+    on(eventNames.client.CREATE_CHAT, async ({ name, userIds }) => {
         logger.trace('client.CREATE_CHAT', { name, userIds });
         const chatId = uuidv4();
         const chat = new Chat(
@@ -123,7 +134,7 @@ const trySendUserInfo = async (socket, userId) => {
         const user = await usersRepository.getUser(userId);
         socket.emit(eventNames.server.CURRENT_USER, user);
     } catch (e) {
-        logger.error(e, 'Failed to send user info');
+        logger.warn(e, 'Failed to send user info');
     }
 };
 

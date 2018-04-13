@@ -27,9 +27,9 @@ describe('Repositories', async () => {
         const chat = new Chat(0, 'testchat', [0]);
         await userRepo.upsertUser(user);
         await chatsRepo.upsertChat(chat);
-        const chats = await chatsRepo.getAllChatsForUser(user.userId);
+        const actualChat = await chatsRepo.getChat(0);
 
-        expect(chats).to.be.deep.equal([chat]);
+        expect(actualChat).to.be.deep.equal(chat);
         expect(hrudbMock.getDb()).to.be.deep.equal({
             Users_0: [user],
             Chats_0: [chat]
@@ -65,9 +65,9 @@ describe('Repositories', async () => {
         await userRepo.upsertUser(user);
         await chatsRepo.upsertChat(chat);
         await chatsRepo.joinChat(user.userId, chat.chatId);
-        const chats = await chatsRepo.getAllChatsForUser(user.userId);
+        const actualChat = await chatsRepo.getChat(0);
 
-        expect(chats).to.be.deep.equal([chat]);
+        expect(actualChat).to.be.deep.equal(chat);
         expect(hrudbMock.getDb()).to.be.deep.equal({
             Users_0: [user],
             Chats_0: [chat]

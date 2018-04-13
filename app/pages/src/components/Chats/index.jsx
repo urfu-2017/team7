@@ -4,6 +4,7 @@ import { observer, inject } from 'mobx-react';
 import { Link } from 'react-router-dom';
 import { List, Image, Menu, Input, Button } from 'semantic-ui-react';
 import Chat from '../Chat';
+import Markdown from '../Markdown';
 
 @inject('chatsStore', 'messagesStore', 'currentUserStore')
 @observer
@@ -43,7 +44,9 @@ class ChatList extends React.Component {
                             key={chat.chatId}
                             isActive={chat === chatsStore.activeChat}
                             lastMessage={{
-                                text: messagesStore.getLastMessageText(chat.chatId),
+                                text: <Markdown
+                                    source={messagesStore.getLastMessageText(chat.chatId)}
+                                />,
                                 timestamp: messagesStore.getLastMessageTimestamp(chat.chatId)
                             }}
                             onClick={() => chatsStore.selectChat(chat)}

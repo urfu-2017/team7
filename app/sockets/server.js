@@ -1,7 +1,5 @@
-/* eslint-disable no-console */
 import Server from 'socket.io';
 import _ from 'lodash';
-import urlMetadata from 'url-metadata2';
 import uuidv4 from 'uuid/v4';
 import * as eventNames from './event-names';
 import * as usersRepository from '../db/users-repository';
@@ -12,20 +10,21 @@ import { Chat, Message } from '../db/datatypes';
 import { getOwlUrl } from '../utils/owl-provider';
 import getLogger from '../utils/logger';
 import { MAX_CHAT_NAME_LENGTH, MAX_MESSAGE_LENGTH } from '../utils/constants';
+import getMetadata from '../utils/url-metadata';
 
 const logger = getLogger('socket-server');
 
 const trySendUserChats = async (socket, userId) => {
     try {
-        const userChats = await chatsRepository.getAllChatsForUser(userId);
-        socket.emit(eventNames.server.LIST_CHATS, userChats);
-
-        userChats.forEach(x => socket.join(x.chatId));
-
-        await Promise.all(userChats.map(async ({ chatId }) => {
+        const user = await usersRepository.getUser(userId);
+        const sendChatInfoPromises = user.chatIds.map(async (chatId) => {
+            const chat = await chatsRepository.getChat(chatId);
+            socket.emit(eventNames.server.CHAT, chat);
+            socket.join(chat.chatId);
             const messages = await messagesRepository.getMessagesFromChat(chatId);
             socket.emit(eventNames.server.LIST_MESSAGES, { messages, chatId });
-        }));
+        });
+        await Promise.all(sendChatInfoPromises);
     } catch (e) {
         logger.warn(e, 'Failed to send user chats');
     }
@@ -108,10 +107,10 @@ const registerMessageHandlers = (socketServer, socket, currentUserId) => {
     on(eventNames.client.GET_URL_META, async (url) => {
         logger.trace('client.GET_URL_META', { url });
         try {
-            const meta = await urlMetadata(url);
-            socket.emit(eventNames.server.URL_META, { ...meta, url });
+            const meta = await getMetadata(url);
+            logger.debug('Got meta:', meta);
+            socket.emit(eventNames.server.URL_META, { meta, url });
         } catch (e) {
-            // TODO: фикс регулярки на клиенте
             logger.debug(e, `No metadata for url=${url}`);
         }
     });

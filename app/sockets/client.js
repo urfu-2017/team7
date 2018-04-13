@@ -29,10 +29,6 @@ export const getUrlMeta = (url) => {
     socket.emit(eventNames.client.GET_URL_META, url);
 };
 
-export const onChatsList = (handler) => {
-    socket.on(eventNames.server.LIST_CHATS, handler);
-};
-
 export const getMessages = (payload) => {
     socket.emit(eventNames.client.GET_MESSAGES, payload);
 };

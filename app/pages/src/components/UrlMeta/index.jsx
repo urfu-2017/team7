@@ -38,7 +38,7 @@ class UrlMeta extends React.Component {
                             width: '100px',
                             height: '100px',
                             background: `#ddd url(${meta.image}) no-repeat`,
-                            'background-size': 'cover'
+                            backgroundSize: 'cover'
                         }}
                     />
                     <Item.Content>

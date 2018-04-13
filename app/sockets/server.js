@@ -101,10 +101,9 @@ const registerMessageHandlers = (socketServer, socket, currentUserId) => {
         try {
             const meta = await getMetadata(url);
             logger.debug('Got meta:', meta);
-            socket.emit(eventNames.server.URL_META, { ...meta, url });
+            socket.emit(eventNames.server.URL_META, { meta, url });
         } catch (e) {
             logger.debug(e, `No metadata for url=${url}`);
-            socket.emit(eventNames.server.URL_META, { url });
         }
     });
 

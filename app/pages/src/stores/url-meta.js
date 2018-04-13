@@ -11,10 +11,8 @@ class UrlMetaStore {
     }
 
     constructor() {
-        onUrlMeta(({ url, ...meta }) => {
-            if (Object.keys(meta).length) {
-                this.metaByUrl.set(url, meta);
-            }
+        onUrlMeta(({ url, meta }) => {
+            this.metaByUrl.set(url, meta);
         });
     }
 }

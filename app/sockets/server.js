@@ -154,10 +154,8 @@ export default async (server) => {
             const userId = await userInfoProvider.getUserId(socket.handshake);
             registerMessageHandlers(socketServer, socket, userId);
 
-            await Promise.all([
-                trySendUserInfo(socket, userId),
-                trySendUserChats(socket, userId)
-            ]);
+            trySendUserInfo(socket, userId);
+            trySendUserChats(socket, userId);
 
             logger.trace(`Socket connected. socket.id=${socket.id}, userId=${userId}`);
         } catch (e) {

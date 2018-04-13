@@ -22,10 +22,10 @@ const trySendUserChats = async (socket, userId) => {
 
         userChats.forEach(x => socket.join(x.chatId));
 
-        userChats.forEach(async ({ chatId }) => {
+        await Promise.all(userChats.map(async ({ chatId }) => {
             const messages = await messagesRepository.getMessagesFromChat(chatId);
             socket.emit(eventNames.server.LIST_MESSAGES, { messages, chatId });
-        });
+        }));
     } catch (e) {
         logger.warn(e, 'Failed to send user chats');
     }

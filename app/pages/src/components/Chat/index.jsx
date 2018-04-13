@@ -1,7 +1,6 @@
 import React from 'react';
-import moment from 'moment';
 import { Link } from 'react-router-dom';
-import { List, Image, Menu, Label } from 'semantic-ui-react';
+import { List, Image, Menu } from 'semantic-ui-react';
 
 import css from './item.css';
 

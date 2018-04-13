@@ -1,3 +1,4 @@
+import _ from 'lodash';
 import React from 'react';
 import { observer, inject } from 'mobx-react';
 import { Link } from 'react-router-dom';
@@ -9,6 +10,7 @@ import css from './item.css';
 class ChatList extends React.Component {
     render() {
         const { chatsStore, messagesStore, currentUserStore } = this.props;
+        const chats = [...chatsStore.chatsById.toJS().values()];
         return (
             <Menu as={List} size="large" style={{ boxShadow: 'none', border: 'none' }} vertical>
                 {/* note: Перебиваем padding:0 для первого элемента списка. */}
@@ -27,29 +29,33 @@ class ChatList extends React.Component {
                         <input />
                     </Input>
                 </List.Item>
-                {chatsStore.allChats.map(chat => (
-                    <Menu.Item
-                        as={Link}
-                        to="/"
-                        key={chat.chatId}
-                        active={chat === chatsStore.activeChat}
-                        className={css.item}
-                        onClick={() => chatsStore.selectChat(chat)}
-                    >
-                        <Label color="teal" style={{ marginTop: '8px' }}>1</Label>
-                        <Image avatar src={chat.avatarUrl} />
-                        <List.Content>
-                            <List.Header
-                                as="span"
-                                className={css.item__line}
-                                content={`${chat.name}\ufeff`}
-                            />
-                            <List.Description
-                                content={messagesStore.getLastMessageText(chat.chatId)}
-                                className={css.item__line}
-                            />
-                        </List.Content>
-                    </Menu.Item>))}
+                {_.chain(chats)
+                    .filter(chat => chat.lastMessageTimestamp)
+                    .orderBy(['lastMessageTimestamp'], ['desc'])
+                    .concat(_.filter(chats, chat => !chat.lastMessageTimestamp))
+                    .map(chat => (
+                        <Menu.Item
+                            as={Link}
+                            to="/"
+                            key={chat.chatId}
+                            active={chat === chatsStore.activeChat}
+                            className={css.item}
+                            onClick={() => chatsStore.selectChat(chat)}
+                        >
+                            <Label color="teal" style={{ marginTop: '8px' }}>1</Label>
+                            <Image avatar src={chat.avatarUrl} />
+                            <List.Content>
+                                <List.Header
+                                    as="span"
+                                    className={css.item__line}
+                                    content={`${chat.name}\ufeff`}
+                                />
+                                <List.Description
+                                    content={messagesStore.getLastMessageText(chat.chatId)}
+                                    className={css.item__line}
+                                />
+                            </List.Content>
+                        </Menu.Item>)).value()}
                 <List.Item />
             </Menu>
         );

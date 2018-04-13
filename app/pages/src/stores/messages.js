@@ -1,4 +1,4 @@
-import { observable, action } from 'mobx';
+import { observable, action, computed } from 'mobx';
 import { onMessage, onMessagesList } from '../../../sockets/client';
 
 class MessagesStore {

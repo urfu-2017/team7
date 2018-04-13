@@ -21,6 +21,11 @@ const trySendUserChats = async (socket, userId) => {
         socket.emit(eventNames.server.LIST_CHATS, userChats);
 
         userChats.forEach(x => socket.join(x.chatId));
+
+        userChats.forEach(async ({ chatId }) => {
+            const messages = await messagesRepository.getMessagesFromChat(chatId);
+            socket.emit(eventNames.server.LIST_MESSAGES, { messages, chatId });
+        });
     } catch (e) {
         logger.warn(e, 'Failed to send user chats');
     }
@@ -134,8 +139,10 @@ export default async (server) => {
         try {
             const userId = await userInfoProvider.getUserId(socket.handshake);
             registerMessageHandlers(socketServer, socket, userId);
-            await trySendUserInfo(socket, userId);
-            await trySendUserChats(socket, userId);
+
+            trySendUserInfo(socket, userId);
+            trySendUserChats(socket, userId);
+
             logger.trace(`Socket connected. socket.id=${socket.id}, userId=${userId}`);
         } catch (e) {
             logger.error(e, 'Socket connection failed.');

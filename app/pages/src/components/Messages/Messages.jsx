@@ -40,9 +40,6 @@ class Messages extends React.Component {
                             <Comment.Text style={{ minHeight: '1em' }}>
                                 <Markdown source={message.content} needFormat />
                             </Comment.Text>
-                            {
-                                message.status ? <Comment.Text>{message.status || ''}</Comment.Text> : null
-                            }
                             <UrlMeta text={message.content} />
                         </Comment.Content>
                     </Comment>

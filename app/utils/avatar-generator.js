@@ -10,9 +10,14 @@ export default class AvatarGenerator {
     constructor() {
         this.backgroundColor = AvatarGenerator.createColor(255, 255, 255);
         this.colorList = [
-            AvatarGenerator.createColor(255, 0, 0),
-            AvatarGenerator.createColor(0, 255, 0),
-            AvatarGenerator.createColor(0, 0, 255)
+            AvatarGenerator.createColor(115, 221, 221),
+            AvatarGenerator.createColor(251, 176, 64),
+            AvatarGenerator.createColor(31, 32, 65),
+            AvatarGenerator.createColor(255, 92, 92),
+            AvatarGenerator.createColor(53, 183, 41),
+            AvatarGenerator.createColor(82, 113, 255),
+            AvatarGenerator.createColor(183, 96, 230),
+            AvatarGenerator.createColor(255, 99, 177)
         ];
     }
 

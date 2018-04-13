@@ -4,3 +4,43 @@
     border-left-style: solid;
     padding-left: .5em;
 }
+
+.meta-header
+{
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    width: 100%;
+}
+
+.meta-description
+{
+    overflow: hidden;
+    position: relative;
+    line-height: 1.4em;
+    max-height: 4.2em;
+    text-align: justify;
+    margin-right: -1em;
+    padding-right: 1em;
+}
+
+.meta-description:before
+{
+    content: '...';
+    position: absolute;
+    right: 0;
+    bottom: 0;
+}
+
+
+.meta-description:after {
+    content: '';
+    position: absolute;
+    right: 0;
+    width: 3em;
+    height: 3em;
+    margin-top: 0.2em;
+    background: white;
+}
+
+

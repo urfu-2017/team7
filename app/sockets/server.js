@@ -94,12 +94,15 @@ const registerMessageHandlers = (socketServer, socket, currentUserId) => {
             truncatedText, chatId
         );
         socket.emit(eventNames.server.MESSAGE_SENT, message);
-        messagesRepository.createMessage(message)
-            .then(() => {
-                socket.broadcast.to(message.chatId).emit(eventNames.server.MESSAGE, message);
-                socket.emit(eventNames.server.MESSAGE_RECEIVED, message);
-            })
-            .catch(() => socket.emit(eventNames.server.MESSAGE_REVOKED, message));
+
+        try {
+            await messagesRepository.createMessage(message);
+            socket.broadcast.to(message.chatId).emit(eventNames.server.MESSAGE, message);
+            socket.emit(eventNames.server.MESSAGE_RECEIVED, message);
+        } catch (e) {
+            logger.warn(e, `Failed to save message '${message.content}' in db`);
+            socket.emit(eventNames.server.MESSAGE_REVOKED, message);
+        }
     });
 
     on(eventNames.client.GET_URL_META, async (url) => {

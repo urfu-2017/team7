@@ -16,15 +16,15 @@ const logger = getLogger('socket-server');
 
 const trySendUserChats = async (socket, userId) => {
     try {
-        const userChats = await chatsRepository.getAllChatsForUser(userId);
-        socket.emit(eventNames.server.LIST_CHATS, userChats);
-
-        userChats.forEach(x => socket.join(x.chatId));
-
-        await Promise.all(userChats.map(async ({ chatId }) => {
+        const user = await usersRepository.getUser(userId);
+        const sendChatInfoPromises = user.chatIds.map(async (chatId) => {
+            const chat = await chatsRepository.getChat(chatId);
+            socket.emit(eventNames.server.CHAT, chat);
+            socket.join(chat.chatId);
             const messages = await messagesRepository.getMessagesFromChat(chatId);
             socket.emit(eventNames.server.LIST_MESSAGES, { messages, chatId });
-        }));
+        });
+        await Promise.all(sendChatInfoPromises);
     } catch (e) {
         logger.warn(e, 'Failed to send user chats');
     }
@@ -154,8 +154,10 @@ export default async (server) => {
             const userId = await userInfoProvider.getUserId(socket.handshake);
             registerMessageHandlers(socketServer, socket, userId);
 
-            trySendUserInfo(socket, userId);
-            trySendUserChats(socket, userId);
+            await Promise.all([
+                trySendUserInfo(socket, userId),
+                trySendUserChats(socket, userId)
+            ]);
 
             logger.trace(`Socket connected. socket.id=${socket.id}, userId=${userId}`);
         } catch (e) {

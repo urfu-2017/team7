@@ -29,10 +29,6 @@ export function getUrlMeta(url) {
     socket.emit(eventNames.client.GET_URL_META, url);
 }
 
-export function onChatsList(handler) {
-    socket.on(eventNames.server.LIST_CHATS, handler);
-}
-
 export function getMessages(payload) {
     socket.emit(eventNames.client.GET_MESSAGES, payload);
 }

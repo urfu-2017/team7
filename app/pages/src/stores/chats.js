@@ -16,6 +16,23 @@ class ChatsStore {
         getMessages({ chatId: chat.chatId });
     }
 
+    @action setAllChats(chats) {
+        this.chatsById = observable.map(chats.map(chat => [chat.chatId, chat]));
+        this.activeChat = null;
+    }
+
+    @action setScrollHeight(height, chatId) {
+        const chat = this.chatsById.get(chatId);
+        if (chat) {
+            chat.scrollHeight = height;
+        }
+    }
+
+    getScrollHeight(chatId) {
+        const chat = this.chatsById.get(chatId);
+        return chat ? chat.scrollHeight : null;
+    }
+
     constructor() {
         onChat((chat) => {
             this.chatsById.set(chat.chatId, chat);

@@ -4,25 +4,45 @@ import moment from 'moment';
 import { observer, inject } from 'mobx-react';
 import { Comment } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
+import { getUser, onMessageSent } from '../../../../sockets/client';
 import Markdown from '../Markdown';
-import { getUser } from '../../../../sockets/client';
 import UrlMeta from '../UrlMeta';
 import Weather from '../Weather';
 
-@inject('usersStore')
+@inject('usersStore', 'currentUserStore', 'chatsStore')
 @observer
 class Messages extends React.Component {
     componentDidMount() {
-        const messages = ReactDOM.findDOMNode(this).parentElement;
-        messages.scrollTop = messages.scrollHeight;
+        this.scroll();
+        const { usersStore } = this.props;
 
         const users = [];
         this.props.messages.forEach(({ authorUserId }) => {
-            if (!this.props.usersStore.getUsername(authorUserId) && !users.includes(authorUserId)) {
+            if (!usersStore.getUsername(authorUserId) && !users.includes(authorUserId)) {
                 users.push(authorUserId);
                 getUser({ userId: authorUserId });
             }
         });
+
+        onMessageSent(() => this.scroll());
+    }
+
+    componentWillUpdate(props) {
+        if (props.chatId !== this.props.chatId) {
+            const messages = ReactDOM.findDOMNode(this).parentElement;
+            this.props.chatsStore.setScrollHeight(messages.scrollTop, this.props.chatId);
+        }
+    }
+
+    componentDidUpdate(props) {
+        if (props.chatId !== this.props.chatId) {
+            this.scroll(this.props.chatsStore.getScrollHeight(this.props.chatId));
+        }
+    }
+
+    scroll(value) {
+        const messages = ReactDOM.findDOMNode(this).parentElement;
+        messages.scrollTop = ![undefined, null].includes(value) ? value : messages.scrollHeight;
     }
 
     render() {

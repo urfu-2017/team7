@@ -8,7 +8,7 @@ export default async (city) => {
     let requestedCity = city;
     let tomorrow = false;
     if (city.indexOf('завтра_') === 0) {
-        requestedCity = city.split('_')[1]; // eslint-disable-line
+        [, requestedCity] = city.split('_');
         tomorrow = true;
     }
     try {
@@ -28,8 +28,11 @@ export default async (city) => {
 
         const response = data.body;
 
-        response.list.forEach((item) => {
-            item.dt_txt = moment(item.dt_txt, "YYYY-MM-DD HH:mm:ss").add({hours: 5}).format("YYYY-MM-DD HH:mm:ss"); // eslint-disable-line
+        response.list = response.list.map((item) => {
+            const newItem = item;
+            newItem.dt_txt = moment(newItem.dt_txt, 'YYYY-MM-DD HH:mm:ss').add({ hours: 5 }).format('YYYY-MM-DD HH:mm:ss');
+
+            return newItem;
         });
 
         const currentDate = tomorrow ? moment(response.list[0].dt_txt, 'YYYY-MM-DD HH:mm:ss').add({ days: 1 }).format('YYYY-MM-DD') :

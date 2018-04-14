@@ -8,13 +8,13 @@ import { isUndefined } from 'util';
 class WeatherWidget extends React.Component {
     componentWillMount() {
         const { text, weatherStore } = this.props;
-        const matchToday = text.match(new RegExp(/#погода_([A-zА-я-]+)/));
-        const matchTomorrow = text.match(new RegExp(/#погода_(завтра_[A-zА-я-]+)/));
+        const matchToday = text.match(/#погода_([A-zА-я-]+)/);
+        const matchTomorrow = text.match(/#погода_(завтра_[A-zА-я-]+)/);
         if (matchTomorrow) {
-            this.city = matchTomorrow[1]; // eslint-disable-line
+            [, this.city] = matchTomorrow;
             weatherStore.fetchWeather(this.city);
         } else if (matchToday) {
-            this.city = matchToday[1]; // eslint-disable-line
+            [, this.city] = matchToday;
             weatherStore.fetchWeather(this.city);
         }
     }
@@ -36,11 +36,14 @@ class WeatherWidget extends React.Component {
                 <Table.Body>
                     {forecast
                         .map(item =>
-                            /* eslint-disable react/jsx-wrap-multilines */
                             <Table.Row>
                                 <Table.Cell>
                                     <Header as="h4" image>
-                                        <Image src={`/static/weather/${item.weather[0].icon.slice(0, 2)}.svg`} rounded size="mini" />
+                                        <Image 
+                                            src={`/static/weather/${item.weather[0].icon.slice(0, 2)}.svg`} 
+                                            rounded 
+                                            size="mini" 
+                                        />
                                         <Header.Content>
                                             {item.dt_txt.split(' ')[1].slice(0, 5)}
                                             <Header.Subheader>

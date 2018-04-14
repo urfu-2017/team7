@@ -1,10 +1,13 @@
 import { Promise } from 'bluebird';
 import * as hrudb from './hrudb-client';
+import { REPEATER_TIMES } from '../utils/constants';
+import getLogger from '../utils/logger';
 
-const repeatTimes = 10;
+const logger = getLogger('hrudb');
+const repeatTimes = REPEATER_TIMES;
 const repeatRange = [...Array(repeatTimes)];
 
-const tryResolve = async (promise) => {
+const tryResolve = async (opts, promise) => {
     let resolved = false;
     let resolvedValue;
     await Promise.mapSeries(repeatRange, async () => {
@@ -24,14 +27,17 @@ const tryResolve = async (promise) => {
     });
 
     if (!resolved) {
+        logger.debug('Hrudb request failed', opts);
         throw new Error('Request failed');
     }
     return resolvedValue;
 };
 
-export const put = (key, value) => tryResolve(() => hrudb.put(key, value));
+export const put = async (key, value) =>
+    tryResolve({ key, value, method: 'put' }, () => hrudb.put(key, value));
 
-export const post = (key, value) => tryResolve(() => hrudb.post(key, value));
+export const post = async (key, value) =>
+    tryResolve({ key, value, method: 'post' }, () => hrudb.post(key, value));
 
 /*
     from           - моложе указанного таймстемпа (new Date().getTime())
@@ -40,10 +46,10 @@ export const post = (key, value) => tryResolve(() => hrudb.post(key, value));
     limit          – в указанном количестве (по умолчанию, Infinity)
     offset         – с отступ от начала выборки (по умолчанию, 0)
 */
-export const getAll = (key, options = {}) =>
-    tryResolve(() => hrudb.getAll(key, options));
+export const getAll = async (key, options = {}) =>
+    tryResolve({ key, method: 'getAll', options }, () => hrudb.getAll(key, options));
 
-export const get = key => tryResolve(() => hrudb.get(key));
+export const get = async key => tryResolve({ key, method: 'get' }, () => hrudb.get(key));
 
-export const remove = key => tryResolve(() => hrudb.remove(key));
+export const remove = async key => tryResolve({ key, method: 'remove' }, () => hrudb.remove(key));
 

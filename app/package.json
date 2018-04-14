@@ -5,6 +5,7 @@
   "license": "MIT",
   "scripts": {
     "start": "node .",
+    "db-shell": "node . db-shell",
     "build": "next build",
     "mocha": "mocha --timeout 5000 --require babel-core/register test/*.spec.js",
     "mwatch": "npm run mocha -- --watch",
@@ -47,6 +48,7 @@
     "simple-telegram-message": "1.0.0",
     "socket.io": "2.1.0",
     "socket.io-client": "2.1.0",
+    "synchro-prompt": "1.1.0",
     "uuid": "3.2.1"
   },
   "devDependencies": {

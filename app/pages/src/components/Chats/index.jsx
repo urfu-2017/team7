@@ -18,7 +18,7 @@ class ChatList extends React.Component {
                 <List.Item style={{ paddingTop: '0.928571em' }}>
                     <Image
                         as={Link}
-                        to="/user"
+                        to="/me"
                         src={currentUserStore.avatarUrl || '/static/logo.png'}
                         size="medium"
                         rounded

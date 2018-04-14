@@ -3,7 +3,7 @@ import ReactDOM from 'react-dom';
 import moment from 'moment';
 import { observer, inject } from 'mobx-react';
 import { Comment } from 'semantic-ui-react';
-import { getUser, onMessage } from '../../../../sockets/client';
+import { getUser, onMessageSent } from '../../../../sockets/client';
 import Markdown from '../Markdown';
 import UrlMeta from '../UrlMeta';
 
@@ -12,7 +12,7 @@ import UrlMeta from '../UrlMeta';
 class Messages extends React.Component {
     componentDidMount() {
         this.scroll();
-        const { usersStore, currentUserStore } = this.props;
+        const { usersStore } = this.props;
 
         const users = [];
         this.props.messages.forEach(({ authorUserId }) => {
@@ -22,13 +22,7 @@ class Messages extends React.Component {
             }
         });
 
-        onMessage((message) => {
-            const { chatId } = this.props;
-            if (message.authorUserId === currentUserStore.user.userId
-                && chatId === message.chatId) {
-                this.scroll();
-            }
-        });
+        onMessageSent(() => this.scroll());
     }
 
     componentWillUpdate(props) {
@@ -52,7 +46,7 @@ class Messages extends React.Component {
     render() {
         const { usersStore } = this.props;
         return (
-            <Comment.Group>
+            <Comment.Group id="messages">
                 {this.props.messages.map(message => (
                     <Comment key={message.messageId}>
                         <Comment.Avatar src={usersStore.getAvatar(message.authorUserId)} />

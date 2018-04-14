@@ -22,11 +22,20 @@ const MainActivity = () => (
                         <ChatCreation />
                     </SegmentActivity>
                 </Route>
-                <Route exact path="/user">
+                <Route exact path="/me">
                     <SegmentActivity>
                         <User />
                     </SegmentActivity>
                 </Route>
+                <Route
+                    exact
+                    path="/user_:userId"
+                    render={({ match }) => (
+                        <SegmentActivity>
+                            <User userId={match.params.userId} />
+                        </SegmentActivity>
+                    )}
+                />
             </Switch>
         </div>
     </div>

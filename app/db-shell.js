@@ -1,14 +1,12 @@
 /* eslint-disable */
-import prompt from 'synchro-prompt';
+import inquirer from 'inquirer';
+import inquirerCommandPrompt from 'inquirer-command-prompt';
 import { getAllUsers, removeAllUsers, getUser, removeUser } from './db/users-repository';
 import { getMessagesFromChat } from './db/messages-repository';
 import { getChat } from './db/chats-repository';
 import { getAll } from './db/hrudb-repeater';
 
-const ask = () => {
-    console.log();
-    return prompt('db-shell@> ', { color: 'green' });
-};
+inquirer.registerPrompt('command', inquirerCommandPrompt);
 
 const printJson = asyncHandler => async (...args) => {
     const obj = await asyncHandler(...args);
@@ -20,9 +18,9 @@ const lastUserMessages = async (userId, amount) => {
     const chats = await Promise.all(user.chatIds.map(getMessagesFromChat));
     const messages = [].concat(...chats).filter(({ authorUserId }) => authorUserId === userId);
     messages.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
-    
+
     return messages.slice(0, amount).map(({ content }) => content);
-}
+};
 
 
 const commands = [
@@ -37,6 +35,8 @@ const commands = [
     { name: 'get', desc: 'get all values for (key)', handler: printJson(getAll), argc: 1 },
 ];
 
+const autoCompletion = commands.map(x => x.name);
+
 const list = async () => {
     console.log('\t', 'possible commands:');
     commands.forEach(({ name, desc }) => {
@@ -48,7 +48,7 @@ commands.push({ name: 'list', desc: 'view all commands', handler: list, argc: 0 
 
 
 const findCmd = (cmd, args) => {
-    for (let { name, argc, handler } of commands) {
+    for (const { name, argc, handler } of commands) {
         if (name !== cmd) {
             continue;
         }
@@ -59,10 +59,15 @@ const findCmd = (cmd, args) => {
         return handler;
     }
     console.error(`No such command: ${cmd}`);
-}
+};
 
 const asyncLoop = async () => {
-    const line = ask();
+    const { line } = await inquirer.prompt([{
+          type: 'command',
+          name: 'line',
+          message: 'db-shell@>',
+          autoCompletion
+    }]);
     const [cmd, ...args] = line.split(' ');
     const handler = findCmd(cmd, args);
     if (!handler) {
@@ -77,7 +82,7 @@ export default async () => {
     while (true) {
         try {
             await asyncLoop();
-        } catch(e) {
+        } catch (e) {
             console.error('An error occured');
             console.error(e.stack);
         }

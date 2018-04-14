@@ -21,14 +21,14 @@ class ChatsStore {
         this.activeChat = null;
     }
 
-    @action setScrollHeight(height, chatId) {
+    setScrollHeight(height, chatId) {
         const chat = this.chatsById.get(chatId);
         if (chat) {
             chat.scrollHeight = height;
         }
     }
 
-    @action getScrollHeight(chatId) {
+    getScrollHeight(chatId) {
         const chat = this.chatsById.get(chatId);
         return chat ? chat.scrollHeight : null;
     }

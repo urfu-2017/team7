@@ -55,8 +55,7 @@ const registerMessageHandlers = (socketServer, socket, userId) => {
 
     socket.on(eventNames.client.GET_WEATHER, async (city) => {
         const response = await getWeather(city);
-        response.city = city;
-        socket.emit(eventNames.server.WEATHER, response);
+        socket.emit(eventNames.server.WEATHER, { ...response, city });
     });
 };
 

@@ -5,6 +5,7 @@ import chatsStore from './stores/chats';
 import messagesStore from './stores/messages';
 import usersStore from './stores/users';
 import urlMetaStore from './stores/url-meta';
+import weatherStore from './stores/weather';
 import currentUserStore from './stores/current-user';
 import MainActivity from './activities/Main';
 
@@ -14,7 +15,8 @@ const stores = {
     messagesStore,
     usersStore,
     urlMetaStore,
-    currentUserStore
+    currentUserStore,
+    weatherStore
 };
 
 

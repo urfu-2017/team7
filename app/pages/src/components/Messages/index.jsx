@@ -14,9 +14,9 @@ class MessageList extends React.Component {
         }
         const chatMessages = messagesStore.getChatMessagesOrNull(chatsStore.activeChat.chatId);
 
-        return !chatMessages
-            ? <DimmerLoader text="Загружаем сообщения" />
-            : <Messages messages={chatMessages} />;
+        return chatMessages
+            ? <Messages messages={chatMessages} chatId={chatsStore.activeChat.chatId} />
+            : <DimmerLoader text="Загружаем сообщения" />;
     }
 }
 

@@ -84,3 +84,11 @@ export const getCurrentUser = () => {
 export const onCurrentUser = (handler) => {
     socket.on(eventNames.server.CURRENT_USER, handler);
 };
+
+export const getWeather = (city) => {
+    socket.emit(eventNames.client.GET_WEATHER, city);
+};
+
+export const onWeather = (handler) => {
+    socket.on(eventNames.server.WEATHER, handler);
+};

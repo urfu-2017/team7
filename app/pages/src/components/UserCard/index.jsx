@@ -1,20 +1,19 @@
 import React from 'react';
 import { Card, Image } from 'semantic-ui-react';
-import { observer, inject } from 'mobx-react';
+import { observer } from 'mobx-react';
 
 
-@inject('usersStore', 'currentUserStore')
 @observer
 class UserCard extends React.Component {
     render() {
-        const { currentUserStore, className } = this.props;
+        const { user, className } = this.props;
 
         return (
             <Card className={className}>
-                <Image src={currentUserStore.user.avatarUrl} centered size="large" />
+                <Image src={user.avatarUrl} centered size="large" />
                 <Card.Content>
                     <Card.Header textAlign="center">
-                        {currentUserStore.user.username}
+                        {user.username}
                     </Card.Header>
                 </Card.Content>
             </Card>

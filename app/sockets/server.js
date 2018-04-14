@@ -11,6 +11,7 @@ import { getOwlUrl } from '../utils/owl-provider';
 import getLogger from '../utils/logger';
 import { MAX_CHAT_NAME_LENGTH, MAX_MESSAGE_LENGTH } from '../utils/constants';
 import getMetadata from '../utils/url-metadata';
+import getWeather from '../utils/weather';
 
 const logger = getLogger('socket-server');
 
@@ -26,7 +27,7 @@ const trySendUserChats = async (socket, userId) => {
         });
         await Promise.all(sendChatInfoPromises);
     } catch (e) {
-        logger.warn(e, 'Failed to send user chats');
+        logger.warn(e, `Failed to send user chats (userId=${userId})`);
     }
 };
 
@@ -138,6 +139,11 @@ const registerMessageHandlers = (socketServer, socket, currentUserId) => {
             }).value();
         await Promise.all(joinRoomPromises);
     });
+
+    on(eventNames.client.GET_WEATHER, async (city) => {
+        const response = await getWeather(city);
+        socket.emit(eventNames.server.WEATHER, { ...response, city });
+    });
 };
 
 const trySendUserInfo = async (socket, userId) => {
@@ -145,7 +151,7 @@ const trySendUserInfo = async (socket, userId) => {
         const user = await usersRepository.getUser(userId);
         socket.emit(eventNames.server.CURRENT_USER, user);
     } catch (e) {
-        logger.warn(e, 'Failed to send user info');
+        logger.warn(e, `Failed to send user info ${userId}`);
     }
 };
 

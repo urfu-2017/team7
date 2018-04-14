@@ -10,6 +10,10 @@ class UsersStore {
 
     sentQueries = [];
 
+    getUser(userId) {
+        return this.usersById.get(userId);
+    }
+
     // eslint-disable-next-line class-methods-use-this
     searchUser(query) {
         if (!this.sentQueries.find(x => query.includes(x))) {
@@ -26,14 +30,14 @@ class UsersStore {
 
     getUsername(userId) {
         if (this.usersById.has(userId)) {
-            return this.usersById.get(userId).username;
+            return this.getUser(userId).username;
         }
         return 'Чебурашка';
     }
 
     getAvatar(userId) {
         if (this.usersById.has(userId)) {
-            return this.usersById.get(userId).avatarUrl;
+            return this.getUser(userId).avatarUrl;
         }
         return `/avatar/${userId}`;
     }

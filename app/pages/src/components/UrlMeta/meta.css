@@ -3,6 +3,12 @@
     border: 3px none #4183c4;
     border-left-style: solid;
     padding-left: .5em;
+    min-height: 100px;
+}
+
+.meta__link {
+    height: 125px;
+    display: block;
 }
 
 .meta__header

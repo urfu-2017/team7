@@ -10,7 +10,8 @@ const {
     LOGGLY_TOKEN,
     LOGGLY_SUBDOMAIN,
     TELEGRAM_BOT_TOKEN,
-    CONSOLE_LOG_LEVEL
+    CONSOLE_LOG_LEVEL,
+    WEATHER_TOKEN
 } = process.env;
 
 const HTTP_SCHEME = process.env.HTTP_SCHEME || 'http';
@@ -28,6 +29,7 @@ export default {
     GITHUB_CLIENT_SECRET,
     EXPRESS_SESSION_SECRET,
     HRUDB_TOKEN,
+    WEATHER_TOKEN,
     IS_PRODUCTION: process.env.NODE_ENV === 'production',
     HRUDB_URL: HRUDB_URL || 'https://hrudb.herokuapp.com',
     LOGGLY_TOKEN,

@@ -12,7 +12,9 @@ class UrlMeta extends React.Component {
         const match = text.match(urlRegex);
         if (match) {
             [this.url] = match;
-            urlMetaStore.fetchUrlMeta(this.url);
+            if (!urlMetaStore.metaByUrl.get(this.url)) {
+                urlMetaStore.fetchUrlMeta(this.url);
+            }
         }
     }
 
@@ -23,7 +25,7 @@ class UrlMeta extends React.Component {
         const { urlMetaStore } = this.props;
         const meta = urlMetaStore.metaByUrl.get(this.url);
         if (!meta) {
-            return '';
+            return <div className={css.meta__link} />;
         }
 
         return (

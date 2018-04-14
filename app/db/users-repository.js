@@ -7,9 +7,15 @@ export const getAllUsers = async () => {
     return allUsers || {};
 };
 
-export const deleteAllUsers = async () => remove('AllUsers');
+export const removeAllUsers = async () => remove('AllUsers');
 
 export const getUser = async userId => get(`Users_${userId}`);
 
 export const upsertAllUsers = async allUsers => put('AllUsers', allUsers);
 
+export const removeUser = async (userId) => {
+    const allUsers = await getAllUsers();
+    await remove(`Users_${userId}`);
+    delete allUsers[userId];
+    await upsertAllUsers(allUsers);
+};

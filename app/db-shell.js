@@ -1,8 +1,9 @@
 /* eslint-disable */
 import prompt from 'synchro-prompt';
-import { getAllUsers, deleteAllUsers, getUser } from './db/users-repository';
+import { getAllUsers, removeAllUsers, getUser, removeUser } from './db/users-repository';
 import { getMessagesFromChat } from './db/messages-repository';
 import { getChat } from './db/chats-repository';
+import { getAll } from './db/hrudb-repeater';
 
 const ask = () => {
     console.log();
@@ -18,19 +19,22 @@ const lastUserMessages = async (userId, amount) => {
     const user = await getUser(userId);
     const chats = await Promise.all(user.chatIds.map(getMessagesFromChat));
     const messages = [].concat(...chats).filter(({ authorUserId }) => authorUserId === userId);
-    messages.sort((a, b) => new Date(a.timestamp) - new Date(b.timestamp));
+    messages.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
     
     return messages.slice(0, amount).map(({ content }) => content);
 }
 
+
 const commands = [
     { name: 'users', desc: 'returns user index', handler: printJson(getAllUsers), argc: 0 },
-    { name: 'delete_users', desc: 'deletes user index', handler: printJson(deleteAllUsers), argc: 0 },
+    { name: 'rm_users', desc: 'clears user index', handler: printJson(removeAllUsers), argc: 0 },
     { name: 'messages', desc: 'getMessagesFromChat(chatId)', handler: printJson(getMessagesFromChat), argc: 1 },
     { name: 'user', desc: 'getUser(userId)', handler: printJson(getUser), argc: 1 },
     { name: 'chat', desc: 'getChat(chatId)', handler: printJson(getChat), argc: 1 },
     { name: 'exit', desc: 'Ctrl+C', handler: async () => process.exit(0), argc: 0 },
-    { name: 'lum', desc: 'lastUserMessages(userId, amount)', handler: printJson(lastUserMessages), argc: 2 }
+    { name: 'lum', desc: 'lastUserMessages(userId, amount)', handler: printJson(lastUserMessages), argc: 2 },
+    { name: 'rm_user', desc: 'removeUser(userId)', handler: printJson(removeUser), argc: 1 },
+    { name: 'get', desc: 'get all values for (key)', handler: printJson(getAll), argc: 1 },
 ];
 
 const list = async () => {

@@ -1,8 +1,10 @@
 import got from 'got';
 import moment from 'moment';
 import config from '../config';
+import getLogger from './logger';
 
 export default async (city) => {
+    const logger = getLogger('weather');
     let requestedCity = city;
     let tomorrow = false;
     if (city.indexOf('завтра_') === 0) {
@@ -38,7 +40,7 @@ export default async (city) => {
 
         return response;
     } catch (error) {
-        console.warn(error.message);
+        logger.debug(error.message);
     }
 
     return null;

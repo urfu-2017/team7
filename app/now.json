@@ -9,6 +9,10 @@
     "EXPRESS_SESSION_SECRET": "@session-secret",
     "HRUDB_TOKEN": "@hrudb-token",
     "WEATHER_TOKEN": "@weather-token",
+    "LOGGLY_SUBDOMAIN": "@loggly-subdomain",
+    "LOGGLY_TOKEN": "@loggly-token",
+    "TELEGRAM_CHAT_IDS": "@telegram-chat-ids",
+    "TELEGRAM_BOT_TOKEN": "@telegram-bot-token",
     "NODE_ENV": "production",
     "SITE_URL": "https://team7chat.now.sh"
   }

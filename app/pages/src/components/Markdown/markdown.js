@@ -1,3 +1,17 @@
+import shortid from 'shortid';
+
+class Node {
+    constructor(type, content) {
+        this.type = type;
+        this.content = content;
+        this.id = shortid();
+    }
+
+    static text(content) {
+        return new Node('text', content);
+    }
+}
+
 export default class MarkdownParser {
     static parseToTree(text) {
         return MarkdownParser.createTree(MarkdownParser.parseTokens(text));
@@ -19,10 +33,7 @@ export default class MarkdownParser {
                 for (i += 1; i < tokens.length; i++) {
                     const secondToken = tokens[i];
                     if (token === secondToken) {
-                        localRes.push({
-                            type: token,
-                            content: MarkdownParser.createTree(localTokens)
-                        });
+                        localRes.push(new Node(token, MarkdownParser.createTree(localTokens)));
                         flag = true;
                         break;
                     } else {
@@ -30,13 +41,13 @@ export default class MarkdownParser {
                     }
                 }
                 if (!flag) {
-                    localRes.push({ type: 'text', content: token });
+                    localRes.push(Node.text(token));
                     if (localTokens.length > 0) {
-                        localRes.push({ type: 'text', content: MarkdownParser.createTree(localTokens) });
+                        localRes.push(Node.text(MarkdownParser.createTree(localTokens)));
                     }
                 }
             } else {
-                localRes.push({ type: 'text', content: token });
+                localRes.push(Node.text(token));
             }
         }
 

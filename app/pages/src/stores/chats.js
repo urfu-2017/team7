@@ -16,11 +16,6 @@ class ChatsStore {
         getMessages({ chatId: chat.chatId });
     }
 
-    @action setAllChats(chats) {
-        this.chatsById = observable.map(chats.map(chat => [chat.chatId, chat]));
-        this.activeChat = null;
-    }
-
     constructor() {
         onChat((chat) => {
             this.chatsById.set(chat.chatId, chat);

@@ -5,6 +5,7 @@
   "license": "MIT",
   "scripts": {
     "start": "node .",
+    "db-shell": "node . db-shell",
     "build": "next build",
     "mocha": "mocha --timeout 5000 --require babel-core/register test/*.spec.js",
     "mwatch": "npm run mocha -- --watch",
@@ -29,6 +30,8 @@
     "express-promise-router": "3.0.2",
     "got": "8.3.0",
     "html-to-utf8": "0.1.0",
+    "inquirer": "5.2.0",
+    "inquirer-command-prompt": "0.0.7",
     "lodash": "4.17.5",
     "metascraper": "3.10.4",
     "mobx": "4.1.1",

@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom';
 import moment from 'moment';
 import { observer, inject } from 'mobx-react';
 import { Comment } from 'semantic-ui-react';
+import { Link } from 'react-router-dom';
 import Markdown from '../Markdown';
 import { getUser } from '../../../../sockets/client';
 import UrlMeta from '../UrlMeta';
@@ -29,9 +30,10 @@ class Messages extends React.Component {
             <Comment.Group>
                 {this.props.messages.map(message => (
                     <Comment key={message.messageId}>
+
                         <Comment.Avatar src={usersStore.getAvatar(message.authorUserId)} />
                         <Comment.Content>
-                            <Comment.Author as="a">
+                            <Comment.Author as={Link} to={`/user_${message.authorUserId}`}>
                                 {usersStore.getUsername(message.authorUserId)}
                             </Comment.Author>
                             <Comment.Metadata>

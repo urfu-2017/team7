@@ -1,5 +1,4 @@
 import React from 'react';
-import uuidv4 from 'uuid/v4';
 import css from './markdown.css';
 
 
@@ -31,7 +30,7 @@ export default class MarkdownInner extends React.Component {
             <React.Fragment>
                 {source.map(item =>
                     (<MardownNode
-                        key={uuidv4}
+                        key={item.id}
                         item={item}
                         needFormat={needFormat}
                     />))}

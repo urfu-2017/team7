@@ -11,6 +11,7 @@ import { getOwlUrl } from '../utils/owl-provider';
 import getLogger from '../utils/logger';
 import { MAX_CHAT_NAME_LENGTH, MAX_MESSAGE_LENGTH } from '../utils/constants';
 import getMetadata from '../utils/url-metadata';
+import getWeather from '../utils/weather';
 
 const logger = getLogger('socket-server');
 
@@ -137,6 +138,11 @@ const registerMessageHandlers = (socketServer, socket, currentUserId) => {
                 }
             }).value();
         await Promise.all(joinRoomPromises);
+    });
+
+    on(eventNames.client.GET_WEATHER, async (city) => {
+        const response = await getWeather(city);
+        socket.emit(eventNames.server.WEATHER, { ...response, city });
     });
 };
 

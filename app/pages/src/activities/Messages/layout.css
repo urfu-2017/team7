@@ -1,0 +1,30 @@
+.layout
+{
+    display: grid;
+    grid-template-rows: auto 1fr auto;
+    grid-template-areas: 'menu' 'items' 'input';
+    grid-gap: 1rem;
+    height: calc(100vh - 4rem);
+    position: relative;
+}
+
+.layout .layout__items
+{
+    grid-area: items;
+    margin-top: 0;
+    margin-bottom: 0;
+    padding: 2rem;
+    position: relative;
+    overflow-x: hidden;
+    overflow-y: auto;
+}
+
+.layout .layout__menu
+{
+    grid-area: menu;
+}
+
+.layout__input
+{
+    grid-area: input;
+}

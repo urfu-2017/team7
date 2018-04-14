@@ -1,18 +1,21 @@
 import PNGImage from 'pngjs-image';
 
 
-const IMAGE_SIZE = 420;
+const IMAGE_SIZE = 220;
 const TOTAL_BLOCKS = 5;
 const BLOCK_SIZE = IMAGE_SIZE / TOTAL_BLOCKS;
 
 
 export default class AvatarGenerator {
     constructor() {
-        this.backgroundColor = AvatarGenerator.createColor(50, 50, 50);
+        this.backgroundColor = AvatarGenerator.createColor(255, 255, 255);
         this.colorList = [
-            AvatarGenerator.createColor(255, 0, 0),
-            AvatarGenerator.createColor(0, 255, 0),
-            AvatarGenerator.createColor(0, 0, 255)
+            AvatarGenerator.createColor(115, 221, 221),
+            AvatarGenerator.createColor(251, 176, 64),
+            AvatarGenerator.createColor(255, 92, 92),
+            AvatarGenerator.createColor(53, 183, 41),
+            AvatarGenerator.createColor(82, 113, 255),
+            AvatarGenerator.createColor(183, 96, 230)
         ];
     }
 

@@ -1,10 +1,18 @@
 import { Passport } from 'passport';
 import { Strategy } from 'passport-github';
 import config from '../config';
-import { upsertUserWithIndex } from '../db/users-repository';
-import { User } from '../db/datatypes';
+import loginUser from '../db/login-manager';
+import getLogger from '../utils/logger';
+
+const logger = getLogger('auth');
 
 export const CALLBACK_PATH = '/login/return';
+
+const saveUserAfterAuth = async ({ username, id }) => {
+    logger.debug(`User from github: https://github.com/${username} (id=${id})`);
+    return loginUser(id, username)
+        .then(() => [null, { userId: id }], err => [err, null]);
+};
 
 const strategyOptions = {
     clientID: config.GITHUB_CLIENT_ID,
@@ -12,10 +20,7 @@ const strategyOptions = {
     callbackURL: config.SITE_URL + CALLBACK_PATH
 };
 const githubStrategy = new Strategy(strategyOptions, (accessToken, refreshToken, profile, done) => {
-    const { username, id } = profile;
-    upsertUserWithIndex(new User(id, username, null, []))
-        .then(() => done(null, { userId: id }))
-        .catch(err => done(err));
+    saveUserAfterAuth(profile).then(args => done(...args));
 });
 
 export const passport = new Passport();

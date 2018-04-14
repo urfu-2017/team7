@@ -3,6 +3,8 @@ import ReactDOM from 'react-dom';
 import moment from 'moment';
 import { observer, inject } from 'mobx-react';
 import { Comment } from 'semantic-ui-react';
+import { Link } from 'react-router-dom';
+import Markdown from '../Markdown';
 import { getUser } from '../../../../sockets/client';
 import UrlMeta from '../UrlMeta';
 
@@ -23,20 +25,22 @@ class Messages extends React.Component {
     }
 
     render() {
+        const { usersStore } = this.props;
         return (
             <Comment.Group>
                 {this.props.messages.map(message => (
                     <Comment key={message.messageId}>
-                        <Comment.Avatar src="https://react.semantic-ui.com/assets/images/avatar/small/matt.jpg" />
+
+                        <Comment.Avatar src={usersStore.getAvatar(message.authorUserId)} />
                         <Comment.Content>
-                            <Comment.Author as="a">
-                                {this.props.usersStore.getUsername(message.authorUserId) || 'Чебурашка'}
+                            <Comment.Author as={Link} to={`/user_${message.authorUserId}`}>
+                                {usersStore.getUsername(message.authorUserId)}
                             </Comment.Author>
                             <Comment.Metadata>
                                 <div>{moment(message.timestamp).format('HH:mm')}</div>
                             </Comment.Metadata>
-                            <Comment.Text>
-                                {message.content ? message.content.trim() || '\u00A0' : '\u00A0'}
+                            <Comment.Text style={{ minHeight: '1em' }}>
+                                <Markdown source={message.content} needFormat />
                             </Comment.Text>
                             <UrlMeta text={message.content} />
                         </Comment.Content>

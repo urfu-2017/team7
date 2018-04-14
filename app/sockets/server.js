@@ -26,7 +26,7 @@ const trySendUserChats = async (socket, userId) => {
         });
         await Promise.all(sendChatInfoPromises);
     } catch (e) {
-        logger.warn(e, 'Failed to send user chats');
+        logger.warn(e, `Failed to send user chats (userId=${userId})`);
     }
 };
 
@@ -145,7 +145,7 @@ const trySendUserInfo = async (socket, userId) => {
         const user = await usersRepository.getUser(userId);
         socket.emit(eventNames.server.CURRENT_USER, user);
     } catch (e) {
-        logger.warn(e, 'Failed to send user info');
+        logger.warn(e, `Failed to send user info ${userId}`);
     }
 };
 

@@ -7,6 +7,7 @@ import { Link } from 'react-router-dom';
 import Markdown from '../Markdown';
 import { getUser } from '../../../../sockets/client';
 import UrlMeta from '../UrlMeta';
+import Weather from '../Weather';
 
 @inject('usersStore')
 @observer
@@ -43,6 +44,7 @@ class Messages extends React.Component {
                                 <Markdown source={message.content} needFormat />
                             </Comment.Text>
                             <UrlMeta text={message.content} />
+                            <Weather text={message.content} />
                         </Comment.Content>
                     </Comment>
                 ))}

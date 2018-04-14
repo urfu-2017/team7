@@ -21,7 +21,7 @@ class ChatsStore {
         this.activeChat = null;
     }
 
-    setScrollHeight(height, chatId) {
+    @action setScrollHeight(height, chatId) {
         const chat = this.chatsById.get(chatId);
         if (chat) {
             chat.scrollHeight = height;

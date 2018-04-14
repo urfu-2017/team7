@@ -6,11 +6,6 @@
     min-height: 100px;
 }
 
-.meta__link {
-    height: 125px;
-    display: block;
-}
-
 .meta__header
 {
     white-space: nowrap;

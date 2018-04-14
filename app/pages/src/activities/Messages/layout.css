@@ -6,6 +6,7 @@
     grid-gap: 1rem;
     height: calc(100vh - 4rem);
     position: relative;
+    scroll-behavior: smooth;
 }
 
 .layout .layout__items
@@ -13,7 +14,7 @@
     grid-area: items;
     margin-top: 0;
     margin-bottom: 0;
-    padding: 2rem;
+    padding: 5px 2rem;
     position: relative;
     overflow-x: hidden;
     overflow-y: auto;

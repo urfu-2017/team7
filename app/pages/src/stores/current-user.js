@@ -1,5 +1,5 @@
-import { observable, computed } from 'mobx';
-import { onCurrentUser } from '../../../sockets/client';
+import { observable, computed, action } from 'mobx';
+import { onCurrentUser, changeAvatarUrl } from '../../../sockets/client';
 
 class CurrentUserStore {
     @observable user;
@@ -9,6 +9,11 @@ class CurrentUserStore {
         return this.user
             ? this.user.avatarUrl
             : null;
+    }
+
+    @action
+    changeAvatarUrl(url) {
+        changeAvatarUrl(url);
     }
 
     constructor() {

@@ -30,7 +30,7 @@ export const getUrlMeta = (url) => {
 };
 
 export const getMessages = (payload) => {
-    socket.emit(eventNames.client.GET_MESSAGES, payload);
+    socket.emit(eventNames.client.GET_CHAT_INFO, payload);
 };
 
 export const onMessagesList = (handler) => {
@@ -79,6 +79,10 @@ export const onUrlMeta = (handler) => {
 
 export const getCurrentUser = () => {
     socket.emit(eventNames.client.GET_CURRENT_USER);
+};
+
+export const changeAvatarUrl = (avatarUrl) => {
+    socket.emit(eventNames.client.CHANGE_AVATAR_URL, avatarUrl);
 };
 
 export const onCurrentUser = (handler) => {

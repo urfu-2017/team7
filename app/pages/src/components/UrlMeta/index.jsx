@@ -24,8 +24,8 @@ class UrlMeta extends React.Component {
         }
         const { urlMetaStore } = this.props;
         const meta = urlMetaStore.metaByUrl.get(this.url);
-        if (!meta) {
-            return <div className={css.meta__link} />;
+        if (!meta || meta.error) {
+            return null;
         }
 
         return (

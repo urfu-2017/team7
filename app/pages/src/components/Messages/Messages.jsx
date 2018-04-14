@@ -7,13 +7,16 @@ import { Link } from 'react-router-dom';
 import { getUser, onMessageSent } from '../../../../sockets/client';
 import Markdown from '../Markdown';
 import UrlMeta from '../UrlMeta';
+import Weather from '../Weather';
+import css from './messages.css';
 
 @inject('usersStore', 'currentUserStore', 'chatsStore')
 @observer
 class Messages extends React.Component {
     componentDidMount() {
-        this.scroll();
-        const { usersStore } = this.props;
+        const { usersStore, chatsStore, chatId } = this.props;
+
+        this.scroll(chatsStore.getScrollHeight(chatId));
 
         const users = [];
         this.props.messages.forEach(({ authorUserId }) => {
@@ -24,19 +27,33 @@ class Messages extends React.Component {
         });
 
         onMessageSent(() => this.scroll());
-    }
 
-    componentWillUpdate(props) {
-        if (props.chatId !== this.props.chatId) {
-            const messages = ReactDOM.findDOMNode(this).parentElement;
-            this.props.chatsStore.setScrollHeight(messages.scrollTop, this.props.chatId);
-        }
+        const messages = ReactDOM.findDOMNode(this).parentElement;
+        messages.onwheel = e => this.onwheel(e);
+        messages.onscroll = e => this.onscroll(e);
     }
 
     componentDidUpdate(props) {
-        if (props.chatId !== this.props.chatId) {
-            this.scroll(this.props.chatsStore.getScrollHeight(this.props.chatId));
+        const { chatsStore, chatId } = this.props;
+        if (chatId !== props.chatId) {
+            this.scroll(chatsStore.getScrollHeight(chatId));
         }
+    }
+
+    onwheel(e) {
+        const messages = ReactDOM.findDOMNode(this).parentElement;
+        e.preventDefault();
+        const height = messages.scrollHeight - messages.offsetHeight;
+        if ((e.deltaY < 0 && messages.scrollTop > 0) ||
+            (e.deltaY > 0 && messages.scrollTop < height)) {
+            messages.scrollTop += 75 * Math.sign(e.deltaY);
+        }
+    }
+
+    onscroll() {
+        const { chatsStore, chatId } = this.props;
+        const messages = ReactDOM.findDOMNode(this).parentElement;
+        chatsStore.setScrollHeight(messages.scrollTop, chatId);
     }
 
     scroll(value) {
@@ -47,10 +64,10 @@ class Messages extends React.Component {
     render() {
         const { usersStore } = this.props;
         return (
-            <Comment.Group>
-                {this.props.messages.map(message => (
-                    <Comment key={message.messageId}>
-
+            <Comment.Group className={css.messages}>
+                <div style={{ height: '.1px' }} />
+                {this.props.messages.reverse().map(message => (
+                    <Comment key={message.messageId} className={css.comment}>
                         <Comment.Avatar src={usersStore.getAvatar(message.authorUserId)} />
                         <Comment.Content>
                             <Comment.Author as={Link} to={`/user_${message.authorUserId}`}>

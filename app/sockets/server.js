@@ -112,6 +112,7 @@ const registerMessageHandlers = (socketServer, socket, currentUserId) => {
             socket.emit(eventNames.server.URL_META, { meta, url });
         } catch (e) {
             logger.debug(e, `No metadata for url=${url}`);
+            socket.emit(eventNames.server.URL_META, { meta: { error: 'NO_META' }, url });
         }
     });
 

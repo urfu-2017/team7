@@ -35,14 +35,14 @@ class WeatherWidget extends React.Component {
             <Table basic="very" celled collapsing>
                 <Table.Body>
                     {forecast
-                        .map(item =>
+                        .map(item => (
                             <Table.Row>
                                 <Table.Cell>
                                     <Header as="h4" image>
-                                        <Image 
-                                            src={`/static/weather/${item.weather[0].icon.slice(0, 2)}.svg`} 
-                                            rounded 
-                                            size="mini" 
+                                        <Image
+                                            src={`/static/weather/${item.weather[0].icon.slice(0, 2)}.svg`}
+                                            rounded
+                                            size="mini"
                                         />
                                         <Header.Content>
                                             {item.dt_txt.split(' ')[1].slice(0, 5)}
@@ -58,7 +58,7 @@ class WeatherWidget extends React.Component {
                                 <Table.Cell textAlign="center">
                                     {Math.round(parseFloat(item.wind.speed))} м/c
                                 </Table.Cell>
-                            </Table.Row>)
+                            </Table.Row>))
                     }
                 </Table.Body>
             </Table>

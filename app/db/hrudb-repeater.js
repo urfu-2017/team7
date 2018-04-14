@@ -7,7 +7,7 @@ const logger = getLogger('hrudb');
 const repeatTimes = REPEATER_TIMES;
 const repeatRange = [...Array(repeatTimes)];
 
-const tryResolve = async (opts, promise) => {
+const tryResolve = async (options, promise) => {
     let resolved = false;
     let resolvedValue;
     await Promise.mapSeries(repeatRange, async () => {
@@ -27,7 +27,7 @@ const tryResolve = async (opts, promise) => {
     });
 
     if (!resolved) {
-        logger.debug('Hrudb request failed', opts);
+        logger.debug('Hrudb request failed', options);
         throw new Error('Request failed');
     }
     return resolvedValue;

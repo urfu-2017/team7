@@ -3,8 +3,8 @@ import ReactDOM from 'react-dom';
 import moment from 'moment';
 import { observer, inject } from 'mobx-react';
 import { Comment } from 'semantic-ui-react';
-import { getUser, onMessageSent } from '../../../../sockets/client';
 import { Link } from 'react-router-dom';
+import { getUser, onMessageSent } from '../../../../sockets/client';
 import Markdown from '../Markdown';
 import UrlMeta from '../UrlMeta';
 

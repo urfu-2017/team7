@@ -46,7 +46,7 @@ class Messages extends React.Component {
     render() {
         const { usersStore } = this.props;
         return (
-            <Comment.Group id="messages">
+            <Comment.Group>
                 {this.props.messages.map(message => (
                     <Comment key={message.messageId}>
                         <Comment.Avatar src={usersStore.getAvatar(message.authorUserId)} />

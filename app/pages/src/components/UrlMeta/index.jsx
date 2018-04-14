@@ -27,6 +27,9 @@ class UrlMeta extends React.Component {
         if (!meta) {
             return <div className={css.meta__link} />;
         }
+        if (meta.error) {
+            return null;
+        }
 
         return (
             <Item.Group className={css.meta}>

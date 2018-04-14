@@ -1,5 +1,5 @@
 import { observable, action, computed } from 'mobx';
-import { getMessages, onChat, onChatsList } from '../../../sockets/client';
+import { getMessages, onChat } from '../../../sockets/client';
 
 class ChatsStore {
     @observable activeChat = null;
@@ -36,13 +36,6 @@ class ChatsStore {
     constructor() {
         onChat((chat) => {
             this.chatsById.set(chat.chatId, chat);
-        });
-
-        onChatsList((chats) => {
-            this.chatsById = observable.map(chats.map(chat => [chat.chatId, chat]));
-            if (this.activeChat) {
-                this.activeChat = this.chatsById.get(this.activeChat.chatId);
-            }
         });
     }
 }

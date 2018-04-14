@@ -1,5 +1,5 @@
 import seedrandom from 'seedrandom';
-
+import murmurhash from 'murmurhash';
 
 export default class AvatarController {
     constructor(generator) {
@@ -7,7 +7,8 @@ export default class AvatarController {
     }
 
     getAvatar(req, res) {
-        const rng = AvatarController.getRandomInt.bind(null, seedrandom(req.params.userId));
+        const seed = murmurhash(req.params.userId);
+        const rng = AvatarController.getRandomInt.bind(null, seedrandom(seed));
         const avatarBuffer = this.generator.createAvatar(rng);
         avatarBuffer.toBlob((err, img) => {
             res.contentType('png');

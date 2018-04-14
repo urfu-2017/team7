@@ -46,7 +46,7 @@ class Messages extends React.Component {
 
     scroll(value) {
         const messages = ReactDOM.findDOMNode(this).parentElement;
-        messages.scrollTop = value !== undefined ? value : messages.scrollHeight;
+        messages.scrollTop = ![undefined, null].includes(value) ? value : messages.scrollHeight;
     }
 
     render() {

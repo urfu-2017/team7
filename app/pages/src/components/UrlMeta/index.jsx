@@ -12,7 +12,9 @@ class UrlMeta extends React.Component {
         const match = text.match(urlRegex);
         if (match) {
             [this.url] = match;
-            urlMetaStore.fetchUrlMeta(this.url);
+            if (!urlMetaStore.metaByUrl.get(this.url)) {
+                urlMetaStore.fetchUrlMeta(this.url);
+            }
         }
     }
 
@@ -23,7 +25,7 @@ class UrlMeta extends React.Component {
         const { urlMetaStore } = this.props;
         const meta = urlMetaStore.metaByUrl.get(this.url);
         if (!meta) {
-            return <a href={this.url}>{this.url}</a>;
+            return <a href={this.url} className={css.meta__link}>{this.url}</a>;
         }
         const sourceUrl = meta.url.startsWith('https://')
             ? `https://${meta.source}`
@@ -33,7 +35,7 @@ class UrlMeta extends React.Component {
         return (
             <Item.Group className={css.meta}>
                 <Item>
-                    {imageUrl ? <Item.Image src={imageUrl} size="small" style={{ height: '150px' }} /> : ''}
+                    {imageUrl ? <Item.Image src={imageUrl} size="small" /> : ''}
                     <Item.Content>
                         <Item.Header as="a" href={meta.url} content={meta['og:title'] || meta.title} />
                         <Item.Meta>

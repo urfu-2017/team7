@@ -30,7 +30,7 @@ class ChatsStore {
 
     @action getScrollHeight(chatId) {
         const chat = this.chatsById.get(chatId);
-        return chat ? chat.scrollHeight : undefined;
+        return chat ? chat.scrollHeight : null;
     }
 
     constructor() {

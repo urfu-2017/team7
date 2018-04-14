@@ -6,23 +6,31 @@ import css from './layout.css';
 import DimmerLoader from '../DimmerLoader';
 import BackButton from '../BackButton';
 
-@inject('currentUserStore')
+const LogoutButton = () => (
+    <form action="/logout" className={css.layout__logout}>
+        <Button color="red" type="submit" content="LOGOUT" />
+    </form>);
+
+@inject('currentUserStore', 'usersStore')
 @observer
 class User extends React.Component {
     render() {
-        if (!this.props.currentUserStore.user) {
+        const { usersStore, currentUserStore, userId } = this.props;
+        const isSelf = !userId;
+        const user = isSelf
+            ? currentUserStore.user
+            : usersStore.getUser(userId);
+
+
+        if (!user) {
             return <DimmerLoader text="Загружаем профиль" />;
         }
 
         return (
             <div className={css.layout}>
                 <BackButton className={css.layout__back} />
-                <UserCard className={css.layout__user} />
-                <form action="/logout" className={css.layout__logout}>
-                    <Button color="red" type="submit">
-                        LOGOUT
-                    </Button>
-                </form>
+                <UserCard user={user} className={css.layout__user} />
+                {isSelf ? <LogoutButton /> : null}
             </div>
         );
     }

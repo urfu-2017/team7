@@ -10,7 +10,7 @@
     "mocha": "mocha --timeout 5000 --require babel-core/register test/*.spec.js",
     "mwatch": "npm run mocha -- --watch",
     "test": "npm run lint && npm run mocha",
-    "stats": "mocha --no-timeouts --require babel-core/register test/*.stats.js",
+    "stats": "mocha --no-timeouts --ui qunit --require babel-core/register test/*.stats.js",
     "lint": "eslint . --ext .js,.jsx"
   },
   "dependencies": {

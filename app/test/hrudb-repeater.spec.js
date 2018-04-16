@@ -2,13 +2,13 @@ import { expect } from 'chai';
 import { Promise } from 'bluebird';
 import proxyquire from 'proxyquire';
 import { rotateResponses } from './helpers';
-import * as hrudbMock from '../db/hrudb-client.mock';
+import * as hrudbMock from '../hrudb/hrudb-client.mock';
 
 let hrudb;
 suite('HrudbRepeater');
 
 beforeEach(async () => {
-    hrudb = proxyquire('../db/hrudb-repeater', {
+    hrudb = proxyquire('../hrudb/hrudb-repeater', {
         './hrudb-client': hrudbMock
     });
     hrudbMock.clearDb();

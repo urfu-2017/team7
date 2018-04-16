@@ -1,4 +1,4 @@
-import * as hrudbMock from '../db/hrudb-client.mock';
+import * as hrudbMock from '../hrudb/hrudb-client.mock';
 
 export const okResponse = () => new hrudbMock.Response(200, 'ok');
 

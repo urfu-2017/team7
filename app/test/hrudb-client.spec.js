@@ -1,13 +1,13 @@
 import { expect } from 'chai';
 import { Promise } from 'bluebird';
-import * as hrudb from '../db/hrudb-client.mock';
+import * as hrudb from '../hrudb/hrudb-client.mock';
 import { okResponses } from './helpers';
 
 
 suite('HrudbClient');
 
 /* Можно проверить тесты на оригинальной хрюше
-const hrudb = proxyquire('../db/hrudb-client', {
+const hrudb = proxyquire('../hrudb/hrudb-client', {
     '../config': {
         default: {
             HRUDB_TOKEN: '8f92d8b92cffc5d2c4ddb2af9959dfa9391b6f43',

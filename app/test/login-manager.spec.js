@@ -1,21 +1,21 @@
 import { expect } from 'chai';
 import proxyquire from 'proxyquire';
 import { rotateResponses } from './helpers';
-import * as hrudbMock from '../db/hrudb-client.mock';
-import { User } from '../db/datatypes';
+import * as hrudbMock from '../hrudb/hrudb-client.mock';
+import { User } from '../hrudb/datatypes';
 
 let hrudb, userRepo, loginUser;
 
 suite('LoginManager.loginUser');
 
 beforeEach(async () => {
-    hrudb = proxyquire('../db/hrudb-repeater', {
+    hrudb = proxyquire('../hrudb/hrudb-repeater', {
         './hrudb-client': hrudbMock
     });
-    userRepo = proxyquire('../db/users-repository', {
+    userRepo = proxyquire('../hrudb/users-repository', {
         './hrudb-repeater': hrudb
     });
-    loginUser = proxyquire('../db/login-manager', {
+    loginUser = proxyquire('../hrudb/login-manager', {
         './users-repository': userRepo
     }).default;
     hrudbMock.clearDb();

@@ -11,7 +11,12 @@ const {
     LOGGLY_SUBDOMAIN,
     TELEGRAM_BOT_TOKEN,
     CONSOLE_LOG_LEVEL,
-    WEATHER_TOKEN
+    WEATHER_TOKEN,
+    POSTGRES_CONNECTION_STRING,
+    S3_ACCESS_KEY,
+    S3_SECRET_KEY,
+    S3_ENDPOINT,
+    S3_PORT
 } = process.env;
 
 const HTTP_SCHEME = process.env.HTTP_SCHEME || 'http';
@@ -34,7 +39,12 @@ export default {
     HRUDB_URL: HRUDB_URL || 'https://hrudb.herokuapp.com',
     LOGGLY_TOKEN,
     LOGGLY_SUBDOMAIN,
+    S3_PORT: parseInt(S3_PORT, 10) || 7000,
+    S3_ENDPOINT: S3_ENDPOINT || 'kilogram.online',
     TELEGRAM_CHAT_IDS,
     TELEGRAM_BOT_TOKEN,
+    POSTGRES_CONNECTION_STRING,
+    S3_ACCESS_KEY,
+    S3_SECRET_KEY,
     CONSOLE_LOG_LEVEL: CONSOLE_LOG_LEVEL || 'info'
 };

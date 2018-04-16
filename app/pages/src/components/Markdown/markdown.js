@@ -8,7 +8,36 @@ class Node {
     }
 
     static text(content) {
-        return new Node('text', content);
+        return new Node('text', Node.parseTextToken(content));
+    }
+
+    static parseTextToken(textToken) {
+        const result = [];
+        let currentText = '';
+        textToken.split('\n').forEach((line) => {
+            line.split(' ').forEach((word) => {
+                if (/^https?:\/\/\S*$/i.test(word)) {
+                    if (currentText) {
+                        result.push({ type: 'text', content: currentText });
+                    }
+                    currentText = ' ';
+                    result.push({ type: 'link', content: word });
+                } else {
+                    currentText += word;
+                    currentText += ' ';
+                }
+            });
+
+            currentText = currentText.substring(0, currentText.length - 1);
+            currentText += '\n';
+        });
+
+        currentText = currentText.substring(0, currentText.length - 1);
+        if (currentText) {
+            result.push({ type: 'text', content: currentText });
+        }
+
+        return result;
     }
 }
 

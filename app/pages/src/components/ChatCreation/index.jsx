@@ -67,9 +67,15 @@ class ChatCreation extends React.Component {
         const currentUserId = currentUser.userId;
 
         const users = _.chain(this.props.usersStore.allUsers)
-            .filter(x => this.queryRegex.test(x.username))
-            .reject(x => x.userId === currentUserId)
-            .sortBy(['username'])
+            .filter(user => this.queryRegex.test(user.username))
+            .reject(user => user.userId === currentUserId)
+            .orderBy(
+                [
+                    user => this.state.selectedUserIds.includes(user.userId),
+                    user => user.username
+                ],
+                ['desc', 'asc']
+            )
             .value();
 
         return (

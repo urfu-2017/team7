@@ -1,14 +1,14 @@
-import { expect, proxyquire, sandbox } from './helpers';
-import * as userRepo from '../hrudb/users-repository';
+import { expect, proxyquire, sandbox } from '../helpers';
+import * as userRepo from '../../db/hrudb/users-repository';
 
 
 let sut;
 
-suite('LoginManager.loginUser');
+suite('Hrudb.LoginManager.loginUser');
 
 beforeEach(async () => {
     sandbox.stub(userRepo);
-    sut = proxyquire('../hrudb/login-manager', {
+    sut = proxyquire('../db/hrudb/login-manager', {
         './users-repository': userRepo
     }).default;
 });

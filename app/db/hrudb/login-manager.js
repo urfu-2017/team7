@@ -1,5 +1,5 @@
 import { upsertUser, getAllUsers, upsertAllUsers, getUser } from './users-repository';
-import { User } from './datatypes';
+import { User } from '../datatypes';
 
 export default async (id, username) => {
     const allUsers = await getAllUsers();

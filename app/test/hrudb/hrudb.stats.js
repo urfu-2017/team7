@@ -12,7 +12,7 @@ const TIMES = 1000;
 let hrudb;
 let stream;
 
-suite('HrudbStats');
+suite('Hrudb.Stats');
 
 const createWriteStreamAsync = fileName => new Promise((resolve) => {
     const result = createWriteStream(fileName);
@@ -26,8 +26,8 @@ after(async () => {
 
 before(async () => {
     stream = await createWriteStreamAsync(FILENAME);
-    hrudb = proxyquire('../hrudb/hrudb-client', {
-        '../config': {
+    hrudb = proxyquire('../db/hrudb/hrudb-client', {
+        '../../config': {
             default: {
                 HRUDB_TOKEN: '8f92d8b92cffc5d2c4ddb2af9959dfa9391b6f43',
                 HRUDB_URL: 'https://hrudb.herokuapp.com'

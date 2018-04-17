@@ -1,0 +1,10 @@
+.popup {
+    box-sizing: initial;
+}
+
+.popup__emoji
+{
+    cursor: pointer;
+    padding: .25rem;
+
+}

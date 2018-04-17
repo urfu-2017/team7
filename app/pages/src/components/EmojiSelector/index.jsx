@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import React from 'react';
 import { Popup } from 'semantic-ui-react';
-import * as css from './emoji.css';
+import * as css from './popup.css';
 
 const emojies = [
     '😁', '😂', '😃', '😄', '😅', '😆', '😉', '😊', '😋', '😌',
@@ -23,7 +23,7 @@ class EmojiSelector extends React.Component {
         const { className, children, onSelected } = this.props;
         return (
             <Popup
-                className={className}
+                className={`${className} ${css.popup}`}
                 trigger={children}
                 open={this.state.isOpen}
                 onClose={this.handleClose}
@@ -41,7 +41,7 @@ class EmojiSelector extends React.Component {
                                     <td
                                         role="gridcell"
                                         key={value}
-                                        className={css.emoji}
+                                        className={css.popup__emoji}
                                         onClick={() => {
                                             this.handleClose();
                                             onSelected(value);

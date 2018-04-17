@@ -1,4 +1,5 @@
 import shortid from 'shortid';
+import urlregex from '../../common/url-regex';
 
 class Node {
     constructor(type, content) {
@@ -16,7 +17,7 @@ class Node {
         let currentText = '';
         textToken.split('\n').forEach((line) => {
             line.split(' ').forEach((word) => {
-                if (/^https?:\/\/\S*$/i.test(word)) {
+                if (urlregex.test(word)) {
                     if (currentText) {
                         result.push({ type: 'text', content: currentText });
                     }

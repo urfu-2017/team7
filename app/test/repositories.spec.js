@@ -1,76 +1,54 @@
-import { expect } from 'chai';
-import proxyquire from 'proxyquire';
-import { User, Chat } from '../db/datatypes';
-import { rotateResponses } from './helpers';
-import * as hrudbMock from '../db/hrudb-client.mock';
+import { expect, proxyquire, sandbox } from './helpers';
+import { User, Chat } from '../hrudb/datatypes';
+import * as hrudb from '../hrudb/hrudb-client';
 
+suite('Repositories');
 
-describe('Repositories', async () => {
-    const hrudb = proxyquire('../db/hrudb-repeater', {
-        './hrudb-client': hrudbMock
-    });
-    const userRepo = proxyquire('../db/users-repository', {
+let userRepo;
+let chatsRepo;
+
+beforeEach(async () => {
+    sandbox.stub(hrudb);
+    userRepo = proxyquire('../hrudb/users-repository', {
         './hrudb-repeater': hrudb
     });
-    const chatsRepo = proxyquire('../db/chats-repository', {
+    chatsRepo = proxyquire('../hrudb/chats-repository', {
         './hrudb-repeater': hrudb,
         './users-repository': userRepo
     });
+});
 
-    beforeEach(async () => {
-        hrudbMock.clearDb();
-        hrudbMock.setResponses(rotateResponses(500));
-    });
+afterEach(async () => {
+    sandbox.restore();
+});
 
-    it('can create chat for user', async () => {
-        const user = new User(0, 'Admiral', null, [0]);
-        const chat = new Chat(0, 'testchat', [0]);
-        await userRepo.upsertUser(user);
-        await chatsRepo.upsertChat(chat);
-        const actualChat = await chatsRepo.getChat(0);
+test('can create user', async () => {
+    const user = new User(0, 'Admiral', null, [0]);
+    await userRepo.upsertUser(user);
 
-        expect(actualChat).to.be.deep.equal(chat);
-        expect(hrudbMock.getDb()).to.be.deep.equal({
-            Users_0: [user],
-            Chats_0: [chat]
-        });
-    });
+    expect(hrudb.put).to.be.calledWith('Users_0', user);
+});
 
-    it('can create user', async () => {
-        const expected = new User(0, 'Admiral', null, [0]);
-        await userRepo.upsertUser(expected);
-        const user = await userRepo.getUser(expected.userId);
+test('can update user', async () => {
+    const user = new User(0, 'Admiral', null, [0]);
+    await userRepo.upsertUser(user);
+    const updatedUser = new User(0, 'NewAdmiral', null, [0]);
+    await userRepo.upsertUser(updatedUser);
 
-        expect(user).to.be.deep.equal(expected);
-        expect(hrudbMock.getDb()).to.be.deep.equal({
-            Users_0: [user]
-        });
-    });
+    expect(hrudb.put.getCalls().map(x => x.args)).to.be.deep.equal([
+        ['Users_0', user],
+        ['Users_0', updatedUser]
+    ]);
+});
 
-    it('can update user', async () => {
-        await userRepo.upsertUser(new User(0, 'Admiral', null, [0]));
-        const expected = new User(0, 'NewAdmiral', null, [0]);
-        await userRepo.upsertUser(expected);
-        const user = await userRepo.getUser(expected.userId);
-
-        expect(user).to.be.deep.equal(expected);
-        expect(hrudbMock.getDb()).to.be.deep.equal({
-            Users_0: [user]
-        });
-    });
-
-    it('can join chat', async () => {
-        const user = new User(0, 'Admiral', null, []);
-        const chat = new Chat(0, 'testchat', []);
-        await userRepo.upsertUser(user);
-        await chatsRepo.upsertChat(chat);
-        await chatsRepo.joinChat(user.userId, chat.chatId);
-        const actualChat = await chatsRepo.getChat(0);
-
-        expect(actualChat).to.be.deep.equal(chat);
-        expect(hrudbMock.getDb()).to.be.deep.equal({
-            Users_0: [user],
-            Chats_0: [chat]
-        });
-    });
+test('can join chat', async () => {
+    const user = new User(0, 'Admiral', null, []);
+    const chat = new Chat(0, 'testchat', []);
+    const updatedUser = new User(0, 'Admiral', null, [0]);
+    const updatedChat = new Chat(0, 'testchat', [0]);
+    hrudb.get.withArgs('Users_0').returns(user);
+    hrudb.get.withArgs('Chats_0').returns(chat);
+    await chatsRepo.joinChat(user.userId, chat.chatId);
+    expect(hrudb.put).to.be.calledWith('Users_0', updatedUser);
+    expect(hrudb.put).to.be.calledWith('Chats_0', updatedChat);
 });

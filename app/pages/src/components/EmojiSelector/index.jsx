@@ -31,6 +31,7 @@ class EmojiSelector extends React.Component {
                 on="click"
                 position="top center"
                 as="table"
+                role="grid"
             >
                 <tbody>
                     {_.chunk(emojies, ROW_LENGTH)
@@ -38,6 +39,7 @@ class EmojiSelector extends React.Component {
                             <tr key={index} >
                                 {row.map(value => (
                                     <td
+                                        role="gridcell"
                                         key={value}
                                         className={css.emoji}
                                         onClick={() => {

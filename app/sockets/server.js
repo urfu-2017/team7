@@ -22,10 +22,24 @@ const trySendUserChats = async (socket, userId) => {
             const chat = await chatsRepository.getChat(chatId);
             socket.emit(eventNames.server.CHAT, chat);
             socket.join(chat.chatId);
+
             const messages = await messagesRepository.getMessagesFromChat(chatId);
             socket.emit(eventNames.server.LIST_MESSAGES, { messages, chatId });
+
+            return chat;
         });
-        await Promise.all(sendChatInfoPromises);
+
+        const chats = await Promise.all(sendChatInfoPromises);
+        const sendUsersPromises = _.chain(chats)
+            .flatMap(chat => chat.userIds)
+            .uniq()
+            .map(async (uid) => {
+                const anotherUser = await usersRepository.getUser(uid);
+                socket.emit(eventNames.server.USER, anotherUser);
+            })
+            .value();
+
+        await Promise.all(sendUsersPromises);
     } catch (e) {
         logger.warn(e, `Failed to send user chats (userId=${userId})`);
     }

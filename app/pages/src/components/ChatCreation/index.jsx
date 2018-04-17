@@ -22,7 +22,7 @@ class ChatCreation extends React.Component {
     }
 
     get isValid() {
-        return this.state.name && this.state.selectedUserIds.length > 0;
+        return this.state.name.trim() && this.state.selectedUserIds.length > 0;
     }
 
     resetComponent() {
@@ -65,21 +65,19 @@ class ChatCreation extends React.Component {
             return <DimmerLoader text="Загрузка" />;
         }
         const currentUserId = currentUser.userId;
-        const { allUsers } = this.props.usersStore;
-        const selectedUsers = _.chain(allUsers)
-            .filter(x => this.state.selectedUserIds.includes(x.userId))
-            .filter(x => x.userId !== currentUserId)
-            .sortBy(['username'])
+
+        const users = _.chain(this.props.usersStore.allUsers)
+            .filter(user => this.queryRegex.test(user.username))
+            .reject(user => user.userId === currentUserId)
+            .orderBy(
+                [
+                    user => this.state.selectedUserIds.includes(user.userId),
+                    user => user.username
+                ],
+                ['desc', 'asc']
+            )
             .value();
 
-        const usersFromSearch = _.chain(allUsers)
-            .without(...selectedUsers)
-            .filter(x => this.queryRegex.test(x.username))
-            .filter(x => x.userId !== currentUserId)
-            .sortBy(['username'])
-            .value();
-
-        const users = _.concat(selectedUsers, usersFromSearch);
         return (
             <div className={css.layout}>
                 <BackButton className={css.layout__back} />

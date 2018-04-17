@@ -32,6 +32,7 @@ class UsersStore {
         if (this.usersById.has(userId)) {
             return this.getUser(userId).username;
         }
+
         return 'Чебурашка';
     }
 

@@ -37,7 +37,7 @@ class EmojiSelector extends React.Component {
                         .map((row, index) => ( // eslint-disable-next-line react/no-array-index-key
                             <tr key={index} >
                                 {row.map(value => (
-                                    <th
+                                    <td
                                         key={value}
                                         className={css.emoji}
                                         onClick={() => {
@@ -45,7 +45,7 @@ class EmojiSelector extends React.Component {
                                             onSelected(value);
                                         }}
                                     >{value}
-                                    </th>))}
+                                    </td>))}
                             </tr>))}
                 </tbody>
 

@@ -1,37 +1,37 @@
-import { expect } from 'chai';
-import { Promise } from 'bluebird';
-import proxyquire from 'proxyquire';
-import { rotateResponses } from './helpers';
-import * as hrudbMock from '../hrudb/hrudb-client.mock';
+import { expect, proxyquire, sandbox } from './helpers';
+import * as hrudb from '../hrudb/hrudb-client';
+import { REPEATER_TIMES } from '../utils/constants';
 
-let hrudb;
+let sut;
+
 suite('HrudbRepeater');
 
 beforeEach(async () => {
-    hrudb = proxyquire('../hrudb/hrudb-repeater', {
-        './hrudb-client': hrudbMock
+    sandbox.stub(hrudb);
+    sut = proxyquire('../hrudb/hrudb-repeater', {
+        './hrudb-client': hrudb
     });
-    hrudbMock.clearDb();
-    hrudbMock.setResponses(rotateResponses(500));
 });
 
-test('should put/get key-value', async () => {
-    await hrudb.put('key', 'value');
-    const value = await hrudb.get('key');
-
-    expect(value).to.be.equal('value');
-});
-
-test('should post multiple values then getAll', async () => {
-    const expected = ['SanaraBoi', '}{"SanaraBoi', 'SanaraBoi2'];
-    await Promise.mapSeries(expected, value => hrudb.post('key', value));
-    const all = await hrudb.getAll('key');
-
-    expect(all).to.be.deep.equal(expected);
+afterEach(async () => {
+    sandbox.restore();
 });
 
 test('returns 404 http code immediately', async () => {
-    const { statusCode } = await hrudb.get('key').catch(x => x);
+    hrudb.get.withArgs('key').onFirstCall().returnsAsync({ statusCode: 404 });
+    const { statusCode } = await sut.get('key').catch(x => x);
 
+    expect(hrudb.get).to.have.been.calledWith('key');
+    expect(hrudb.get).to.have.been.calledOnce;
     expect(statusCode).to.be.equal(404);
 });
+
+test(`will have ${REPEATER_TIMES} attempts before fail`, async () => {
+    hrudb.get.withArgs('key').returnsAsync({ statusCode: 418 });
+    const { gotError } = await sut.get('key').catch(() => ({ gotError: true }));
+
+    expect(hrudb.get).to.have.been.calledWith('key');
+    expect(hrudb.get).to.have.callCount(REPEATER_TIMES);
+    expect(gotError).to.be.true;
+});
+

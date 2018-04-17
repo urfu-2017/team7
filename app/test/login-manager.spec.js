@@ -1,44 +1,28 @@
-import { expect } from 'chai';
-import proxyquire from 'proxyquire';
-import { rotateResponses } from './helpers';
-import * as hrudbMock from '../hrudb/hrudb-client.mock';
-import { User } from '../hrudb/datatypes';
+import { expect, proxyquire, sandbox } from './helpers';
+import * as userRepo from '../hrudb/users-repository';
 
-let hrudb, userRepo, loginUser;
+
+let sut;
 
 suite('LoginManager.loginUser');
 
 beforeEach(async () => {
-    hrudb = proxyquire('../hrudb/hrudb-repeater', {
-        './hrudb-client': hrudbMock
-    });
-    userRepo = proxyquire('../hrudb/users-repository', {
-        './hrudb-repeater': hrudb
-    });
-    loginUser = proxyquire('../hrudb/login-manager', {
+    sandbox.stub(userRepo);
+    sut = proxyquire('../hrudb/login-manager', {
         './users-repository': userRepo
     }).default;
-    hrudbMock.clearDb();
-    hrudbMock.setResponses(rotateResponses(500));
 });
 
-test('saves new user', async () => {
-    await loginUser(0, 'name1');
-    const users = await userRepo.getAllUsers();
-    const user = await userRepo.getUser(0);
-
-    expect(users).to.be.deep.equal({ 0: 'name1' });
-    expect(user).to.be.deep.equal(new User(0, 'name1', '/avatar/0', []));
+afterEach(async () => {
+    sandbox.restore();
 });
 
-test('won\'t overwrite fields', async () => {
-    const expected = new User(0, 'name1', 'custom_avatar', ['chatik']);
-    await loginUser(0, 'name1');
-    await userRepo.upsertUser(expected);
-    await loginUser(0, 'name1');
-    const users = await userRepo.getAllUsers();
-    const user = await userRepo.getUser(0);
+test('will do single request to hrudb', async () => {
+    userRepo.getAllUsers.returnsAsync({ 0: 'name1' });
+    await sut(0, 'name1');
 
-    expect(users).to.be.deep.equal({ 0: 'name1' });
-    expect(user).to.be.deep.equal(expected);
+    expect(userRepo.getAllUsers).to.have.been.calledOnce;
+    expect(userRepo.upsertUser).to.have.not.been.called;
+    expect(userRepo.getUser).to.have.not.been.called;
+    expect(userRepo.upsertAllUsers).to.have.not.been.called;
 });

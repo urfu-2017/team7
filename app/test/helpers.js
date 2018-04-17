@@ -1,12 +1,15 @@
-import * as hrudbMock from '../hrudb/hrudb-client.mock';
+import chai from 'chai';
+import sinonChai from 'sinon-chai';
+import sinon_ from 'sinon';
+import proxyquire_ from 'proxyquire';
 
-export const okResponse = () => new hrudbMock.Response(200, 'ok');
+chai.use(sinonChai);
+sinon_.addBehavior('returnsAsync', (fake, value) => fake.returns(Promise.resolve(value)));
 
-export const badResponse = () => new hrudbMock.Response(418, 'teapot');
-
-export const okResponses = amount => [...Array(amount)].map(okResponse);
-
-export const badResponses = amount => [...Array(amount)].map(badResponse);
-
-export const rotateResponses = amount =>
-    [...Array(amount).keys()].map(x => (x % 2 ? okResponse() : badResponse()));
+export function skipSuite() {
+    this.skip();
+}
+export const { expect } = chai;
+export const sinon = sinon_;
+export const proxyquire = proxyquire_;
+export const sandbox = sinon.sandbox.create();

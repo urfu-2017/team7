@@ -9,11 +9,14 @@ const TEST_KEY = '__measurements';
 const TEST_VALUE = 'VALUE';
 const TIMES = 1000;
 
-let hrudb, stream;
+let hrudb;
+let stream;
+
+suite('HrudbStats');
 
 const createWriteStreamAsync = fileName => new Promise((resolve) => {
-    const stream = createWriteStream(fileName);
-    stream.once('open', () => resolve(stream));
+    const result = createWriteStream(fileName);
+    result.once('open', () => resolve(result));
 });
 
 after(async () => {
@@ -35,7 +38,7 @@ before(async () => {
 
 const range = [...Array(TIMES).keys()];
 const testRequest = (requestType, getCodeAsync) => async () => {
-    const promises = range.map(i => async () => {
+    await Promise.mapSeries(range, async (i) => {
         const currentDate = new Date();
         const code = await getCodeAsync();
         const millis = new Date() - currentDate;
@@ -43,13 +46,9 @@ const testRequest = (requestType, getCodeAsync) => async () => {
         stream.write('\n');
         console.info(requestType, i + 1, 'out of', TIMES);
     });
-
-    await Promise.mapSeries(promises, x => x);
 };
 
 const sends = requestType => `Sending ${TIMES} times ${requestType}`;
-
-suite('HrudbStats');
 
 test(sends('DELETE'), testRequest('DELETE', () => hrudb.remove(TEST_KEY).then(() => 204, x => x.statusCode)));
 test(sends('PUT'), testRequest('PUT', () => hrudb.put(TEST_KEY, TEST_VALUE).then(() => 201, x => x.statusCode)));

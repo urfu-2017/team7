@@ -1,10 +1,16 @@
-.popup {
+.popup
+{
     box-sizing: initial;
 }
 
 .popup__emoji
 {
     cursor: pointer;
-    padding: .25rem;
+    padding: .25em;
+}
 
+.popup__emoji:hover
+{
+    background-color: #dfdfdf;
+    border-radius: .2em;
 }

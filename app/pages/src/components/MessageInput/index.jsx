@@ -66,7 +66,7 @@ class MessageInput extends React.Component {
                             name="smile"
                             size="large"
                             color="grey"
-                            style={{ width: '2.2em', pointerEvents: 'auto' }}
+                            style={{ width: '2.2em', pointerEvents: 'auto', cursor: 'pointer' }}
                         />
                     </EmojiSelector>
                 </Input>

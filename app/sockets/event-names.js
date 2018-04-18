@@ -6,6 +6,7 @@ export const client = Object.freeze({
     GET_USER: 'GET_USER',
     SEARCH_USER: 'SEARCH_USER',
     GET_URL_META: 'GET_URL_META',
+    CHANGE_AVATAR_URL: 'CHANGE_AVATAR_URL',
     GET_CURRENT_USER: 'GET_CURRENT_USER',
     GET_WEATHER: 'GET_WEATHER'
 });

@@ -14,7 +14,6 @@ class UsersStore {
         return this.usersById.get(userId);
     }
 
-    // eslint-disable-next-line class-methods-use-this
     searchUser(query) {
         if (!this.sentQueries.find(x => query.includes(x))) {
             this.sentQueries.push(query);
@@ -22,11 +21,6 @@ class UsersStore {
         }
     }
 
-    fetchUser(userId) {
-        if (!this.usersById.has(userId)) {
-            getUser({ userId });
-        }
-    }
 
     getUsername(userId) {
         if (this.usersById.has(userId)) {

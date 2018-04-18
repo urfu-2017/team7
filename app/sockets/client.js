@@ -81,6 +81,10 @@ export const getCurrentUser = () => {
     socket.emit(eventNames.client.GET_CURRENT_USER);
 };
 
+export const changeAvatarUrl = (avatarUrl) => {
+    socket.emit(eventNames.client.CHANGE_AVATAR_URL, avatarUrl);
+};
+
 export const onCurrentUser = (handler) => {
     socket.on(eventNames.server.CURRENT_USER, handler);
 };

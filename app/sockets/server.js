@@ -4,10 +4,10 @@ import uuidv4 from 'uuid/v4';
 import * as eventNames from './event-names';
 import { usersRepo, messagesRepo, chatsRepo } from '../db';
 import * as userInfoProvider from './user-info-provider';
-import { Chat, Message } from '../db/datatypes';
+import { Message } from '../db/datatypes';
 import { getOwlUrl } from '../utils/owl-provider';
 import getLogger from '../utils/logger';
-import { MAX_CHAT_NAME_LENGTH, MAX_MESSAGE_LENGTH } from '../utils/constants';
+import { MAX_MESSAGE_LENGTH } from '../utils/constants';
 import getMetadata from '../utils/url-metadata';
 import getWeather from '../utils/weather';
 
@@ -130,22 +130,15 @@ const registerMessageHandlers = (socketServer, socket, currentUserId) => {
 
     on(eventNames.client.CREATE_CHAT, async ({ name, userIds }) => {
         logger.trace('client.CREATE_CHAT', { name, userIds });
-        const chatId = uuidv4();
-        const chat = new Chat(
-            chatId,
-            name.substring(0, MAX_CHAT_NAME_LENGTH),
-            [],
-            getOwlUrl()
-        );
-        await chatsRepo.upsertChat(chat);
-        const joinChatPromises = userIds.map(userId => chatsRepo.joinChat(userId, chatId));
+        const chat = await chatsRepo.createChat(name, getOwlUrl());
+        const joinChatPromises = userIds.map(userId => chatsRepo.joinChat(userId, chat.chatId));
         await Promise.all(joinChatPromises);
 
         const joinRoomPromises = _.chain(await getAllSockets())
             .map(async (otherSocket) => {
                 const otherUserId = await userInfoProvider.getUserId(otherSocket.handshake);
                 if (userIds.includes(otherUserId)) {
-                    otherSocket.join(chatId);
+                    otherSocket.join(chat.chatId);
                     otherSocket.emit(eventNames.server.CHAT, chat);
                 }
             }).value();

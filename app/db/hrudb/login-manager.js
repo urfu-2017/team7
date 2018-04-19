@@ -1,19 +1,18 @@
-import { upsertUser, getAllUsers, upsertAllUsers, getUser } from './users-repository';
+import uuidv4 from 'uuid/v4';
 import { User } from '../datatypes';
+import { getAll, put } from './hrudb-repeater';
 
-export default async (id, username) => {
-    const allUsers = await getAllUsers();
-    const userExists = Boolean(allUsers[id]);
-    const shouldUpdateUser = !userExists || allUsers[id] !== username;
 
-    if (shouldUpdateUser) {
-        let user = new User(id, username, `/avatar/${id}`, []);
-        if (userExists) {
-            user = await getUser(id);
-            user.username = username;
-        }
-        await upsertUser(user);
-        allUsers[id] = username;
-        await upsertAllUsers(allUsers);
+export default async (githubId, username) => {
+    let [allUsers] = await getAll('AllUsers');
+    allUsers = allUsers || {};
+    const userInIndex = Object.entries(allUsers).find(([, [, gid]]) => gid === githubId);
+    if (userInIndex) {
+        return userInIndex[0];
     }
+    const userId = uuidv4();
+    const user = new User(userId, githubId, username, `/avatar/${userId}`);
+    await put(`Users_${userId}`, user);
+    await put('AllUsers', allUsers);
+    return userId;
 };

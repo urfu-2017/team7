@@ -1,4 +1,12 @@
-import { User } from '../datatypes';
-import { upsertUser } from './users-repository';
+import { knex } from './knex';
 
-export default async (id, username) => upsertUser(new User(id, username, `/avatar/${id}`, []));
+export default async (githubId, username) => {
+    let [user] = await knex('user').where({ githubId }).select('userId');
+    if (!user) {
+        user = await knex('user')
+            .insert({ githubId, username, avatarUrl: `/avatar/${githubId}` })
+            .returning('userId');
+    }
+
+    return user.userId;
+};

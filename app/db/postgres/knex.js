@@ -6,31 +6,32 @@ const logger = getLogger('postgres-knex');
 
 
 export const createTables = async (knex) => {
-    await knex.schema.createTable('users', (table) => {
-        table.integer('id').primary();
+    await knex.schema.createTable('user', (table) => {
+        table.uuid('userId').primary();
+        table.integer('githubId').unique().notNullable();
         table.string('username');
         table.string('avatarUrl');
     });
 
-    await knex.schema.createTable('chats', (table) => {
-        table.uuid('id').primary();
+    await knex.schema.createTable('chat', (table) => {
+        table.uuid('chatId').primary();
         table.string('name');
         table.string('avatarUrl');
     });
 
-    await knex.schema.createTable('userChats', (table) => {
-        table.uuid('chatId').references('chats.id');
-        table.integer('userId').references('users.id');
+    await knex.schema.createTable('users_chats', (table) => {
+        table.uuid('chatId').references('chat.chatId');
+        table.integer('userId').references('user.userId');
         table.primary(['chatId', 'userId']);
     });
 
-    await knex.schema.createTable('messages', (table) => {
+    await knex.schema.createTable('message', (table) => {
         table.uuid('messageId').primary();
         table.timestamp('timestamp');
-        table.integer('authorUserId').references('users.id');
+        table.integer('authorUserId').references('user.userId');
         table.string('content');
         table.string('originalContent');
-        table.uuid('chatId').references('chats.id');
+        table.uuid('chatId').references('chat.chatId');
     });
 };
 
@@ -49,7 +50,7 @@ export const connect = async () => {
             acquireConnectionTimeout: 10000,
             connection: config.POSTGRES_CONNECTION_STRING
         });
-        const tablesExits = await knexInstance.schema.hasTable('users');
+        const tablesExits = await knexInstance.schema.hasTable('user');
 
         if (!tablesExits) {
             await createTables(knexInstance);

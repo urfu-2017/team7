@@ -10,7 +10,7 @@ export const getChat = async (chatId) => {
     if (!items.length) {
         throw new Error(`No such chat (chatId=${chatId})`);
     }
-    const userIds = items.map(x => x.userId).filter(Boolean);;
+    const userIds = items.map(x => x.userId).filter(Boolean);
     const { name, avatarUrl } = items[0];
     return new Chat(chatId, name, userIds, avatarUrl);
 };

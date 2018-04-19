@@ -11,7 +11,7 @@ export default async (githubId, username) => {
         return userInIndex[0];
     }
     const userId = uuidv4();
-    const user = new User(userId, githubId, username, `/avatar/${userId}`);
+    const user = new User(userId, githubId, username, `/avatar/${githubId}`);
     await put(`Users_${userId}`, user);
     await put('AllUsers', allUsers);
     return userId;

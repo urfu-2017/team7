@@ -1,5 +1,5 @@
 import { expect, proxyquire, sandbox } from '../helpers';
-import * as userRepo from '../../db/hrudb/users-repository';
+import * as repeater from '../../db/hrudb/hrudb-repeater';
 
 
 let sut;
@@ -7,9 +7,9 @@ let sut;
 suite('Hrudb.LoginManager.loginUser');
 
 beforeEach(async () => {
-    sandbox.stub(userRepo);
+    sandbox.stub(repeater);
     sut = proxyquire('../db/hrudb/login-manager', {
-        './users-repository': userRepo
+        './hrudb-repeater': repeater
     }).default;
 });
 
@@ -18,11 +18,9 @@ afterEach(async () => {
 });
 
 test('will do single request to hrudb', async () => {
-    userRepo.getAllUsers.returnsAsync({ 0: 'name1' });
+    repeater.getAll.returnsAsync([{ kekId: ['name1', 0] }]);
     await sut(0, 'name1');
 
-    expect(userRepo.getAllUsers).to.have.been.calledOnce;
-    expect(userRepo.upsertUser).to.have.not.been.called;
-    expect(userRepo.getUser).to.have.not.been.called;
-    expect(userRepo.upsertAllUsers).to.have.not.been.called;
+    expect(repeater.getAll).to.have.been.calledOnce;
+    expect(repeater.put).to.have.not.been.called;
 });

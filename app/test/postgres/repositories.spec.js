@@ -1,7 +1,7 @@
 import Knex from 'knex';
 import { expect, proxyquire } from '../helpers';
 import { createTables } from '../../db/postgres/knex';
-import { User, Chat, Message } from '../../db/datatypes';
+import { User, Message } from '../../db/datatypes';
 
 
 let usersRepo;
@@ -34,36 +34,26 @@ beforeEach(async () => {
     }).default;
 });
 
-const user1 = new User(900, 'papa', '/avatar/900', []);
-const user2 = new User(600, 'mama', '/avatar/600', []);
-const chat = new Chat('11111117-287a-46ec-8c67-8cc0c89eb77c', 'чятик', [], '');
-const msg1 = new Message(
-    '21111117-287a-46ec-8c67-8cc0c89eb77c', new Date(), user1.userId,
-    'privet1', 'privet1', chat.chatId
-);
+const user1 = new User('91111117-287a-46ec-8c67-8cc0c89eb77c', 900, 'papa', '/avatar/900', []);
+const user2 = new User('10111117-287a-46ec-8c67-8cc0c89eb77c', 600, 'mama', '/avatar/600', []);
 
-const msg2 = new Message(
-    '31111117-287a-46ec-8c67-8cc0c89eb77c', new Date(), user1.userId,
-    'paka1', 'paka1', chat.chatId
-);
+test('can login thru github', async () => {
+    const userId1 = await loginUser(user1.githubId, user1.username);
+    const userId2 = await loginUser(user2.githubId, user2.username);
+    const gotUser1 = await usersRepo.getUser(userId1);
+    const gotUser2 = await usersRepo.getUser(userId2);
 
-test('can login', async () => {
-    await loginUser(user1.userId, user1.username);
-    await loginUser(user2.userId, user2.username);
-    const gotUser1 = await usersRepo.getUser(user1.userId);
-    const gotUser2 = await usersRepo.getUser(user2.userId);
-
-    expect(gotUser1).to.be.deep.equal(user1);
-    expect(gotUser2).to.be.deep.equal(user2);
+    expect(gotUser1).to.be.deep.equal(Object.assign({}, user1, { userId: gotUser1.userId }));
+    expect(gotUser2).to.be.deep.equal(Object.assign({}, user2, { userId: gotUser2.userId }));
 });
 
 test('can join chat', async () => {
-    await loginUser(user1.userId, user1.username);
-    await loginUser(user2.userId, user2.username);
-    await chatsRepo.upsertChat(chat);
+    const userId1 = await loginUser(user1.githubId, user1.username);
+    const userId2 = await loginUser(user2.githubId, user2.username);
+    const chat = await chatsRepo.createChat('чятик', 'avatarUrl');
 
-    await chatsRepo.joinChat(user1.userId, chat.chatId);
-    await chatsRepo.joinChat(user2.userId, chat.chatId);
+    await chatsRepo.joinChat(userId1, chat.chatId);
+    await chatsRepo.joinChat(userId2, chat.chatId);
 
     const {
         avatarUrl, chatId, name, userIds
@@ -73,13 +63,21 @@ test('can join chat', async () => {
         chatId: chat.chatId,
         name: chat.name
     });
-    expect(userIds).to.have.deep.members([user1.userId, user2.userId]);
+    expect(userIds).to.have.deep.members([userId1, userId2]);
 });
 
 test('can send messages to chat', async () => {
-    await loginUser(user1.userId, user1.username);
-    await chatsRepo.upsertChat(chat);
-    await chatsRepo.joinChat(user1.userId, chat.chatId);
+    const userId1 = await loginUser(user1.githubId, user1.username);
+    const chat = await chatsRepo.createChat('чятик', 'avatarUrl');
+    await chatsRepo.joinChat(userId1, chat.chatId);
+    const msg1 = new Message(
+        '21111117-287a-46ec-8c67-8cc0c89eb77c', new Date(), userId1,
+        'privet1', 'privet1', chat.chatId
+    );
+    const msg2 = new Message(
+        '31111117-287a-46ec-8c67-8cc0c89eb77c', new Date(), userId1,
+        'paka1', 'paka1', chat.chatId
+    );
     await messagesRepo.createMessage(msg1);
     await messagesRepo.createMessage(msg2);
     const gotMessages = await messagesRepo.getMessagesFromChat(chat.chatId);
@@ -88,13 +86,13 @@ test('can send messages to chat', async () => {
 });
 
 test('can getAll users', async () => {
-    await loginUser(user1.userId, user1.username);
-    await loginUser(user2.userId, user2.username);
+    const userId1 = await loginUser(user1.githubId, user1.username);
+    const userId2 = await loginUser(user2.githubId, user2.username);
     const allUsers = await usersRepo.getAllUsers();
 
     expect(allUsers).to.be.deep.equal({
-        [user1.userId]: user1.username,
-        [user2.userId]: user2.username
+        [userId1]: user1.username,
+        [userId2]: user2.username
     });
 });
 

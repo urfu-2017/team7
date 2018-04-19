@@ -21,14 +21,14 @@ export const createTables = async (knex) => {
 
     await knex.schema.createTable('users_chats', (table) => {
         table.uuid('chatId').references('chat.chatId');
-        table.integer('userId').references('user.userId');
+        table.uuid('userId').references('user.userId');
         table.primary(['chatId', 'userId']);
     });
 
     await knex.schema.createTable('message', (table) => {
         table.uuid('messageId').primary();
         table.timestamp('timestamp');
-        table.integer('authorUserId').references('user.userId');
+        table.uuid('authorUserId').references('user.userId');
         table.string('content');
         table.string('originalContent');
         table.uuid('chatId').references('chat.chatId');

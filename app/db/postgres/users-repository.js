@@ -15,9 +15,9 @@ export const removeAllUsers = async () => knex('user').del();
 
 export const getUser = async (userId) => {
     const items = await knex('user')
-        .where({ userId })
-        .leftJoin('users_chats', 'users_chats.userId', '=', 'user.userId')
-        .select('users_chats.chatId', 'user.username', 'user.avatarUrl', 'user.githubId');
+        .select('users_chats.chatId', 'user.*')
+        .leftJoin('users_chats', 'users_chats.userId', 'user.userId')
+        .where('user.userId', userId);
     if (!items.length) {
         throw new Error(`No such user (userId=${userId})`);
     }

@@ -1,7 +1,7 @@
 /* eslint-disable */
 import inquirer from 'inquirer';
 import inquirerCommandPrompt from 'inquirer-command-prompt';
-import { usersRepo, messagesRepo, chatsRepo } from './db';
+import { usersRepo, messagesRepo, chatsRepo, connect } from './db';
 
 
 const { getAllUsers, removeAllUsers, getUser, removeUser } = usersRepo;
@@ -78,6 +78,7 @@ const asyncLoop = async () => {
 
 
 export default async () => {
+    await connect();
     console.log('print "list" to view all commands');
     while (true) {
         try {

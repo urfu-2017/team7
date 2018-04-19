@@ -26,7 +26,7 @@ after(async () => {
 
 before(async () => {
     stream = await createWriteStreamAsync(FILENAME);
-    hrudb = proxyquire('../db/hrudb/hrudb-client', {
+    hrudb = proxyquire('../../db/hrudb/hrudb-client', {
         '../../config': {
             default: {
                 HRUDB_TOKEN: '8f92d8b92cffc5d2c4ddb2af9959dfa9391b6f43',

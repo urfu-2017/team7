@@ -1,3 +1,3 @@
 import * as hrudb from './hrudb';
 
-exports = hrudb;
+module.exports = hrudb;

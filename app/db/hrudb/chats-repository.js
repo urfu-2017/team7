@@ -1,6 +1,6 @@
 import { get, put } from './hrudb-repeater';
 import { getUser, upsertUser } from './users-repository';
-import getLogger from '../utils/logger';
+import getLogger from '../../utils/logger';
 
 const logger = getLogger('chats-repo');
 

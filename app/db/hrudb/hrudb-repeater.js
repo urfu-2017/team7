@@ -1,11 +1,10 @@
 import { Promise } from 'bluebird';
 import * as hrudb from './hrudb-client';
-import { REPEATER_TIMES } from '../utils/constants';
-import getLogger from '../utils/logger';
+import { REPEATER_TIMES } from '../../utils/constants';
+import getLogger from '../../utils/logger';
 
 const logger = getLogger('hrudb');
-const repeatTimes = REPEATER_TIMES;
-const repeatRange = [...Array(repeatTimes)];
+const repeatRange = [...Array(REPEATER_TIMES)];
 
 const tryResolve = async (options, promise) => {
     let resolved = false;

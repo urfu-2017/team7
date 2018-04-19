@@ -2,9 +2,7 @@ import Server from 'socket.io';
 import _ from 'lodash';
 import uuidv4 from 'uuid/v4';
 import * as eventNames from './event-names';
-import * as usersRepository from '../db/users-repository';
-import * as messagesRepository from '../db/messages-repository';
-import * as chatsRepository from '../db/chats-repository';
+import { usersRepo, messagesRepo, chatsRepo } from '../db';
 import * as userInfoProvider from './user-info-provider';
 import { Chat, Message } from '../db/datatypes';
 import { getOwlUrl } from '../utils/owl-provider';
@@ -17,15 +15,29 @@ const logger = getLogger('socket-server');
 
 const trySendUserChats = async (socket, userId) => {
     try {
-        const user = await usersRepository.getUser(userId);
+        const user = await usersRepo.getUser(userId);
         const sendChatInfoPromises = user.chatIds.map(async (chatId) => {
-            const chat = await chatsRepository.getChat(chatId);
+            const chat = await chatsRepo.getChat(chatId);
             socket.emit(eventNames.server.CHAT, chat);
             socket.join(chat.chatId);
-            const messages = await messagesRepository.getMessagesFromChat(chatId);
+
+            const messages = await messagesRepo.getMessagesFromChat(chatId);
             socket.emit(eventNames.server.LIST_MESSAGES, { messages, chatId });
+
+            return chat;
         });
-        await Promise.all(sendChatInfoPromises);
+
+        const chats = await Promise.all(sendChatInfoPromises);
+        const sendUsersPromises = _.chain(chats)
+            .flatMap(chat => chat.userIds)
+            .uniq()
+            .map(async (uid) => {
+                const anotherUser = await usersRepo.getUser(uid);
+                socket.emit(eventNames.server.USER, anotherUser);
+            })
+            .value();
+
+        await Promise.all(sendUsersPromises);
     } catch (e) {
         logger.warn(e, `Failed to send user chats (userId=${userId})`);
     }
@@ -43,7 +55,7 @@ const getAsyncSocketHandler = (socket, currentUserId) => (eventName, asyncMessag
 
 const registerMessageHandlers = (socketServer, socket, currentUserId) => {
     const sendUser = async (userId) => {
-        const user = await usersRepository.getUser(userId);
+        const user = await usersRepo.getUser(userId);
         if (user) {
             socket.emit(eventNames.server.USER, user);
         }
@@ -60,7 +72,7 @@ const registerMessageHandlers = (socketServer, socket, currentUserId) => {
 
     on(eventNames.client.GET_MESSAGES, async ({ chatId }) => {
         logger.trace('client.GET_MESSAGES', { chatId });
-        const messages = await messagesRepository.getMessagesFromChat(chatId);
+        const messages = await messagesRepo.getMessagesFromChat(chatId);
         socket.emit(eventNames.server.LIST_MESSAGES, { chatId, messages });
         const sendUserPromises = _.chain(messages)
             .map(x => x.authorUserId)
@@ -74,7 +86,7 @@ const registerMessageHandlers = (socketServer, socket, currentUserId) => {
 
     on(eventNames.client.SEARCH_USER, async ({ query }) => {
         logger.trace('client.SEARCH_USER', { query });
-        const usersFromIndex = await usersRepository.getAllUsers();
+        const usersFromIndex = await usersRepo.getAllUsers();
         const re = new RegExp(_.escapeRegExp(query), 'i');
         const sendUserPromises = _.chain(usersFromIndex)
             .map((username, userId) => ({ username, userId }))
@@ -96,7 +108,7 @@ const registerMessageHandlers = (socketServer, socket, currentUserId) => {
         socket.emit(eventNames.server.MESSAGE_SENT, message);
 
         try {
-            await messagesRepository.createMessage(message);
+            await messagesRepo.createMessage(message);
             socket.broadcast.to(message.chatId).emit(eventNames.server.MESSAGE, message);
             socket.emit(eventNames.server.MESSAGE_RECEIVED, message);
         } catch (e) {
@@ -125,8 +137,8 @@ const registerMessageHandlers = (socketServer, socket, currentUserId) => {
             [],
             getOwlUrl()
         );
-        await chatsRepository.upsertChat(chat);
-        const joinChatPromises = userIds.map(userId => chatsRepository.joinChat(userId, chatId));
+        await chatsRepo.upsertChat(chat);
+        const joinChatPromises = userIds.map(userId => chatsRepo.joinChat(userId, chatId));
         await Promise.all(joinChatPromises);
 
         const joinRoomPromises = _.chain(await getAllSockets())
@@ -148,7 +160,7 @@ const registerMessageHandlers = (socketServer, socket, currentUserId) => {
 
 const trySendUserInfo = async (socket, userId) => {
     try {
-        const user = await usersRepository.getUser(userId);
+        const user = await usersRepo.getUser(userId);
         socket.emit(eventNames.server.CURRENT_USER, user);
     } catch (e) {
         logger.warn(e, `Failed to send user info ${userId}`);

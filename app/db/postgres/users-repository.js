@@ -21,7 +21,7 @@ export const upsertUser = async (updatedUser) => {
 export const getAllUsers = async () => {
     const result = {};
     const users = await knex('users').select('id', 'username');
-    users.forEach(([id, username]) => {
+    users.forEach(({ id, username }) => {
         result[id] = username;
     });
     return result;
@@ -36,8 +36,9 @@ export const getUser = async (userId) => {
     if (!items.length) {
         throw new Error(`No such user (userId=${userId})`);
     }
+
     const chatIds = items.map(x => x.chatId).filter(Boolean);
-    const { username, avatarUrl } = items;
+    const { username, avatarUrl } = items[0];
     return new User(userId, username, avatarUrl, chatIds);
 };
 

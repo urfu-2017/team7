@@ -1,3 +1,3 @@
-import * as hrudb from './hrudb';
+import * as postgres from './postgres';
 
-module.exports = hrudb;
+module.exports = postgres;

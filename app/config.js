@@ -1,4 +1,5 @@
 import { config } from 'dotenv';
+import uuidv4 from 'uuid/v4';
 
 config();
 const {
@@ -32,7 +33,7 @@ export default {
     SITE_URL,
     GITHUB_CLIENT_ID,
     GITHUB_CLIENT_SECRET,
-    EXPRESS_SESSION_SECRET,
+    EXPRESS_SESSION_SECRET: EXPRESS_SESSION_SECRET || uuidv4(),
     HRUDB_TOKEN,
     WEATHER_TOKEN,
     IS_PRODUCTION: process.env.NODE_ENV === 'production',

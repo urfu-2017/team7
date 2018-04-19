@@ -5,12 +5,12 @@ import { Chat } from '../datatypes';
 export const getChat = async (chatId) => {
     const items = await knex('chats')
         .where({ id: chatId })
-        .join('userChats', 'userChats.chatId', 'chats.id');
+        .leftJoin('userChats', 'userChats.chatId', 'chats.id');
 
     if (!items.length) {
         throw new Error(`No such chat (chatId=${chatId})`);
     }
-    const userIds = items.map(x => x.userId);
+    const userIds = items.map(x => x.userId).filter(Boolean);;
     const { name, avatarUrl } = items[0];
     return new Chat(chatId, name, userIds, avatarUrl);
 };

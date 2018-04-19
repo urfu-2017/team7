@@ -4,7 +4,7 @@ import installSocketServer from './sockets/server';
 import buildExpressApp from './express-app';
 import config from './config';
 import getLogger from './utils/logger';
-import connect from './db';
+import { connect } from './db';
 
 const logger = getLogger('entry-point');
 
@@ -32,6 +32,7 @@ export default async () => {
         logger.info(`Running on http://${config.HOST}:${config.PORT}`);
     } catch (e) {
         logger.fatal(e, 'Failed to run server');
+        process.exit(1);
     }
 };
 

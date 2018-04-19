@@ -5,9 +5,9 @@ import config from '../../config';
 const logger = getLogger('postgres-knex');
 
 
-const createTables = async (knex) => {
+export const createTables = async (knex) => {
     await knex.schema.createTable('users', (table) => {
-        table.uuid('id').primary();
+        table.integer('id').primary();
         table.string('username');
         table.string('avatarUrl');
     });
@@ -20,14 +20,14 @@ const createTables = async (knex) => {
 
     await knex.schema.createTable('userChats', (table) => {
         table.uuid('chatId').references('chats.id');
-        table.uuid('userId').references('users.id');
+        table.integer('userId').references('users.id');
         table.primary(['chatId', 'userId']);
     });
 
     await knex.schema.createTable('messages', (table) => {
         table.uuid('messageId').primary();
         table.timestamp('timestamp');
-        table.uuid('authorUserId').references('users.id');
+        table.integer('authorUserId').references('users.id');
         table.string('content');
         table.string('originalContent');
         table.uuid('chatId').references('chats.id');

@@ -1,5 +1,5 @@
 import got from 'got';
-import config from '../config';
+import config from '../../config';
 
 const sendRequest = async (relativeUrl, method, body, query) => {
     const headers = {

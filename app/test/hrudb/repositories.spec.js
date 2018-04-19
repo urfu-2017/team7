@@ -1,18 +1,18 @@
-import { expect, proxyquire, sandbox } from './helpers';
-import { User, Chat } from '../hrudb/datatypes';
-import * as hrudb from '../hrudb/hrudb-client';
+import { expect, proxyquire, sandbox } from '../helpers';
+import { User, Chat } from '../../db/datatypes';
+import * as hrudb from '../../db/hrudb/hrudb-client';
 
-suite('Repositories');
+suite('Hrudb.Repositories');
 
 let userRepo;
 let chatsRepo;
 
 beforeEach(async () => {
     sandbox.stub(hrudb);
-    userRepo = proxyquire('../hrudb/users-repository', {
+    userRepo = proxyquire('../db/hrudb/users-repository', {
         './hrudb-repeater': hrudb
     });
-    chatsRepo = proxyquire('../hrudb/chats-repository', {
+    chatsRepo = proxyquire('../db/hrudb/chats-repository', {
         './hrudb-repeater': hrudb,
         './users-repository': userRepo
     });

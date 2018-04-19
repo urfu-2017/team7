@@ -1,7 +1,7 @@
 import { Passport } from 'passport';
 import { Strategy } from 'passport-github';
 import config from '../config';
-import loginUser from '../hrudb/login-manager';
+import { loginUser } from '../db';
 import getLogger from '../utils/logger';
 
 const logger = getLogger('auth');

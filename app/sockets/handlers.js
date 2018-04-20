@@ -1,11 +1,11 @@
 import _ from 'lodash';
 import uuidv4 from 'uuid/v4';
 import * as eventNames from './event-names';
-import * as usersRepository from '../hrudb/users-repository';
-import * as messagesRepository from '../hrudb/messages-repository';
-import * as chatsRepository from '../hrudb/chats-repository';
+import * as usersRepository from '../db/postgres/users-repository';
+import * as messagesRepository from '../db/postgres/messages-repository';
+import * as chatsRepository from '../db/postgres/chats-repository';
 import * as userInfoProvider from './user-info-provider';
-import { Chat, Message } from '../hrudb/datatypes';
+import { Chat, Message } from '../db/datatypes';
 import { getOwlUrl } from '../utils/owl-provider';
 import getLogger from '../utils/logger';
 import { MAX_CHAT_NAME_LENGTH, MAX_MESSAGE_LENGTH } from '../utils/constants';

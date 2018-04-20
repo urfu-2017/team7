@@ -21,6 +21,7 @@ class EmojiSelector extends React.Component {
     };
     render() {
         const { className, children, onSelected } = this.props;
+
         return (
             <Popup
                 className={`${className} ${css.popup}`}

@@ -1,16 +1,16 @@
 import { Promise } from 'bluebird';
-import { expect, proxyquire, skipSuite } from './helpers';
+import { expect, proxyquire, skipSuite } from '../helpers';
 
 
 let sut;
 
-suite('HrudbClientIntegration');
+suite('Hrudb.Client.Integration');
 
 before(skipSuite);
 
 beforeEach(async () => {
-    sut = proxyquire('../hrudb/hrudb-client', {
-        '../config': {
+    sut = proxyquire('../db/hrudb/hrudb-client', {
+        '../../config': {
             default: {
                 HRUDB_TOKEN: '8f92d8b92cffc5d2c4ddb2af9959dfa9391b6f43',
                 HRUDB_URL: 'https://hrudb.herokuapp.com'

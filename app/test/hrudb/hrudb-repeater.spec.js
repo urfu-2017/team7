@@ -1,14 +1,14 @@
-import { expect, proxyquire, sandbox } from './helpers';
-import * as hrudb from '../hrudb/hrudb-client';
-import { REPEATER_TIMES } from '../utils/constants';
+import { expect, proxyquire, sandbox } from '../helpers';
+import * as hrudb from '../../db/hrudb/hrudb-client';
+import { REPEATER_TIMES } from '../../utils/constants';
 
 let sut;
 
-suite('HrudbRepeater');
+suite('Hrudb.Repeater');
 
 beforeEach(async () => {
     sandbox.stub(hrudb);
-    sut = proxyquire('../hrudb/hrudb-repeater', {
+    sut = proxyquire('../db/hrudb/hrudb-repeater', {
         './hrudb-client': hrudb
     });
 });

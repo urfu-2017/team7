@@ -34,6 +34,7 @@ class UsersStore {
         if (this.usersById.has(userId)) {
             return this.getUser(userId).avatarUrl;
         }
+
         return `/avatar/${userId}`;
     }
 

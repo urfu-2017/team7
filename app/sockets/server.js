@@ -13,7 +13,7 @@ const registerMessageHandlers = (socketServer, socket, currentUserId) => {
 
     on(eventNames.client.GET_CHATS, handlers.trySendUserChats);
 
-    on(eventNames.client.GET_MESSAGES, handlers.sendMessages);
+    on(eventNames.client.GET_MESSAGES, handlers.sendChatInfo);
 
     on(eventNames.client.GET_USER, handlers.sendUser);
 
@@ -26,6 +26,8 @@ const registerMessageHandlers = (socketServer, socket, currentUserId) => {
     on(eventNames.client.CREATE_CHAT, handlers.createChat);
 
     on(eventNames.client.GET_WEATHER, handlers.getWeather);
+
+    on(eventNames.client.CHANGE_AVATAR_URL, handlers.changeAvatarUrl);
 
     return handlers;
 };

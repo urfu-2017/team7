@@ -5,10 +5,10 @@ import * as usersRepository from '../db/postgres/users-repository';
 import * as messagesRepository from '../db/postgres/messages-repository';
 import * as chatsRepository from '../db/postgres/chats-repository';
 import * as userInfoProvider from './user-info-provider';
-import { Chat, Message } from '../db/datatypes';
+import { Message } from '../db/datatypes';
 import { getOwlUrl } from '../utils/owl-provider';
 import getLogger from '../utils/logger';
-import { MAX_CHAT_NAME_LENGTH, MAX_MESSAGE_LENGTH } from '../utils/constants';
+import { MAX_MESSAGE_LENGTH } from '../utils/constants';
 import getMetadata from '../utils/url-metadata';
 import getWeather from '../utils/weather';
 
@@ -20,7 +20,7 @@ export default (socketServer, socket, currentUserId) => {
             ? reject(error)
             : resolve(clients.map(id => socketServer.sockets.connected[id])))));
 
-    const sendUser = async ({ userId }) => {
+    const fetchAndSendUser = async (userId) => {
         const user = await usersRepository.getUser(userId);
         if (user) {
             socket.emit(eventNames.server.USER, user);
@@ -41,7 +41,7 @@ export default (socketServer, socket, currentUserId) => {
         },
 
         sendUser({ userId }) {
-            sendUser({ userId });
+            fetchAndSendUser(userId);
         },
 
         async trySendUserInfo() {
@@ -71,7 +71,7 @@ export default (socketServer, socket, currentUserId) => {
                 const sendUsersPromises = _.chain(chats)
                     .flatMap(chat => chat.userIds)
                     .uniq()
-                    .map(userId => sendUser({ userId }))
+                    .map(fetchAndSendUser)
                     .value();
 
                 await Promise.all(sendUsersPromises);
@@ -80,14 +80,14 @@ export default (socketServer, socket, currentUserId) => {
             }
         },
 
-        async sendMessages({ chatId }) {
+        async sendChatInfo({ chatId }) {
             logger.trace('client.GET_MESSAGES', { chatId });
             const messages = await messagesRepository.getMessagesFromChat(chatId);
             socket.emit(eventNames.server.LIST_MESSAGES, { chatId, messages });
             const sendUserPromises = _.chain(messages)
                 .map(message => message.authorUserId)
                 .uniq()
-                .map(userId => sendUser({ userId }))
+                .map(fetchAndSendUser)
                 .value();
             await Promise.all(sendUserPromises);
         },
@@ -100,7 +100,7 @@ export default (socketServer, socket, currentUserId) => {
                 .map((username, userId) => ({ username, userId }))
                 .filter(user => re.test(user.username))
                 .map(user => user.userId)
-                .map(userId => sendUser({ userId }))
+                .map(fetchAndSendUser)
                 .value();
             await Promise.all(sendUserPromises);
         },
@@ -138,23 +138,16 @@ export default (socketServer, socket, currentUserId) => {
 
         async createChat({ name, userIds }) {
             logger.trace('client.CREATE_CHAT', { name, userIds });
-            const chatId = uuidv4();
-            const chat = new Chat(
-                chatId,
-                name.substring(0, MAX_CHAT_NAME_LENGTH),
-                [],
-                getOwlUrl()
-            );
-            await chatsRepository.upsertChat(chat);
+            const chat = await chatsRepository.createChat(name, getOwlUrl());
             const joinChatPromises = userIds
-                .map(userId => chatsRepository.joinChat(userId, chatId));
+                .map(userId => chatsRepository.joinChat(userId, chat.chatId));
             await Promise.all(joinChatPromises);
 
             const joinRoomPromises = _.chain(await getAllSockets())
                 .map(async (otherSocket) => {
                     const otherUserId = await userInfoProvider.getUserId(otherSocket.handshake);
                     if (userIds.includes(otherUserId)) {
-                        otherSocket.join(chatId);
+                        otherSocket.join(chat.chatId);
                         otherSocket.emit(eventNames.server.CHAT, chat);
                     }
                 }).value();
@@ -164,6 +157,24 @@ export default (socketServer, socket, currentUserId) => {
         async getWeather(city) {
             const response = await getWeather(city);
             socket.emit(eventNames.server.WEATHER, { ...response, city });
+        },
+
+        async changeAvatarUrl(url) {
+            logger.trace('client.CHANGE_AVATAR_URL', { url });
+            const currentUser = await usersRepository.getUser(currentUserId);
+            currentUser.avatarUrl = url;
+            await usersRepository.updateUser(currentUser);
+            socket.emit(eventNames.server.CURRENT_USER, currentUser);
+            const userIds = await usersRepository.getUserCompanionsIds(currentUser);
+            const updateCurrentUserPromises = _.chain(await getAllSockets())
+                .map(async (otherSocket) => {
+                    const otherUserId = await userInfoProvider.getUserId(otherSocket.handshake);
+                    if (userIds.includes(otherUserId)) {
+                        otherSocket.emit(eventNames.server.USER, currentUser);
+                    }
+                }).value();
+
+            await Promise.all(updateCurrentUserPromises);
         }
     };
 };

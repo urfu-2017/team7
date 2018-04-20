@@ -30,3 +30,14 @@ export const getUser = async (userId) => {
 };
 
 export const removeUser = async userId => knex('user').where({ userId }).del();
+
+export const updateUser = async ({
+    username, avatarUrl, githubId, userId
+}) => knex('user')
+    .where('userId', userId)
+    .update({ username, avatarUrl, githubId });
+
+export const getUserCompanionsIds = async user => knex('users_chats')
+    .whereIn('chatId', user.chatIds)
+    .select('userId')
+    .distinct('userId');

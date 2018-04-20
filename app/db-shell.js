@@ -1,10 +1,10 @@
 /* eslint-disable */
 import inquirer from 'inquirer';
 import inquirerCommandPrompt from 'inquirer-command-prompt';
-import { getAllUsers, removeAllUsers, getUser, removeUser } from './db/users-repository';
-import { getMessagesFromChat } from './db/messages-repository';
-import { getChat } from './db/chats-repository';
-import { getAll } from './db/hrudb-repeater';
+import { getAllUsers, removeAllUsers, getUser, removeUser } from './hrudb/users-repository';
+import { getMessagesFromChat } from './hrudb/messages-repository';
+import { getChat } from './hrudb/chats-repository';
+import { getAll } from './hrudb/hrudb-repeater';
 
 inquirer.registerPrompt('command', inquirerCommandPrompt);
 

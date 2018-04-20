@@ -1,67 +1,66 @@
-import { expect } from 'chai';
 import { Promise } from 'bluebird';
-import * as hrudb from '../db/hrudb-client.mock';
-import { okResponses } from './helpers';
+import { expect, proxyquire, skipSuite } from './helpers';
 
 
-describe('HrudbClient', async () => {
-    /*  Можно проверить тесты на оригинальной хрюше
-    const hrudb = proxyquire('../db/hrudb-client', {
+let sut;
+
+suite('HrudbClientIntegration');
+
+before(skipSuite);
+
+beforeEach(async () => {
+    sut = proxyquire('../hrudb/hrudb-client', {
         '../config': {
             default: {
                 HRUDB_TOKEN: '8f92d8b92cffc5d2c4ddb2af9959dfa9391b6f43',
                 HRUDB_URL: 'https://hrudb.herokuapp.com'
             }
         }
-    }); */
-
-    beforeEach(async () => {
-        hrudb.setResponses(okResponses(500));
-        await hrudb.remove('key');
     });
+    await sut.remove('key');
+});
 
-    it('should put/get key-value', async () => {
-        await hrudb.put('key', 'value');
-        const value = await hrudb.get('key');
+test('should put/get key-value', async () => {
+    await sut.put('key', 'value');
+    const value = await sut.get('key');
 
-        expect(value).to.be.equal('value');
-    });
+    expect(value).to.be.equal('value');
+});
 
-    it('should post multiple values then getAll', async () => {
-        const [a, b, c] = ['SanaraBoi', '}{"SanaraBoi', 'SanaraBoi2'];
-        await Promise.mapSeries([a, b, c], value => hrudb.post('key', value));
-        const all = await hrudb.getAll('key');
+test('should post multiple values then getAll', async () => {
+    const [a, b, c] = ['SanaraBoi', '}{"SanaraBoi', 'SanaraBoi2'];
+    await Promise.mapSeries([a, b, c], value => sut.post('key', value));
+    const all = await sut.getAll('key');
 
-        expect(all).to.be.deep.equal([a, b, c]);
-    });
+    expect(all).to.be.deep.equal([a, b, c]);
+});
 
-    it.skip('should sort lexicographically and limit/offset', async () => {
-        const [a, b, c] = ['a1', 'a2', 'b1'];
-        await Promise.mapSeries([b, a, c], value => hrudb.post('key', value));
-        const sorted = await hrudb.getAll('key', { sortByAlphabet: true });
-        const lex = await hrudb.getAll('key', { sortByAlphabet: true, limit: 1, offset: 1 });
-        const dated = await hrudb.getAll('key', { limit: 2, offset: 1 });
+test('should sort lexicographically and limit/offset', async () => {
+    const [a, b, c] = ['a1', 'a2', 'b1'];
+    await Promise.mapSeries([b, a, c], value => sut.post('key', value));
+    const sorted = await sut.getAll('key', { sortByAlphabet: true });
+    const lex = await sut.getAll('key', { sortByAlphabet: true, limit: 1, offset: 1 });
+    const dated = await sut.getAll('key', { limit: 2, offset: 1 });
 
-        expect(sorted).to.be.deep.equal([a, b, c]);
-        expect(lex).to.be.deep.equal([b]);
-        expect(dated).to.be.deep.equal([a, c]);
-    });
+    expect(sorted).to.be.deep.equal([a, b, c]);
+    expect(lex).to.be.deep.equal([b]);
+    expect(dated).to.be.deep.equal([a, c]);
+});
 
-    it('can\'t replace by put', async () => {
-        const usersLikeValue = [{ a: 1 }];
-        await hrudb.put('key', usersLikeValue);
-        const totalValue = await hrudb.getAll('key');
+test('can\'t replace by put', async () => {
+    const usersLikeValue = [{ a: 1 }];
+    await sut.put('key', usersLikeValue);
+    const totalValue = await sut.getAll('key');
 
-        expect(totalValue).to.be.deep.equal([usersLikeValue]);
-    });
+    expect(totalValue).to.be.deep.equal([usersLikeValue]);
+});
 
-    it('returns 204 on delete', async () => {
-        await Promise.mapSeries([...Array(4)], () => hrudb.remove('key'));
-    });
+test('returns 204 on delete', async () => {
+    await Promise.mapSeries([...Array(4)], () => sut.remove('key'));
+});
 
-    it('returns empty array on getAll', async () => {
-        const res = await hrudb.getAll('uniqueeeeKey');
+test('returns empty array on getAll', async () => {
+    const res = await sut.getAll('uniqueeeeKey');
 
-        expect(res).to.be.lengthOf(0);
-    });
+    expect(res).to.be.lengthOf(0);
 });

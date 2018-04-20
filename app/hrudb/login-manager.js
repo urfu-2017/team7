@@ -4,7 +4,7 @@ import { User } from './datatypes';
 export default async (id, username) => {
     const allUsers = await getAllUsers();
     const userExists = Boolean(allUsers[id]);
-    const shouldUpdateUser = !userExists || allUsers[id].username !== username;
+    const shouldUpdateUser = !userExists || allUsers[id] !== username;
 
     if (shouldUpdateUser) {
         let user = new User(id, username, `/avatar/${id}`, []);

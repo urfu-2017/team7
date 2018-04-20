@@ -1,44 +1,28 @@
-import { expect } from 'chai';
-import proxyquire from 'proxyquire';
-import { rotateResponses } from './helpers';
-import * as hrudbMock from '../db/hrudb-client.mock';
-import { User } from '../db/datatypes';
+import { expect, proxyquire, sandbox } from './helpers';
+import * as userRepo from '../hrudb/users-repository';
 
 
-describe('LoginManager.loginUser', async () => {
-    const hrudb = proxyquire('../db/hrudb-repeater', {
-        './hrudb-client': hrudbMock
-    });
-    const userRepo = proxyquire('../db/users-repository', {
-        './hrudb-repeater': hrudb
-    });
-    const loginUser = proxyquire('../db/login-manager', {
+let sut;
+
+suite('LoginManager.loginUser');
+
+beforeEach(async () => {
+    sandbox.stub(userRepo);
+    sut = proxyquire('../hrudb/login-manager', {
         './users-repository': userRepo
     }).default;
+});
 
-    beforeEach(async () => {
-        hrudbMock.clearDb();
-        hrudbMock.setResponses(rotateResponses(500));
-    });
+afterEach(async () => {
+    sandbox.restore();
+});
 
-    it('saves new user', async () => {
-        await loginUser(0, 'name1');
-        const users = await userRepo.getAllUsers();
-        const user = await userRepo.getUser(0);
+test('will do single request to hrudb', async () => {
+    userRepo.getAllUsers.returnsAsync({ 0: 'name1' });
+    await sut(0, 'name1');
 
-        expect(users).to.be.deep.equal({ 0: 'name1' });
-        expect(user).to.be.deep.equal(new User(0, 'name1', '/avatar/0', []));
-    });
-
-    it('won\'t overwrite fields', async () => {
-        const expected = new User(0, 'name1', 'custom_avatar', ['chatik']);
-        await loginUser(0, 'name1');
-        await userRepo.upsertUser(expected);
-        await loginUser(0, 'name1');
-        const users = await userRepo.getAllUsers();
-        const user = await userRepo.getUser(0);
-
-        expect(users).to.be.deep.equal({ 0: 'name1' });
-        expect(user).to.be.deep.equal(expected);
-    });
+    expect(userRepo.getAllUsers).to.have.been.calledOnce;
+    expect(userRepo.upsertUser).to.have.not.been.called;
+    expect(userRepo.getUser).to.have.not.been.called;
+    expect(userRepo.upsertAllUsers).to.have.not.been.called;
 });

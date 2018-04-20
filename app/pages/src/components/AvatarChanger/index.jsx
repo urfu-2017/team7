@@ -10,6 +10,7 @@ class AvatarChanger extends React.Component {
     }
     render() {
         const { changeAvatarUrl, user } = this.props.currentUserStore;
+
         return (
             <Input
                 placeholder={user.avatarUrl}

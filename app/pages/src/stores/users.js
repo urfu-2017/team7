@@ -1,5 +1,5 @@
 import { observable, computed } from 'mobx';
-import { getUser, onUser, searchUser } from '../../../sockets/client';
+import { onUser, searchUser } from '../../../sockets/client';
 
 class UsersStore {
     @observable usersById = observable.map();

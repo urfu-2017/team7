@@ -19,6 +19,7 @@ const requestSerializer = (request) => {
     if (request.user) {
         result.userId = request.user.userId;
     }
+
     return result;
 };
 

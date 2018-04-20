@@ -5,12 +5,12 @@
   "license": "MIT",
   "scripts": {
     "start": "node .",
-    "db-shell": "node . db-shell",
+    "db-shell": "node --require babel-core/register db-shell.js",
     "build": "next build",
-    "mocha": "mocha --timeout 5000 --ui qunit --require babel-core/register test/*.spec.js",
+    "mocha": "mocha --timeout 5000 --ui qunit --require babel-core/register test/**/*.spec.js --exit",
     "mwatch": "npm run mocha -- --watch",
     "test": "npm run lint && npm run mocha",
-    "stats": "mocha --no-timeouts --ui qunit --require babel-core/register test/*.stats.js",
+    "stats": "mocha --no-timeouts --ui qunit --require babel-core/register test/**/*.stats.js",
     "lint": "eslint . --ext .js,.jsx"
   },
   "dependencies": {
@@ -30,8 +30,7 @@
     "express-promise-router": "3.0.2",
     "got": "8.3.0",
     "html-to-utf8": "0.1.0",
-    "inquirer": "5.2.0",
-    "inquirer-command-prompt": "0.0.7",
+    "knex": "0.14.6",
     "lodash": "4.17.5",
     "metascraper": "3.10.4",
     "mobx": "4.1.1",
@@ -41,6 +40,7 @@
     "next": "5.1.0",
     "passport": "0.4.0",
     "passport-github": "1.1.0",
+    "pg": "7.4.1",
     "pngjs-image": "0.11.7",
     "react": "16.3.1",
     "react-dom": "16.3.1",
@@ -54,6 +54,8 @@
     "uuid": "3.2.1"
   },
   "devDependencies": {
+    "inquirer": "5.2.0",
+    "inquirer-command-prompt": "0.0.7",
     "@types/bunyan": "1.8.4",
     "@types/express": "4.11.1",
     "@types/got": "7.1.8",
@@ -84,6 +86,7 @@
     "proxyquire": "2.0.1",
     "sinon": "4.5.0",
     "sinon-chai": "3.0.0",
+    "sqlite3": "4.0.0",
     "supertest": "3.0.0"
   }
 }

@@ -45,6 +45,7 @@ class ChatCreation extends React.Component {
             const selectedUserIds = prevState.selectedUserIds.includes(userId)
                 ? _.without(prevState.selectedUserIds, userId)
                 : _.uniq([...prevState.selectedUserIds, userId]);
+
             return { selectedUserIds };
         });
     };

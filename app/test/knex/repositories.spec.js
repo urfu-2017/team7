@@ -9,7 +9,7 @@ let chatsRepo;
 let loginUser;
 let messagesRepo;
 
-suite('Postgres.Repositories.Integration');
+suite('Knex.Repositories.Integration');
 
 beforeEach(async () => {
     const knexInstance = await Knex({

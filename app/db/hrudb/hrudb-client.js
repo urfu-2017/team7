@@ -18,6 +18,7 @@ const sendRequest = async (relativeUrl, method, body, query) => {
     }
 
     const response = await got(config.HRUDB_URL + relativeUrl, options);
+
     return response.body;
 };
 
@@ -39,6 +40,7 @@ export const optionsToQuery = (options) => {
         query.sort = 'alph';
     }
     delete query.sortByAlphabet;
+
     return query;
 };
 

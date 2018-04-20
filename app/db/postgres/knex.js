@@ -42,6 +42,7 @@ export const knex = (...args) => (args.length ? knexInstance(...args) : knexInst
 export const connect = async () => {
     if (knexInstance) {
         logger.warn('Already connected');
+
         return;
     }
     try {

@@ -11,5 +11,6 @@ export default async (githubId, username) => {
     await knex('user').insert({
         userId, githubId, username, avatarUrl: `/avatar/${githubId}`
     });
+
     return userId;
 };

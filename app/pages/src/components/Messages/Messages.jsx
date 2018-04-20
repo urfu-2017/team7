@@ -47,6 +47,7 @@ class Messages extends React.Component {
 
     render() {
         const { usersStore } = this.props;
+
         return (
             <Comment.Group>
                 {this.props.messages.map(message => (

@@ -19,6 +19,7 @@ const tryResolve = async (options, promise) => {
             if (response.statusCode === 404) {
                 throw response;
             }
+
             return;
         }
         resolvedValue = response;
@@ -29,6 +30,7 @@ const tryResolve = async (options, promise) => {
         logger.debug('Hrudb request failed', options);
         throw new Error('Request failed');
     }
+
     return resolvedValue;
 };
 

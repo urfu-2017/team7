@@ -14,6 +14,7 @@ export const createChat = async (longName, avatarUrl) => {
     const chatId = uuidv4();
     const chat = new Chat(chatId, name, [], avatarUrl);
     await put(`Chats_${chatId}`, chat);
+
     return chat;
 };
 

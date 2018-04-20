@@ -3,12 +3,13 @@ import { User } from '../datatypes';
 
 
 export const getAllUsers = async () => {
-    const result = {};
     const users = await knex('user').select('userId', 'username');
-    users.forEach(({ userId, username }) => {
-        result[userId] = username;
-    });
-    return result;
+
+    return users.reduce((result, { userId, username }) => {
+        result[userId] = username; // eslint-disable-line no-param-reassign
+
+        return result;
+    }, {});
 };
 
 export const removeAllUsers = async () => knex('user').del();
@@ -23,7 +24,8 @@ export const getUser = async (userId) => {
     }
 
     const chatIds = items.map(x => x.chatId).filter(Boolean);
-    const { username, avatarUrl, githubId } = items[0];
+    const [{ username, avatarUrl, githubId }] = items;
+
     return new User(userId, githubId, username, avatarUrl, chatIds);
 };
 

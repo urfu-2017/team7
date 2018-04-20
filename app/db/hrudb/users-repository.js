@@ -2,14 +2,15 @@ import { put, get, getAll, remove } from './hrudb-repeater';
 
 export const getAllUsers = async () => {
     const [allUsers] = await getAll('AllUsers');
-    const result = {};
     if (!allUsers) {
         return {};
     }
-    Object.entries(allUsers).forEach(([userId, [username]]) => {
-        result[userId] = username;
-    });
-    return result;
+
+    return Object.entries(allUsers).reduce((result, [userId, [username]]) => {
+        result[userId] = username; // eslint-disable-line no-param-reassign
+
+        return result;
+    }, {});
 };
 
 export const removeAllUsers = async () => remove('AllUsers');

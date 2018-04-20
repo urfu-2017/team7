@@ -14,7 +14,8 @@ export const getChat = async (chatId) => {
         throw new Error(`No such chat (chatId=${chatId})`);
     }
     const userIds = items.map(x => x.userId).filter(Boolean);
-    const { name, avatarUrl } = items[0];
+    const [{ name, avatarUrl }] = items;
+
     return new Chat(chatId, name, userIds, avatarUrl);
 };
 
@@ -22,6 +23,7 @@ export const createChat = async (longName, avatarUrl) => {
     const name = longName.substring(0, MAX_CHAT_NAME_LENGTH);
     const chatId = uuidv4();
     await knex('chat').insert({ name, avatarUrl, chatId });
+
     return new Chat(chatId, name, [], avatarUrl);
 };
 

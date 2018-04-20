@@ -26,6 +26,7 @@ const MardownNode = ({ item, needFormat }) => {
 export default class MarkdownInner extends React.Component {
     render() {
         const { source, needFormat } = this.props;
+
         return (
             <React.Fragment>
                 {source.map(item =>

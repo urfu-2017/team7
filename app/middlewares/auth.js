@@ -10,6 +10,7 @@ export const CALLBACK_PATH = '/login/return';
 
 const saveUserAfterAuth = async ({ username, githubId }) => {
     logger.debug(`User from github: https://github.com/${username} (githubId=${githubId})`);
+
     return loginUser(githubId, username)
         .then(userId => [null, { userId }], err => [err, null]);
 };

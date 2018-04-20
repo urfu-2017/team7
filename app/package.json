@@ -5,7 +5,7 @@
   "license": "MIT",
   "scripts": {
     "start": "node .",
-    "db-shell": "node . db-shell",
+    "db-shell": "node --require babel-core/register db-shell.js",
     "build": "next build",
     "mocha": "mocha --timeout 5000 --ui qunit --require babel-core/register test/**/*.spec.js --exit",
     "mwatch": "npm run mocha -- --watch",

@@ -77,7 +77,7 @@ const asyncLoop = async () => {
 };
 
 
-export default async () => {
+export const run = async () => {
     await connect();
     console.log('print "list" to view all commands');
     while (true) {
@@ -89,3 +89,7 @@ export default async () => {
         }
     }
 };
+
+if (require.main === module) {
+    run();
+}

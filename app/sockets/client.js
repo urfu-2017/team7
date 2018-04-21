@@ -30,7 +30,7 @@ export const getUrlMeta = (url) => {
 };
 
 export const getMessages = (payload) => {
-    socket.emit(eventNames.client.GET_MESSAGES, payload);
+    socket.emit(eventNames.client.GET_CHAT_INFO, payload);
 };
 
 export const onMessagesList = (handler) => {

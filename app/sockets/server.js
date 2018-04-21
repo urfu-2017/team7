@@ -1,35 +1,43 @@
 import Server from 'socket.io';
-import * as eventNames from './event-names';
+import { client } from './event-names';
 import * as userInfoProvider from './user-info-provider';
-import getLogger from '../utils/logger';
 import getHandlers from './handlers';
 
-const logger = getLogger('socket-server');
+import getLogger from '../utils/logger';
+
+export const logger = getLogger('socket-server');
 
 const registerMessageHandlers = (socketServer, socket, currentUserId) => {
     const handlers = getHandlers(socketServer, socket, currentUserId);
 
     const on = handlers.asyncSocketHandler();
 
-    on(eventNames.client.GET_CHATS, handlers.trySendUserChats);
+    on(client.GET_CHATS, handlers.sendUserChats);
 
-    on(eventNames.client.GET_MESSAGES, handlers.sendChatInfo);
+    on(client.GET_CHAT_INFO, handlers.sendChatInfo);
 
-    on(eventNames.client.GET_USER, handlers.sendUser);
+    on(client.GET_USER, handlers.sendUser);
 
-    on(eventNames.client.SEARCH_USER, handlers.searchUser);
+    on(client.SEARCH_USER, handlers.searchUser);
 
-    on(eventNames.client.NEW_MESSAGE, handlers.newMesage);
+    on(client.NEW_MESSAGE, handlers.newMessage);
 
-    on(eventNames.client.GET_URL_META, handlers.getUrlMeta);
+    on(client.GET_URL_META, handlers.getUrlMeta);
 
-    on(eventNames.client.CREATE_CHAT, handlers.createChat);
+    on(client.CREATE_CHAT, handlers.createChat);
 
-    on(eventNames.client.GET_WEATHER, handlers.getWeather);
+    on(client.GET_WEATHER, handlers.getWeather);
 
-    on(eventNames.client.CHANGE_AVATAR_URL, handlers.changeAvatarUrl);
+    on(client.CHANGE_AVATAR_URL, handlers.changeAvatarUrl);
 
     return handlers;
+};
+
+const startProactiveLoading = (methods) => {
+    methods.forEach(method =>
+        method().catch((err) => {
+            logger.warn(`Proactive method '${method.name}' failed.`, err);
+        }));
 };
 
 export default async (server) => {
@@ -45,8 +53,10 @@ export default async (server) => {
             const userId = await userInfoProvider.getUserId(socket.handshake);
             const handlers = registerMessageHandlers(socketServer, socket, userId);
 
-            handlers.trySendUserInfo();
-            handlers.trySendUserChats();
+            startProactiveLoading([
+                handlers.sendCurrentUser,
+                handlers.sendUserChats]);
+
 
             logger.trace(`Socket connected. socket.id=${socket.id}, userId=${userId}`);
         } catch (e) {

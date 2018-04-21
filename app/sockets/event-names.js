@@ -1,6 +1,6 @@
 export const client = Object.freeze({
     GET_CHATS: 'GET_CHATS',
-    GET_MESSAGES: 'GET_MESSAGES',
+    GET_CHAT_INFO: 'GET_CHAT_INFO',
     NEW_MESSAGE: 'NEW_MESSAGE',
     CREATE_CHAT: 'CREATE_CHAT',
     GET_USER: 'GET_USER',

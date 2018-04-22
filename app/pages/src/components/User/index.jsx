@@ -27,8 +27,8 @@ class User extends React.Component {
             <div className={css.layout}>
                 <BackButton className={css.layout__back} />
                 <UserCard user={user} className={css.layout__user} />
-                {isSelf ? <AvatarChanger className={css.layout__name} /> : null}
-                {isSelf ? <LogoutButton className={css.layout__logout} /> : null}
+                {isSelf && <AvatarChanger className={css.layout__name} /> }
+                {isSelf && <LogoutButton className={css.layout__logout} /> }
             </div>
         );
     }

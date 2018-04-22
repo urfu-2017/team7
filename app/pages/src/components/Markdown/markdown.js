@@ -13,30 +13,15 @@ class Node {
     }
 
     static parseTextToken(textToken) {
+        let currentPos = 0;
         const result = [];
-        let currentText = '';
-        textToken.split('\n').forEach((line) => {
-            line.split(' ').forEach((word) => {
-                if (urlregex.test(word)) {
-                    if (currentText) {
-                        result.push({ type: 'text', content: currentText });
-                    }
-                    currentText = ' ';
-                    result.push({ type: 'link', content: word });
-                } else {
-                    currentText += word;
-                    currentText += ' ';
-                }
-            });
 
-            currentText = currentText.substring(0, currentText.length - 1);
-            currentText += '\n';
+        textToken.replace(urlregex, (...args) => {
+            result.push({ type: 'text', content: textToken.substring(currentPos, args[args.length - 2]) });
+            result.push({ type: 'link', content: args[0] });
+            currentPos = args[args.length - 2] + args[0].length;
         });
-
-        currentText = currentText.substring(0, currentText.length - 1);
-        if (currentText) {
-            result.push({ type: 'text', content: currentText });
-        }
+        result.push({ type: 'text', content: textToken.substring(currentPos) });
 
         return result;
     }

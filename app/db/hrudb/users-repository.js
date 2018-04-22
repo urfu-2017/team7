@@ -23,3 +23,5 @@ export const removeUser = async (userId) => {
     delete allUsers[userId];
     await put('AllUsers', allUsers);
 };
+
+export const updateUser = user => put(`Users_${user.userId}`, user);

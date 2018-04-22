@@ -9,7 +9,6 @@ class WeatherStore {
     }
     @observable weatherByCity = observable.map();
 
-    // eslint-disable-next-line class-methods-use-this
     fetchWeather(city) {
         getWeather(city);
     }

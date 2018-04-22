@@ -8,13 +8,12 @@ import EmojiSelector from '../EmojiSelector';
 
 @inject('chatsStore')
 @observer
-class MessageInput extends React.Component {
-    state = { text: '' };
+export default class MessageInput extends React.Component {
+    state = { text: '', cursorPosition: 0 };
 
     get isValid() {
         return this.props.chatsStore.activeChat && this.state.text;
     }
-
 
     handleChange = (e, { name, value }) => {
         this.setState({ [name]: value });
@@ -36,7 +35,9 @@ class MessageInput extends React.Component {
         const before = text.substr(0, cursorPosition);
         const after = text.substr(cursorPosition);
         this.setState({ text: before + value + after });
+        this.setState({ cursorPosition: cursorPosition + value.length });
     };
+
     trySend = () => {
         if (this.isValid) {
             const { chatId } = this.props.chatsStore.activeChat;
@@ -66,7 +67,7 @@ class MessageInput extends React.Component {
                             name="smile"
                             size="large"
                             color="grey"
-                            style={{ width: '2.2em', pointerEvents: 'auto', cursor: 'pointer' }}
+                            className={css.layout__emojiselector}
                         />
                     </EmojiSelector>
                 </Input>
@@ -82,5 +83,3 @@ class MessageInput extends React.Component {
         );
     }
 }
-
-export default MessageInput;

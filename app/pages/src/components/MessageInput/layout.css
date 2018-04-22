@@ -16,3 +16,16 @@
 {
     grid-area: input;
 }
+
+.layout__emojiselector
+{
+    pointer-events: auto !important;
+    width: 2.2em !important;
+    cursor: pointer !important;
+    opacity: 0.5 !important;
+}
+
+.layout__emojiselector:hover
+{
+    opacity: 1 !important;
+}

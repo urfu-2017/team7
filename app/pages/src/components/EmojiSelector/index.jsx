@@ -10,8 +10,9 @@ const emojies = [
     '😫', '😭', '😰', '😱', '😲', '😳', '😵', '😷', '😸', '😹'];
 
 const ROW_LENGTH = 10;
-class EmojiSelector extends React.Component {
+export default class EmojiSelector extends React.Component {
     state = { isOpen: false };
+
     handleOpen = () => {
         this.setState({ isOpen: true });
     };
@@ -19,6 +20,7 @@ class EmojiSelector extends React.Component {
     handleClose = () => {
         this.setState({ isOpen: false });
     };
+
     render() {
         const { className, children, onSelected } = this.props;
 
@@ -44,7 +46,6 @@ class EmojiSelector extends React.Component {
                                         key={value}
                                         className={css.popup__emoji}
                                         onClick={() => {
-                                            this.handleClose();
                                             onSelected(value);
                                         }}
                                     >{value}
@@ -56,5 +57,3 @@ class EmojiSelector extends React.Component {
         );
     }
 }
-
-export default EmojiSelector;

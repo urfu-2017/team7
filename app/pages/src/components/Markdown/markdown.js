@@ -1,4 +1,5 @@
 import shortid from 'shortid';
+import urlregex from '../../common/url-regex';
 
 class Node {
     constructor(type, content) {
@@ -8,7 +9,21 @@ class Node {
     }
 
     static text(content) {
-        return new Node('text', content);
+        return new Node('text', Node.parseTextToken(content));
+    }
+
+    static parseTextToken(textToken) {
+        let currentPos = 0;
+        const result = [];
+
+        textToken.replace(urlregex, (...args) => {
+            result.push({ type: 'text', content: textToken.substring(currentPos, args[args.length - 2]) });
+            result.push({ type: 'link', content: args[0] });
+            currentPos = args[args.length - 2] + args[0].length;
+        });
+        result.push({ type: 'text', content: textToken.substring(currentPos) });
+
+        return result;
     }
 }
 

@@ -14,11 +14,15 @@ export default class EmojiSelector extends React.Component {
     state = { isOpen: false };
 
     handleOpen = () => {
+        const { onOpenedChanged } = this.props;
         this.setState({ isOpen: true });
+        onOpenedChanged(true);
     };
 
     handleClose = () => {
+        const { onOpenedChanged } = this.props;
         this.setState({ isOpen: false });
+        onOpenedChanged(false);
     };
 
     render() {

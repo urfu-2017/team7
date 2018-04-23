@@ -9,10 +9,14 @@ import EmojiSelector from '../EmojiSelector';
 @inject('chatsStore')
 @observer
 export default class MessageInput extends React.Component {
-    state = { text: '', cursorPosition: 0 };
+    state = { text: '', cursorPosition: 0, isPopupOpened: false };
 
     get isValid() {
         return this.props.chatsStore.activeChat && this.state.text;
+    }
+
+    setPopupOpened = (isPopupOpened) => {
+        this.setState({ isPopupOpened });
     }
 
     handleChange = (e, { name, value }) => {
@@ -34,8 +38,10 @@ export default class MessageInput extends React.Component {
         const { text, cursorPosition } = this.state;
         const before = text.substr(0, cursorPosition);
         const after = text.substr(cursorPosition);
-        this.setState({ text: before + value + after });
-        this.setState({ cursorPosition: cursorPosition + value.length });
+        this.setState({
+            text: before + value + after,
+            cursorPosition: cursorPosition + value.length
+        });
     };
 
     trySend = () => {
@@ -62,12 +68,17 @@ export default class MessageInput extends React.Component {
                     maxLength={MAX_MESSAGE_LENGTH}
                 >
                     <input />
-                    <EmojiSelector onSelected={this.handleEmojiSelect}>
+                    <EmojiSelector
+                        onSelected={this.handleEmojiSelect}
+                        onOpenedChanged={this.setPopupOpened}
+                    >
                         <Icon
                             name="smile"
                             size="large"
                             color="grey"
-                            className={css.layout__emojiselector}
+                            className={this.state.isPopupOpened ?
+                                css.layout__icon_active :
+                                css.layout__icon}
                         />
                     </EmojiSelector>
                 </Input>

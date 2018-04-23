@@ -17,7 +17,8 @@
     grid-area: input;
 }
 
-.layout__emojiselector
+.layout__icon,
+.layout__icon_active
 {
     pointer-events: auto !important;
     width: 2.2em !important;
@@ -25,7 +26,8 @@
     opacity: 0.5 !important;
 }
 
-.layout__emojiselector:hover
+.layout__icon:hover,
+.layout__icon_active
 {
     opacity: 1 !important;
 }

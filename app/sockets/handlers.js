@@ -105,6 +105,9 @@ export default (socketServer, socket, currentUserId) => {
         },
 
         async changeAvatarUrl(url) {
+            if (!url.startsWith('/s3/uploads/avatars/')) {
+                throw new Error(`Changing user avatar to ${url} is rejected`);
+            }
             const currentUser = await usersRepo.getUser(currentUserId);
             currentUser.avatarUrl = url;
             await usersRepo.updateUser(currentUser);

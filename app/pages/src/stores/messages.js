@@ -69,6 +69,7 @@ class MessagesStore {
         if (messages.length === 0) {
             return '';
         }
+
         return messages[messages.length - 1].content;
     }
 

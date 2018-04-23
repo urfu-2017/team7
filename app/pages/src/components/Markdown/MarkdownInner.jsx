@@ -19,6 +19,8 @@ const MardownNode = ({ item, needFormat }) => {
         return <i>{child}</i>;
     case '``':
         return <code><pre className={css.pre}>{child}</pre></code>;
+    case 'link':
+        return <a href={child} target="_blank">{child}</a>;
     default:
         return child;
     }
@@ -26,6 +28,7 @@ const MardownNode = ({ item, needFormat }) => {
 export default class MarkdownInner extends React.Component {
     render() {
         const { source, needFormat } = this.props;
+
         return (
             <React.Fragment>
                 {source.map(item =>

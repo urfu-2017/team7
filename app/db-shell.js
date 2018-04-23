@@ -1,10 +1,12 @@
 /* eslint-disable */
 import inquirer from 'inquirer';
 import inquirerCommandPrompt from 'inquirer-command-prompt';
-import { getAllUsers, removeAllUsers, getUser, removeUser } from './db/users-repository';
-import { getMessagesFromChat } from './db/messages-repository';
-import { getChat } from './db/chats-repository';
-import { getAll } from './db/hrudb-repeater';
+import { usersRepo, messagesRepo, chatsRepo, connect } from './db';
+
+
+const { getAllUsers, removeAllUsers, getUser, removeUser } = usersRepo;
+const { getMessagesFromChat } = messagesRepo;
+const { getChat } = chatsRepo;
 
 inquirer.registerPrompt('command', inquirerCommandPrompt);
 
@@ -22,7 +24,6 @@ const lastUserMessages = async (userId, amount) => {
     return messages.slice(0, amount).map(({ content }) => content);
 };
 
-
 const commands = [
     { name: 'users', desc: 'returns user index', handler: printJson(getAllUsers), argc: 0 },
     { name: 'rm_users', desc: 'clears user index', handler: printJson(removeAllUsers), argc: 0 },
@@ -31,8 +32,7 @@ const commands = [
     { name: 'chat', desc: 'getChat(chatId)', handler: printJson(getChat), argc: 1 },
     { name: 'exit', desc: 'Ctrl+C', handler: async () => process.exit(0), argc: 0 },
     { name: 'lum', desc: 'lastUserMessages(userId, amount)', handler: printJson(lastUserMessages), argc: 2 },
-    { name: 'rm_user', desc: 'removeUser(userId)', handler: printJson(removeUser), argc: 1 },
-    { name: 'get', desc: 'get all values for (key)', handler: printJson(getAll), argc: 1 },
+    { name: 'rm_user', desc: 'removeUser(userId)', handler: printJson(removeUser), argc: 1 }
 ];
 
 const autoCompletion = commands.map(x => x.name);
@@ -77,7 +77,8 @@ const asyncLoop = async () => {
 };
 
 
-export default async () => {
+export const run = async () => {
+    await connect();
     console.log('print "list" to view all commands');
     while (true) {
         try {
@@ -88,3 +89,7 @@ export default async () => {
         }
     }
 };
+
+if (require.main === module) {
+    run();
+}

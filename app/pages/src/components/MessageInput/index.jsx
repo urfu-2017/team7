@@ -8,13 +8,16 @@ import EmojiSelector from '../EmojiSelector';
 
 @inject('chatsStore')
 @observer
-class MessageInput extends React.Component {
-    state = { text: '' };
+export default class MessageInput extends React.Component {
+    state = { text: '', cursorPosition: 0, isPopupOpened: false };
 
     get isValid() {
         return this.props.chatsStore.activeChat && this.state.text;
     }
 
+    setPopupOpened = (isPopupOpened) => {
+        this.setState({ isPopupOpened });
+    }
 
     handleChange = (e, { name, value }) => {
         this.setState({ [name]: value });
@@ -35,8 +38,12 @@ class MessageInput extends React.Component {
         const { text, cursorPosition } = this.state;
         const before = text.substr(0, cursorPosition);
         const after = text.substr(cursorPosition);
-        this.setState({ text: before + value + after });
+        this.setState({
+            text: before + value + after,
+            cursorPosition: cursorPosition + value.length
+        });
     };
+
     trySend = () => {
         if (this.isValid) {
             const { chatId } = this.props.chatsStore.activeChat;
@@ -61,12 +68,17 @@ class MessageInput extends React.Component {
                     maxLength={MAX_MESSAGE_LENGTH}
                 >
                     <input />
-                    <EmojiSelector onSelected={this.handleEmojiSelect}>
+                    <EmojiSelector
+                        onSelected={this.handleEmojiSelect}
+                        onOpenedChanged={this.setPopupOpened}
+                    >
                         <Icon
                             name="smile"
                             size="large"
                             color="grey"
-                            style={{ width: '2.2em', pointerEvents: 'auto', cursor: 'pointer' }}
+                            className={this.state.isPopupOpened ?
+                                css.layout__icon_active :
+                                css.layout__icon}
                         />
                     </EmojiSelector>
                 </Input>
@@ -82,5 +94,3 @@ class MessageInput extends React.Component {
         );
     }
 }
-
-export default MessageInput;

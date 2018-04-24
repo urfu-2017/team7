@@ -21,10 +21,6 @@
     "S3_SECRET_KEY": "@s3-secret-key"
   },
   "scale": {
-    "sfo1": {
-      "min": 0,
-      "max": 0
-    },
     "bru1": {
       "min": 1,
       "max": 1

@@ -1,6 +1,7 @@
 export class User {
-    constructor(userId, username, avatarUrl, chatIds) {
+    constructor(userId, githubId, username, avatarUrl, chatIds) {
         this.userId = userId;
+        this.githubId = githubId;
         this.username = username;
         this.avatarUrl = avatarUrl;
         this.chatIds = chatIds;
@@ -8,8 +9,8 @@ export class User {
 }
 
 export class Chat {
-    constructor(id, name, userIds, avatarUrl) {
-        this.chatId = id;
+    constructor(chatId, name, userIds, avatarUrl) {
+        this.chatId = chatId;
         this.name = name;
         this.userIds = userIds;
         this.avatarUrl = avatarUrl;

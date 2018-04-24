@@ -1,0 +1,9 @@
+.menu {
+
+}
+
+.menu__chatname{
+    max-width: 300px;
+    text-overflow: ellipsis;
+    overflow: hidden;
+}

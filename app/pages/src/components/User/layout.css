@@ -1,0 +1,44 @@
+.layout
+{
+    display: grid;
+    grid-template-areas:
+            'back  .    .  '
+            'user user user'
+            'name name name'
+            ' .    .   .   '
+            ' .    .   logout';
+
+    grid-template-rows: auto min-content 1fr auto auto;
+    grid-template-columns: auto 1fr auto;
+    align-content: space-between;
+    padding: 1em;
+    height: 100%;
+    grid-row-gap: 1em;
+
+}
+
+.layout__back
+{
+    grid-area: back;
+    justify-self: start;
+}
+
+.layout__name
+{
+    grid-area: name;
+    justify-self: center;
+    max-height: 36px;
+}
+
+.layout__logout
+{
+    grid-area: logout;
+    justify-self: end;
+}
+
+.layout__user
+{
+    justify-self: center;
+    grid-area: user;
+    margin: 0;
+}

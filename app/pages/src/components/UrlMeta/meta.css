@@ -3,4 +3,50 @@
     border: 3px none #4183c4;
     border-left-style: solid;
     padding-left: .5em;
+    min-height: 100px;
 }
+
+.meta__link {
+    height: 125px;
+    display: block;
+}
+
+.meta__header
+{
+    white-space: nowrap;
+    text-overflow: ellipsis;
+    overflow: hidden;
+    width: 100%;
+}
+
+.meta__description
+{
+    overflow: hidden;
+    position: relative;
+    line-height: 1.4em;
+    max-height: 4.2em;
+    text-align: justify;
+    margin-right: -1em;
+    padding-right: 1em;
+}
+
+.meta__description:before
+{
+    content: '...';
+    position: absolute;
+    right: 0;
+    bottom: 0;
+}
+
+
+.meta__description:after {
+    content: '';
+    position: absolute;
+    right: 0;
+    width: 3em;
+    height: 3em;
+    margin-top: 0.2em;
+    background: white;
+}
+
+

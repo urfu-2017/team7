@@ -1,0 +1,20 @@
+.layout
+{
+    height: 62px;
+}
+
+.layout__time
+{
+    float: right;
+    font-size: .875em;
+    color: rgba(0,0,0,.4) ;
+}
+
+.layout__line
+{
+    max-width: 140px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    line-height: 1.4em;
+}

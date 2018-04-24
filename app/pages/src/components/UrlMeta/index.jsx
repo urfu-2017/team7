@@ -1,7 +1,7 @@
 import React from 'react';
 import { Item } from 'semantic-ui-react';
 import { inject, observer } from 'mobx-react';
-import urlRegex from './url-regex';
+import urlRegex from '../../common/url-regex';
 import css from './meta.css';
 
 @inject('urlMetaStore')
@@ -12,7 +12,9 @@ class UrlMeta extends React.Component {
         const match = text.match(urlRegex);
         if (match) {
             [this.url] = match;
-            urlMetaStore.fetchUrlMeta(this.url);
+            if (!urlMetaStore.metaByUrl.get(this.url)) {
+                urlMetaStore.fetchUrlMeta(this.url);
+            }
         }
     }
 
@@ -23,20 +25,28 @@ class UrlMeta extends React.Component {
         const { urlMetaStore } = this.props;
         const meta = urlMetaStore.metaByUrl.get(this.url);
         if (!meta) {
-            return <a href={this.url}>{this.url}</a>;
+            return <div className={css.meta__link} />;
         }
 
-        const imageUrl = meta['og:image'] || meta.image;
         return (
             <Item.Group className={css.meta}>
                 <Item>
-                    {imageUrl ? <Item.Image src={imageUrl} size="small" style={{ height: '150px' }} /> : ''}
+                    <Item.Image
+                        size="small"
+                        style={{
+                            width: '100px',
+                            height: '100px',
+                            background: `#ddd url(${meta.image}) no-repeat`,
+                            backgroundSize: 'cover'
+                        }}
+                        title={meta.title}
+                    />
                     <Item.Content>
-                        <Item.Header as="a" href={meta.url} content={meta['og:title'] || meta.title} />
+                        <Item.Header className={css.meta__header} as="a" href={meta.url} content={meta.title} />
                         <Item.Meta>
-                            <a href={meta.source}>{meta.source}</a>
+                            <a href={meta.url}>{meta.url}</a>
                         </Item.Meta>
-                        <Item.Description content={meta['og:description'] || meta.description} />
+                        <Item.Description className={css.meta__description} as="p" content={meta.description} />
                     </Item.Content>
                 </Item>
             </Item.Group>

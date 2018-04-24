@@ -1,6 +1,7 @@
 import Knex from 'knex';
 import getLogger from '../../utils/logger';
 import config from '../../config';
+import { MAX_CHAT_NAME_LENGTH, MAX_MESSAGE_LENGTH } from '../../utils/constants';
 
 const logger = getLogger('postgres-knex');
 
@@ -15,7 +16,7 @@ export const createTables = async (knex) => {
 
     await knex.schema.createTable('chat', (table) => {
         table.uuid('chatId').primary();
-        table.string('name');
+        table.string('name', MAX_CHAT_NAME_LENGTH);
         table.string('avatarUrl');
     });
 
@@ -29,8 +30,8 @@ export const createTables = async (knex) => {
         table.uuid('messageId').primary();
         table.timestamp('timestamp');
         table.uuid('authorUserId').references('user.userId');
-        table.string('content');
-        table.string('originalContent');
+        table.string('content', MAX_MESSAGE_LENGTH);
+        table.string('originalContent', MAX_MESSAGE_LENGTH);
         table.uuid('chatId').references('chat.chatId');
     });
 };

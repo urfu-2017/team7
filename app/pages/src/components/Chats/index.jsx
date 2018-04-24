@@ -9,6 +9,11 @@ import Markdown from '../Markdown';
 @inject('chatsStore', 'messagesStore', 'currentUserStore')
 @observer
 class ChatList extends React.Component {
+    state = { filter: '' };
+    updateFilter = (e, { value }) => {
+        this.setState({ filter: value });
+    };
+
     render() {
         const { chatsStore, messagesStore, currentUserStore } = this.props;
         const chats = [...chatsStore.chatsById.toJS().values()];
@@ -26,12 +31,13 @@ class ChatList extends React.Component {
                     />
                 </List.Item>
                 <List.Item>
-                    <Input placeholder="Поиск..." fluid style={{ height: '36px' }}>
+                    <Input placeholder="Поиск..." fluid style={{ height: '36px' }} onChange={this.updateFilter}>
                         <Link to="/new-chat"><Button icon="plus" /></Link>
                         <input />
                     </Input>
                 </List.Item>
                 {_.chain(chats)
+                    .filter(chat => chat.name.indexOf(this.state.filter) !== -1)
                     .orderBy(
                         [
                             chat => messagesStore.hasMessages(chat.chatId),

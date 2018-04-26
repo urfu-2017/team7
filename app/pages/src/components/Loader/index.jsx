@@ -1,4 +1,5 @@
 import React from 'react';
+import { Icon } from 'semantic-ui-react';
 
 class Loader extends React.Component {
     render() {
@@ -9,7 +10,7 @@ class Loader extends React.Component {
             );
         } else if (status === 'REVOKED') {
             return (
-                <div style={{ color: 'red', display: 'inline-block', margin: '0, 1em' }}>&#10006;</div>
+                <Icon name="dont" size="large" color="red" style={{ margin: '0 0.5em' }} />
             );
         }
 

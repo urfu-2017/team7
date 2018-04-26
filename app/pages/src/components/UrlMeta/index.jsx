@@ -1,7 +1,7 @@
 import React from 'react';
 import { Item } from 'semantic-ui-react';
 import { inject, observer } from 'mobx-react';
-import urlRegex from './url-regex';
+import urlRegex from '../../common/url-regex';
 import css from './meta.css';
 
 @inject('urlMetaStore')

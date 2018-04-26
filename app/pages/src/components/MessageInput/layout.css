@@ -16,3 +16,18 @@
 {
     grid-area: input;
 }
+
+.layout__icon,
+.layout__icon_active
+{
+    pointer-events: auto !important;
+    width: 2.2em !important;
+    cursor: pointer !important;
+    opacity: 0.5 !important;
+}
+
+.layout__icon:hover,
+.layout__icon_active
+{
+    opacity: 1 !important;
+}

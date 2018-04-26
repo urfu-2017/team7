@@ -63,6 +63,7 @@ class Messages extends React.Component {
 
     render() {
         const { usersStore } = this.props;
+
         return (
             <Comment.Group className={css.messages}>
                 <div style={{ height: '.1px' }} />
@@ -80,6 +81,7 @@ class Messages extends React.Component {
                                 <Markdown source={message.content} needFormat />
                             </Comment.Text>
                             <UrlMeta text={message.content} />
+                            <Weather text={message.content} />
                         </Comment.Content>
                     </Comment>
                 ))}

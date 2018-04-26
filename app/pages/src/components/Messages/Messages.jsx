@@ -4,7 +4,7 @@ import moment from 'moment';
 import { observer, inject } from 'mobx-react';
 import { Comment } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
-import { getUser, onMessageSent } from '../../../../sockets/client';
+import { getUser, onMessageSent, onUrlMeta } from '../../../../sockets/client';
 import Markdown from '../Markdown';
 import UrlMeta from '../UrlMeta';
 import Weather from '../Weather';
@@ -14,9 +14,7 @@ import css from './messages.css';
 @observer
 class Messages extends React.Component {
     componentDidMount() {
-        const { usersStore, chatsStore, chatId } = this.props;
-
-        this.scroll(chatsStore.getScrollHeight(chatId));
+        const { usersStore } = this.props;
 
         const users = [];
         this.props.messages.forEach(({ authorUserId }) => {
@@ -27,16 +25,19 @@ class Messages extends React.Component {
         });
 
         onMessageSent(() => this.scroll());
+        onUrlMeta(() => this.scroll());
 
         const messages = ReactDOM.findDOMNode(this).parentElement;
         messages.onwheel = e => this.onwheel(e);
         messages.onscroll = e => this.onscroll(e);
+
+        this.scroll();
     }
 
     componentDidUpdate(props) {
-        const { chatsStore, chatId } = this.props;
+        const { chatId } = this.props;
         if (chatId !== props.chatId) {
-            this.scroll(chatsStore.getScrollHeight(chatId));
+            this.scroll();
         }
     }
 
@@ -53,12 +54,18 @@ class Messages extends React.Component {
     onscroll() {
         const { chatsStore, chatId } = this.props;
         const messages = ReactDOM.findDOMNode(this).parentElement;
-        chatsStore.setScrollHeight(messages.scrollTop, chatId);
+        const scrollDown = messages.scrollHeight - messages.scrollTop - messages.offsetHeight;
+        chatsStore.setScrollHeight(scrollDown, chatId);
     }
 
-    scroll(value) {
+    scroll() {
+        const { chatsStore, chatId } = this.props;
+        const value = chatsStore.getScrollHeight(chatId);
         const messages = ReactDOM.findDOMNode(this).parentElement;
-        messages.scrollTop = ![undefined, null].includes(value) ? value : messages.scrollHeight;
+        messages.scrollTop = messages.scrollHeight - messages.offsetHeight;
+        if (value) {
+            messages.scrollTop -= value;
+        }
     }
 
     render() {

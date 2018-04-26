@@ -12,6 +12,7 @@ class ChatList extends React.Component {
     render() {
         const { chatsStore, messagesStore, currentUserStore } = this.props;
         const chats = [...chatsStore.chatsById.toJS().values()];
+
         return (
             <Menu as={List} size="large" style={{ boxShadow: 'none', border: 'none' }} vertical>
                 {/* note: Перебиваем padding:0 для первого элемента списка. */}

@@ -8,6 +8,7 @@ import css from './menu.css';
 class MessagesMenu extends React.Component {
     render() {
         const { activeChatName } = this.props.chatsStore;
+
         return (
             <Menu className={css.menu}>
                 {activeChatName

@@ -20,5 +20,6 @@ export const server = Object.freeze({
     MESSAGE_REVOKED: 'MESSAGE_REVOKED',
     USER: 'USER',
     URL_META: 'URL_META',
-    CURRENT_USER: 'CURRENT_USER'
+    CURRENT_USER: 'CURRENT_USER',
+    WEATHER: 'WEATHER'
 });

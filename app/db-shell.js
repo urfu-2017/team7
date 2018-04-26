@@ -6,7 +6,7 @@ import { usersRepo, messagesRepo, chatsRepo, connect } from './db';
 
 const { getAllUsers, removeAllUsers, getUser, removeUser } = usersRepo;
 const { getMessagesFromChat } = messagesRepo;
-const { getChat } = chatsRepo;
+const { getChatForUser, createPrivateChat } = chatsRepo;
 
 inquirer.registerPrompt('command', inquirerCommandPrompt);
 
@@ -29,10 +29,11 @@ const commands = [
     { name: 'rm_users', desc: 'clears user index', handler: printJson(removeAllUsers), argc: 0 },
     { name: 'messages', desc: 'getMessagesFromChat(chatId)', handler: printJson(getMessagesFromChat), argc: 1 },
     { name: 'user', desc: 'getUser(userId)', handler: printJson(getUser), argc: 1 },
-    { name: 'chat', desc: 'getChat(chatId)', handler: printJson(getChat), argc: 1 },
+    { name: 'chat', desc: 'getChatForUser(userId, chatId)', handler: printJson(getChatForUser), argc: 2 },
     { name: 'exit', desc: 'Ctrl+C', handler: async () => process.exit(0), argc: 0 },
     { name: 'lum', desc: 'lastUserMessages(userId, amount)', handler: printJson(lastUserMessages), argc: 2 },
-    { name: 'rm_user', desc: 'removeUser(userId)', handler: printJson(removeUser), argc: 1 }
+    { name: 'rm_user', desc: 'removeUser(userId)', handler: printJson(removeUser), argc: 1 },
+    { name: 'pm', desc: 'createPrivateChat(userId1, userId2)', handler: printJson(createPrivateChat), argc: 2 }
 ];
 
 const autoCompletion = commands.map(x => x.name);

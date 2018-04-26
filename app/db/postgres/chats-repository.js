@@ -1,5 +1,4 @@
 import uuidv4 from 'uuid/v4';
-import _ from 'lodash';
 import { knex, transactAsync } from './knex';
 import { Chat } from '../datatypes';
 import { MAX_CHAT_NAME_LENGTH } from '../../utils/constants';
@@ -38,20 +37,15 @@ export const createChat = async (longName, avatarUrl) => {
 };
 
 const getPrivateChatId = async (user1id, user2id) => {
-    const privateChatsPairs = await knex('chat')
+    const [privateChat] = await knex('chat')
         .join('users_chats as uc1', 'uc1.chatId', 'chat.chatId')
         .join('users_chats as uc2', 'uc2.chatId', 'uc1.chatId')
         .where('uc1.userId', user1id)
+        .andWhere('uc2.userId', user2id)
         .andWhere('chat.isPrivate', true)
         .select('chat.chatId', 'uc2.userId');
 
-    return _(privateChatsPairs)
-        .groupBy(x => x.chatId)
-        .mapValues(x => x.map(y => y.userId))
-        .findKey(x => (user1id === user2id ?
-            _.isEqual(x, [user1id]) :
-            (_.isEqual(x, [user1id, user2id]) ||
-            _.isEqual(x, [user2id, user1id]))));
+    return privateChat ? privateChat.chatId : undefined;
 };
 
 export const getOrCreatePrivateChatId = async (user1id, user2id) => {

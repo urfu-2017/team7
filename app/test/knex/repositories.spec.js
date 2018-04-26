@@ -96,7 +96,7 @@ test('can send messages to chat', async () => {
 test('can create private chat', async () => {
     const userId1 = await loginUser(user1.githubId, user1.username);
     const userId2 = await loginUser(user2.githubId, user2.username);
-    const chatId = await chatsRepo.createPrivateChat(userId1, userId2);
+    const chatId = await chatsRepo.getOrCreatePrivateChatId(userId1, userId2);
 
     const chat1 = await chatsRepo.getChatForUser(userId1, chatId);
     const chat2 = await chatsRepo.getChatForUser(userId2, chatId);
@@ -107,6 +107,34 @@ test('can create private chat', async () => {
     expect(chat2.name).to.be.equal(`@${user1.username}`);
     expect(chat1.avatarUrl).to.be.equal(user2.avatarUrl);
     expect(chat2.avatarUrl).to.be.equal(user1.avatarUrl);
+});
+
+test("can't create two private chats", async () => {
+    const userId1 = await loginUser(user1.githubId, user1.username);
+    const userId2 = await loginUser(user2.githubId, user2.username);
+    const chatId1 = await chatsRepo.getOrCreatePrivateChatId(userId1, userId1);
+    const chatId2 = await chatsRepo.getOrCreatePrivateChatId(userId1, userId2);
+
+    const chatId3 = await chatsRepo.getOrCreatePrivateChatId(userId1, userId1);
+    const chatId4 = await chatsRepo.getOrCreatePrivateChatId(userId2, userId1);
+    const chatId5 = await chatsRepo.getOrCreatePrivateChatId(userId1, userId2);
+
+    expect(chatId1).to.be.equal(chatId3);
+    expect(chatId2).to.be.equal(chatId4).and.to.be.equal(chatId5);
+});
+
+test('can create self private chat', async () => {
+    const userId = await loginUser(user1.githubId, user1.username);
+    const chatId = await chatsRepo.getOrCreatePrivateChatId(userId, userId);
+    const chat = await chatsRepo.getChatForUser(userId, chatId);
+
+    expect(chat).to.be.deep.equal({
+        chatId,
+        userIds: [userId],
+        isPrivate: true,
+        avatarUrl: user1.avatarUrl,
+        name: `@${user1.username}`
+    });
 });
 
 test('can getAll users', async () => {

@@ -6,7 +6,7 @@ import { usersRepo, messagesRepo, chatsRepo, connect } from './db';
 
 const { getAllUsers, removeAllUsers, getUser, removeUser } = usersRepo;
 const { getMessagesFromChat } = messagesRepo;
-const { getChatForUser, createPrivateChat } = chatsRepo;
+const { getChatForUser, getOrCreatePrivateChatId } = chatsRepo;
 
 inquirer.registerPrompt('command', inquirerCommandPrompt);
 
@@ -33,7 +33,7 @@ const commands = [
     { name: 'exit', desc: 'Ctrl+C', handler: async () => process.exit(0), argc: 0 },
     { name: 'lum', desc: 'lastUserMessages(userId, amount)', handler: printJson(lastUserMessages), argc: 2 },
     { name: 'rm_user', desc: 'removeUser(userId)', handler: printJson(removeUser), argc: 1 },
-    { name: 'pm', desc: 'createPrivateChat(userId1, userId2)', handler: printJson(createPrivateChat), argc: 2 }
+    { name: 'pm', desc: 'getOrCreatePrivateChatId(userId1, userId2)', handler: printJson(getOrCreatePrivateChatId), argc: 2 }
 ];
 
 const autoCompletion = commands.map(x => x.name);
@@ -79,6 +79,7 @@ const asyncLoop = async () => {
 
 
 export const run = async () => {
+    console.log('connecting to database...');
     await connect();
     console.log('print "list" to view all commands');
     while (true) {

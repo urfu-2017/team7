@@ -10,13 +10,26 @@ import Markdown from '../Markdown';
 @observer
 class ChatList extends React.Component {
     state = { filter: '' };
+
+    get filterRegex() {
+        return new RegExp(_.escapeRegExp(this.state.filter), 'i');
+    }
+
     updateFilter = (e, { value }) => {
-        this.setState({ filter: value });
+        this.setState({ filter: value.toLowerCase() });
     };
 
     render() {
         const { chatsStore, messagesStore, currentUserStore } = this.props;
-        const chats = [...chatsStore.chatsById.toJS().values()];
+        const chats = _.chain(chatsStore.allChats)
+            .filter(chat => this.filterRegex.test(chat.name))
+            .orderBy(
+                [
+                    chat => messagesStore.hasMessages(chat.chatId),
+                    chat => messagesStore.getLastMessageTimestamp(chat.chatId)
+                ],
+                ['desc', 'desc']
+            );
 
         return (
             <Menu as={List} size="large" style={{ boxShadow: 'none', border: 'none' }} vertical>
@@ -36,15 +49,7 @@ class ChatList extends React.Component {
                         <input />
                     </Input>
                 </List.Item>
-                {_.chain(chats)
-                    .filter(chat => chat.name.indexOf(this.state.filter) !== -1)
-                    .orderBy(
-                        [
-                            chat => messagesStore.hasMessages(chat.chatId),
-                            chat => messagesStore.getLastMessageTimestamp(chat.chatId)
-                        ],
-                        ['desc', 'desc']
-                    )
+                {chats
                     .map(chat => (
                         <Chat
                             chat={chat}

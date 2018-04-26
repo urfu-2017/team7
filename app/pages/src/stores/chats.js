@@ -39,6 +39,10 @@ class ChatsStore {
             this.chatsById.set(chat.chatId, chat);
         });
     }
+
+    @computed get allChats() {
+        return [...this.chatsById.toJS().values()];
+    }
 }
 
 const chatsStore = new ChatsStore();

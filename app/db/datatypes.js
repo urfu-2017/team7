@@ -9,11 +9,12 @@ export class User {
 }
 
 export class Chat {
-    constructor(chatId, name, userIds, avatarUrl) {
+    constructor(chatId, name, userIds, avatarUrl, isPrivate) {
         this.chatId = chatId;
         this.name = name;
         this.userIds = userIds;
         this.avatarUrl = avatarUrl;
+        this.isPrivate = isPrivate;
     }
 }
 

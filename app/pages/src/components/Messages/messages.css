@@ -1,6 +1,7 @@
 .messages {
     display: flex;
     flex-direction: column-reverse;
+    padding: 2rem;
 }
 
 .comment:last-child {

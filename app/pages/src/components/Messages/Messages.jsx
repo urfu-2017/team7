@@ -4,7 +4,7 @@ import moment from 'moment';
 import { observer, inject } from 'mobx-react';
 import { Comment } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
-import { getUser, onMessageSent, onUrlMeta } from '../../../../sockets/client';
+import { getUser, onMessageSent, onUrlMeta, onWeather } from '../../../../sockets/client';
 import Markdown from '../Markdown';
 import UrlMeta from '../UrlMeta';
 import Weather from '../Weather';
@@ -24,12 +24,13 @@ class Messages extends React.Component {
             }
         });
 
-        onMessageSent(() => this.scroll());
-        onUrlMeta(() => this.scroll());
-
         const messages = ReactDOM.findDOMNode(this).parentElement;
         messages.onwheel = e => this.onwheel(e);
         messages.onscroll = e => this.onscroll(e);
+
+        onMessageSent(() => this.scroll());
+        onUrlMeta(() => this.scroll());
+        onWeather(() => this.scroll());
 
         this.scroll();
     }

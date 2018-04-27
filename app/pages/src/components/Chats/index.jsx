@@ -50,7 +50,7 @@ class ChatList extends React.Component {
                                 />,
                                 timestamp: messagesStore.getLastMessageTimestamp(chat.chatId)
                             }}
-                            onClick={() => chatsStore.selectChat(chat)}
+                            onClick={() => chatsStore.selectChat(chat.chatId)}
                         />
                     ))
                     .value()

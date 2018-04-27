@@ -1,9 +1,9 @@
 import React from 'react';
 import { Segment } from 'semantic-ui-react';
-import Messages from '../../components/Messages/index';
-import MessageInput from '../../components/MessageInput/index';
+import Messages from '../../components/Messages';
+import MessageInput from '../../components/MessageInput';
 import css from './layout.css';
-import MessagesMenu from '../../components/MessagesMenu/index';
+import MessagesMenu from '../../components/MessagesMenu';
 
 const MessagesActivity = () => (
     <div className={css.layout}>

@@ -9,9 +9,9 @@ import BackButton from '../BackButton';
 import css from './layout.css';
 import { MAX_CHAT_NAME_LENGTH } from '../../../../utils/constants';
 
+@withRouter
 @inject('usersStore', 'currentUserStore')
 @observer
-@withRouter
 class ChatCreation extends React.Component {
     componentWillMount() {
         this.resetComponent();

@@ -89,11 +89,11 @@ test('can send messages to chat', async () => {
     await chatsRepo.joinChat(userId1, chat.chatId);
     const msg1 = new Message(
         '21111117-287a-46ec-8c67-8cc0c89eb77c', new Date(), userId1,
-        'privet1', 'privet1', chat.chatId
+        'privet1', 'privet1', chat.chatId, []
     );
     const msg2 = new Message(
         '31111117-287a-46ec-8c67-8cc0c89eb77c', new Date(), userId1,
-        'paka1', 'paka1', chat.chatId
+        'paka1', 'paka1', chat.chatId, []
     );
     await messagesRepo.createMessage(msg1);
     await messagesRepo.createMessage(msg2);
@@ -211,4 +211,53 @@ test('can create two different inviteWord on collision', async () => {
     expect(chat2.inviteWord).to.be.equal('yes-yes');
     expect(chat1).to.be.deep.equal(chat3);
     expect(chat2).to.be.deep.equal(chat4);
+});
+
+test('can add reaction', async () => {
+    const userId1 = await loginUser(user1.githubId, user1.username);
+    const reaction1 = 'reaction1';
+    const reaction2 = 'reaction2';
+    const chat = await chatsRepo.createChat('чятик', 'avatarUrl');
+    await chatsRepo.joinChat(userId1, chat.chatId);
+    const msg1 = new Message(
+        '21111117-287a-46ec-8c67-8cc0c89eb77c', new Date(), userId1,
+        'privet1', 'privet1', chat.chatId, []
+    );
+    await messagesRepo.createMessage(msg1);
+    await messagesRepo.addReaction({
+        messageId: msg1.messageId, userId: userId1, reaction: reaction1
+    });
+    await messagesRepo.addReaction({
+        messageId: msg1.messageId, userId: userId1, reaction: reaction2
+    });
+    const { reactions } = await messagesRepo.getMessage(msg1.messageId);
+
+    expect(reactions).to.be.deep.equal([
+        { userId: userId1, reaction: reaction1 },
+        { userId: userId1, reaction: reaction2 }
+    ]);
+});
+
+test('can remove reaction', async () => {
+    const userId1 = await loginUser(user1.githubId, user1.username);
+    const reaction1 = 'reaction1';
+    const chat = await chatsRepo.createChat('чятик', 'avatarUrl');
+    await chatsRepo.joinChat(userId1, chat.chatId);
+    const msg1 = new Message(
+        '21111117-287a-46ec-8c67-8cc0c89eb77c', new Date(), userId1,
+        'privet1', 'privet1', chat.chatId, []
+    );
+    await messagesRepo.createMessage(msg1);
+    await messagesRepo.addReaction({
+        messageId: msg1.messageId, userId: userId1, reaction: reaction1
+    });
+    const reactionsBeforeDelete = (await messagesRepo.getMessage(msg1.messageId)).reactions;
+
+    expect(reactionsBeforeDelete).to.be.deep.equal([{ userId: userId1, reaction: reaction1 }]);
+    await messagesRepo.removeReaction({
+        messageId: msg1.messageId, userId: userId1, reaction: reaction1
+    });
+    const reactionsAfterDelete = (await messagesRepo.getMessage(msg1.messageId)).reactions;
+
+    expect(reactionsAfterDelete).to.be.deep.equal([]);
 });

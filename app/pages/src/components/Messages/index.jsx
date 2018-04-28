@@ -9,11 +9,6 @@ import DimmerLoader from '../DimmerLoader';
 @inject('chatsStore', 'messagesStore', 'usersStore')
 @observer
 class MessageList extends React.Component {
-    componentWillMount() {
-        const { chatsStore, match: { params: { chatId } } } = this.props;
-        chatsStore.selectChat(chatId);
-    }
-
     render() {
         const { chatsStore, messagesStore } = this.props;
 

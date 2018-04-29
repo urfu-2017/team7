@@ -12,14 +12,14 @@ export default ({
     lastMessage
 }) => (
     <Menu.Item
-        to="/"
+        to={`/chat/${chat.chatId}`}
         as={Link}
         active={isActive}
         className={css.layout}
         onClick={onClick}
     >
         {lastMessage.timestamp
-            ? <span className={css.layout__time} >{moment(lastMessage.timestamp).format('HH:mm')}</span>
+            ? <span className={css.layout__time}>{moment(lastMessage.timestamp).format('HH:mm')}</span>
             : null
         }
         <Image avatar src={chat.avatarUrl} />

@@ -17,6 +17,7 @@ const MainActivity = () => (
         <div className={css.layout__main_activity}>
             <Switch>
                 <Route exact path="/" component={MessagesActivity} />
+                <Route exact path="/chat/:chatId" component={MessagesActivity} />
                 <Route exact path="/new-chat">
                     <SegmentActivity>
                         <ChatCreation />

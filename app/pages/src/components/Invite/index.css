@@ -1,4 +1,5 @@
-.qr
+.qr,
+.inputbox
 {
     display: block;
     margin-left: auto;
@@ -7,4 +8,10 @@
     width: 100%;
     height: auto;
     margin-bottom: 1rem;
+}
+
+.inputbox
+{
+    display: flex !important;
+    margin-bottom: 0;
 }

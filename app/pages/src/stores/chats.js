@@ -15,7 +15,7 @@ class ChatsStore {
             getChatByInviteWord(inviteWord);
         }
 
-        return chat;
+        return chat || null;
     }
 
     getPrivateChat(userId) {
@@ -24,7 +24,7 @@ class ChatsStore {
             getPrivateChat(userId);
         }
 
-        return chat;
+        return chat || null;
     }
 
     @computed get activeChatName() {

@@ -4,8 +4,7 @@ import { withRouter, Redirect } from 'react-router-dom';
 
 
 @withRouter
-@inject('usersStore')
-@inject('chatsStore')
+@inject('usersStore', 'chatsStore')
 @observer
 export default class PrivateChatActivity extends React.Component {
     render() {
@@ -15,10 +14,7 @@ export default class PrivateChatActivity extends React.Component {
             return '';
         }
         const privateChat = chatsStore.getPrivateChat(user.userId);
-        if (!privateChat) {
-            return '';
-        }
 
-        return (<Redirect to={`/chat/${privateChat.chatId}`} />);
+        return (privateChat && <Redirect to={`/chat/${privateChat.chatId}`} />);
     }
 }

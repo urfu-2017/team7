@@ -8,20 +8,20 @@ import Invite from '../Invite';
 class UserCard extends React.Component {
     render() {
         const { user, className } = this.props;
-        const inviteUserName = `@${user.username}`;
+        const inviteUsername = `@${user.username}`;
 
         return (
             <Card className={className}>
                 <Image src={user.avatarUrl} centered size="large" />
                 <Card.Content>
                     <Card.Header textAlign="center">
-                        <Invite isForUser inviteWord={inviteUserName} title={inviteUserName}>
+                        <Invite isForUser inviteWord={inviteUsername} title={inviteUsername}>
                             <a><Icon name="external" />{user.username}</a>
                         </Invite>
                     </Card.Header>
                 </Card.Content>
                 <Card.Content extra>
-                    <a href={`/#${inviteUserName}`}><Icon name="pencil" />Начать диалог</a>
+                    <a href={`/#${inviteUsername}`}><Icon name="pencil" />Начать диалог</a>
                 </Card.Content>
             </Card>
         );

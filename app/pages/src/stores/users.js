@@ -20,7 +20,7 @@ class UsersStore {
             this.searchUser(username);
         }
 
-        return user;
+        return user || null;
     }
 
     searchUser(query) {

@@ -28,20 +28,19 @@ export default class Invite extends React.Component {
         const { title, children } = this.props;
         const { state: { wasSaved } } = this;
         const link = this.createLink();
-        const button = (wasSaved ?
-            <Button key="clipboard-btn-saved" style={{ flex: '0 0 auto' }} icon="checkmark" color="green" /> :
-            <Button key="clipboard-btn" style={{ flex: '0 0 auto' }} icon="copy" />
-        );
 
         return (
             <Modal trigger={children} size="tiny" onClose={() => this.onClose()} closeIcon>
                 <Modal.Header>{title}</Modal.Header>
                 <Modal.Content>
                     <QRCode className={css.qr} renderAs="svg" value={link} />
-                    <Input className={css.qr} defaultValue={link} style={{ display: 'flex' }} action>
-                        <input style={{ flex: '1 1 auto' }} readOnly />
+                    <Input className={css.inputbox} defaultValue={link} action>
+                        <input readOnly />
                         <CopyToClipboard text={link} onCopy={() => this.onCopy()}>
-                            {button}
+                            {wasSaved ?
+                                <Button key="clipboard-btn-saved" icon="checkmark" color="green" /> :
+                                <Button key="clipboard-btn" icon="copy" />
+                            }
                         </CopyToClipboard>
                     </Input>
                 </Modal.Content>

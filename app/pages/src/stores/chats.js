@@ -40,7 +40,7 @@ class ChatsStore {
     }
 
     @action selectChat(chatId) {
-        if (this.activeChatId !== chatId) {
+        if (chatId && this.activeChatId !== chatId) {
             this.activeChatId = chatId;
             getMessages({ chatId });
         }

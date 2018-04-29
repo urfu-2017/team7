@@ -11,6 +11,12 @@ class ChatsStore {
             : null;
     }
 
+    @computed get activeChatInviteLink() {
+        return this.activeChat
+            ? this.activeChat.inviteWord
+            : null;
+    }
+
     @action selectChat(chat) {
         this.activeChat = chat;
         getMessages({ chatId: chat.chatId });

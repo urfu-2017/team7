@@ -9,6 +9,7 @@ import DimmerLoader from '../DimmerLoader';
 class MessageList extends React.Component {
     render() {
         const { chatsStore, messagesStore } = this.props;
+
         if (!chatsStore.activeChat) {
             return null;
         }

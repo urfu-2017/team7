@@ -2,8 +2,12 @@ import { observable, action, computed } from 'mobx';
 import { getMessages, onChat } from '../../../sockets/client';
 
 class ChatsStore {
-    @observable activeChat = null;
+    @observable activeChatId = null;
     @observable chatsById = observable.map();
+
+    @computed get activeChat() {
+        return this.chatsById.get(this.activeChatId) || null;
+    }
 
     @computed get activeChatName() {
         return this.activeChat
@@ -17,14 +21,16 @@ class ChatsStore {
             : null;
     }
 
-    @action selectChat(chat) {
-        this.activeChat = chat;
-        getMessages({ chatId: chat.chatId });
+    @action selectChat(chatId) {
+        if (this.activeChatId !== chatId) {
+            this.activeChatId = chatId;
+            getMessages({ chatId });
+        }
     }
 
     @action setAllChats(chats) {
         this.chatsById = observable.map(chats.map(chat => [chat.chatId, chat]));
-        this.activeChat = null;
+        this.activeChatId = null;
     }
 
     @action setScrollHeight(height, chatId) {

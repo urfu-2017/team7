@@ -1,5 +1,5 @@
 import { observable, action, computed } from 'mobx';
-import { getMessages, onChat } from '../../../sockets/client';
+import { getMessages, onChat, getChatByInviteWord, getPrivateChat } from '../../../sockets/client';
 
 class ChatsStore {
     @observable activeChatId = null;
@@ -7,6 +7,24 @@ class ChatsStore {
 
     @computed get activeChat() {
         return this.chatsById.get(this.activeChatId) || null;
+    }
+
+    getChatByInviteWord(inviteWord) {
+        const chat = this.allChats.find(x => !x.isPrivate && x.inviteWord === inviteWord);
+        if (!chat) {
+            getChatByInviteWord(inviteWord);
+        }
+
+        return chat;
+    }
+
+    getPrivateChat(userId) {
+        const chat = this.allChats.find(x => x.isPrivate && x.userIds.includes(userId));
+        if (!chat) {
+            getPrivateChat(userId);
+        }
+
+        return chat;
     }
 
     @computed get activeChatName() {

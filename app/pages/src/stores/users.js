@@ -14,13 +14,21 @@ class UsersStore {
         return this.usersById.get(userId);
     }
 
+    getUserByName(username) {
+        const user = this.allUsers.find(x => x.username === username);
+        if (!user) {
+            this.searchUser(username);
+        }
+
+        return user;
+    }
+
     searchUser(query) {
         if (!this.sentQueries.find(x => query.includes(x))) {
             this.sentQueries.push(query);
             searchUser({ query });
         }
     }
-
 
     getUsername(userId) {
         if (this.usersById.has(userId)) {

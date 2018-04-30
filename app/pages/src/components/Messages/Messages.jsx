@@ -2,7 +2,7 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import moment from 'moment';
 import { observer, inject } from 'mobx-react';
-import { Comment } from 'semantic-ui-react';
+import { Comment, Image } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
 import { getUser, onMessageSent, onUrlMeta, onWeather } from '../../../../sockets/client';
 import Markdown from '../Markdown';
@@ -91,7 +91,10 @@ class Messages extends React.Component {
                                 </div>
                             </Comment.Metadata>
                             <Comment.Text style={{ minHeight: '1em' }}>
-                                <Markdown source={message.content} needFormat />
+                                {message.content.startsWith('/s3/uploads') ?
+                                    <Image style={{ maxHeight: '30vh', width: 'auto' }} src={message.content} /> :
+                                    <Markdown source={message.content} needFormat />
+                                }
                             </Comment.Text>
                             <UrlMeta text={message.content} />
                             <Weather text={message.content} />

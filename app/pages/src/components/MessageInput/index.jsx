@@ -5,6 +5,8 @@ import { sendMessage } from '../../../../sockets/client';
 import css from './layout.css';
 import { MAX_MESSAGE_LENGTH } from '../../../../utils/constants';
 import EmojiSelector from '../EmojiSelector';
+import MessageImageUploader from './MessageImageUploader';
+
 
 @inject('chatsStore')
 @observer
@@ -67,7 +69,14 @@ export default class MessageInput extends React.Component {
                     onKeyPress={this.handleKeyPress}
                     maxLength={MAX_MESSAGE_LENGTH}
                 >
-                    <input />
+                    <input className={`${css.s1} ${css.s2} ${css.s3} ${css.s4} ${css.layout__inputbox}`} />
+                    <MessageImageUploader
+                        className={`${css.layout__imageicon} ${css.layout__icon}`}
+                        onFinish={(url) => {
+                            const { chatId } = this.props.chatsStore.activeChat;
+                            sendMessage({ text: url, chatId });
+                        }}
+                    />
                     <EmojiSelector
                         onSelected={this.handleEmojiSelect}
                         onOpenedChanged={this.setPopupOpened}

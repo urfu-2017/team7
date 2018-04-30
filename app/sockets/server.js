@@ -1,76 +1,50 @@
 import Server from 'socket.io';
-import urlMetadata from 'url-metadata2';
-import uuidv4 from 'uuid/v4';
-import * as eventNames from './eventNames';
-import * as usersRepository from '../db/users-repository';
-import * as messagesRepository from '../db/messages-repository';
-import * as chatsRepository from '../db/chats-repository';
+import { client } from './event-names';
 import * as userInfoProvider from './user-info-provider';
-import { Chat, Message } from '../db/datatypes';
+import getHandlers from './handlers';
 
-const registerMessageHandlers = (socketServer, socket, userId) => {
-    socket.on(eventNames.client.GET_CHATS, async () => {
-        const userChats = await chatsRepository.getAllChatsForUser(userId);
-        socket.emit(eventNames.server.LIST_CHATS, userChats);
+import getLogger from '../utils/logger';
 
-        userChats
-            .map(x => x.chatId)
-            .forEach(chatId => socket.join(chatId));
-    });
+export const logger = getLogger('socket-server');
 
-    socket.on(eventNames.client.GET_MESSAGES, async ({ chatId }) => {
-        const messages = await messagesRepository.getMessagesFromChat(chatId);
-        socket.emit(eventNames.server.LIST_MESSAGES, { chatId, messages });
-    });
+const registerMessageHandlers = (socketServer, socket, currentUserId) => {
+    const handlers = getHandlers(socketServer, socket, currentUserId);
 
-    socket.on(eventNames.client.GET_USER, async (payload) => {
-        const user = await usersRepository.getUser(payload.userId);
-        if (user) {
-            socket.emit(eventNames.server.USER, user);
-        }
-    });
+    const on = handlers.asyncSocketHandler();
 
-    socket.on(eventNames.client.NEW_MESSAGE, async ({ chatId, text }) => {
-        const message = new Message(
-            uuidv4(),
-            new Date(),
-            userId,
-            text,
-            text,
-            chatId,
-        );
-        await messagesRepository.createMessage(message);
-        socketServer.to(message.chatId)
-            .emit(eventNames.server.MESSAGE, message);
-    });
+    on(client.GET_CHATS, handlers.sendUserChats);
 
-    socket.on(eventNames.client.GET_URL_META, async (url) => {
-        const meta = await urlMetadata(url);
-        socket.emit(eventNames.server.URL_META, {
-            ...meta,
-            url
-        });
-    });
+    on(client.GET_CHAT_INFO, handlers.sendChatInfo);
+
+    on(client.GET_USER, handlers.sendUser);
+
+    on(client.SEARCH_USER, handlers.searchUser);
+
+    on(client.NEW_MESSAGE, handlers.newMessage);
+
+    on(client.GET_URL_META, handlers.getUrlMeta);
+
+    on(client.CREATE_CHAT, handlers.createChat);
+
+    on(client.GET_WEATHER, handlers.getWeather);
+
+    on(client.CHANGE_AVATAR_URL, handlers.changeAvatarUrl);
+
+    on(client.GET_PRIVATE_CHAT, handlers.getPrivateChat);
+
+    on(client.INVITE_WORD, handlers.getChatByInviteWord);
+
+    return handlers;
 };
 
-const trySendUserInfo = async (socket, userId) => {
-    try {
-        const user = await usersRepository.getUser(userId);
-        socket.emit(eventNames.server.CURRENT_USER, user);
-        // send more information
-    } catch (e) {
-        console.warn('Failed to send user info');
-    }
+const startProactiveLoading = (methods) => {
+    methods.forEach(method =>
+        method().catch((err) => {
+            logger.warn(`Proactive method '${method.name}' failed.`, err);
+        }));
 };
 
 export default async (server) => {
-    const commonChat = new Chat(
-        '6584f174-0ce1-43bd-88ac-026cfe879022',
-        'Общий чат', [],
-        'https://image.flaticon.com/icons/png/128/167/167742.png'
-    );
-    await chatsRepository.upsertChat(commonChat);
-
     const socketServer = new Server(server, {
         serveClient: false,
         pingInterval: 10000,
@@ -81,15 +55,16 @@ export default async (server) => {
     socketServer.on('connection', async (socket) => {
         try {
             const userId = await userInfoProvider.getUserId(socket.handshake);
-            await chatsRepository.joinChat(userId, commonChat.chatId);
+            const handlers = registerMessageHandlers(socketServer, socket, userId);
 
-            registerMessageHandlers(socketServer, socket, userId);
+            startProactiveLoading([
+                handlers.sendCurrentUser,
+                handlers.sendUserChats]);
 
-            await trySendUserInfo(socket, userId);
-            // TODO: втащить нормальный логгер
-            console.info('Socket connected. ID: ', socket.id); // eslint-disable-line no-console
+
+            logger.trace(`Socket connected. socket.id=${socket.id}, userId=${userId}`);
         } catch (e) {
-            console.error('Socket connection failed.', e.message); // eslint-disable-line no-console
+            logger.error(e, 'Socket connection failed.');
             socket.disconnect(true);
         }
     });

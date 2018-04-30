@@ -1,21 +1,27 @@
 import React from 'react';
-import { Card, Image } from 'semantic-ui-react';
-import { observer, inject } from 'mobx-react';
+import { Card, Image, Icon } from 'semantic-ui-react';
+import { observer } from 'mobx-react';
+import Invite from '../Invite';
 
-@inject('usersStore')
+
 @observer
 class UserCard extends React.Component {
     render() {
-        // const { usersStore } = this.props;
-        // const pathToAvatar = '/avatar/' + usersStore.me.id;
+        const { user, className } = this.props;
+        const inviteUsername = `@${user.username}`;
 
         return (
-            <Card>
-                <Image src="http://identicon.net/img/identicon.png" /> {/* src={pathToAvatar} */}
+            <Card className={className}>
+                <Image src={user.avatarUrl} centered size="large" />
                 <Card.Content>
                     <Card.Header textAlign="center">
-                        ProfileName {/* usersStore.me.name */}
+                        <Invite isForUser inviteWord={inviteUsername} title={inviteUsername}>
+                            <a><Icon name="external" />{user.username}</a>
+                        </Invite>
                     </Card.Header>
+                </Card.Content>
+                <Card.Content extra>
+                    <a href={`/#${inviteUsername}`}><Icon name="pencil" />Начать диалог</a>
                 </Card.Content>
             </Card>
         );

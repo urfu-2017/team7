@@ -6,6 +6,7 @@ const session = cookieSession();
 // eslint-disable-next-line import/prefer-default-export
 export async function getUserId(req) {
     const res = new OutgoingMessage();
+
     return new Promise(((resolve, reject) => {
         session(req, res, () => {
             const { passport } = req.session;

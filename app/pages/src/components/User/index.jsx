@@ -1,30 +1,35 @@
 import React from 'react';
-import { Grid, Button } from 'semantic-ui-react';
+import { inject, observer } from 'mobx-react/index';
 import UserCard from '../UserCard';
-import css from './styles.css';
+import css from './layout.css';
+import DimmerLoader from '../DimmerLoader';
+import BackButton from '../BackButton';
+import LogoutButton from '../LogoutButton';
+import AvatarChanger from '../AvatarChanger';
 
+
+@inject('currentUserStore', 'usersStore')
+@observer
 class User extends React.Component {
     render() {
+        const { usersStore, currentUserStore, userId } = this.props;
+        const isSelf = !userId;
+        const user = isSelf
+            ? currentUserStore.user
+            : usersStore.getUser(userId);
+
+
+        if (!user) {
+            return <DimmerLoader text="Загружаем профиль" />;
+        }
+
         return (
-            <Grid className={css.profileBox}>
-                <Grid.Row centered columns={3}>
-                    <Grid.Column width={3} />
-                    <Grid.Column width={2}>
-                        <UserCard />
-                    </Grid.Column>
-                    <Grid.Column width={3} />
-                </Grid.Row>
-                <Grid.Row centered columns={2}>
-                    <Grid.Column width={3} />
-                    <Grid.Column width={1}>
-                        <form action="/logout">
-                            <Button secondary type="submit">
-                                LOGOUT
-                            </Button>
-                        </form>
-                    </Grid.Column>
-                </Grid.Row>
-            </Grid>
+            <div className={css.layout}>
+                <BackButton className={css.layout__back} />
+                <UserCard user={user} className={css.layout__user} />
+                {isSelf && <AvatarChanger className={css.layout__name} /> }
+                {isSelf && <LogoutButton className={css.layout__logout} /> }
+            </div>
         );
     }
 }

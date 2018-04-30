@@ -1,0 +1,33 @@
+/* http://www.latofonts.com/lato-free-fonts/ */
+
+@font-face
+{
+    font-family: 'Lato';
+    font-style: italic;
+    font-weight: 400;
+    src: local('Lato Italic'), local('Lato-Italic'), url(/static/lato/Lato-Italic.woff2) format('woff2');
+}
+
+@font-face
+{
+    font-family: 'Lato';
+    font-style: italic;
+    font-weight: 700;
+    src: local('Lato Bold Italic'), local('Lato-BoldItalic'), url(/static/lato/Lato-BoldItalic.woff2) format('woff2');
+}
+
+@font-face
+{
+    font-family: 'Lato';
+    font-style: normal;
+    font-weight: 400;
+    src: local('Lato Regular'), local('Lato-Regular'), url(/static/lato/Lato-Regular.woff2) format('woff2');
+}
+
+@font-face
+{
+    font-family: 'Lato';
+    font-style: normal;
+    font-weight: 700;
+    src: local('Lato Bold'), local('Lato-Bold'), url(/static/lato/Lato-Bold.woff2) format('woff2');
+}

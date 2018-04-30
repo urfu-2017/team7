@@ -1,22 +1,16 @@
+import Router from 'express-promise-router';
 import seedrandom from 'seedrandom';
+import murmurhash from 'murmurhash';
+import AvatarGenerator from '../utils/avatar-generator';
 
+const generator = new AvatarGenerator();
 
-export default class AvatarController {
-    constructor(generator) {
-        this.generator = generator;
-    }
-
-    getAvatar(req, res) {
-        const rng = AvatarController.getRandomInt.bind(null, seedrandom(req.params.userId));
-        const avatarBuffer = this.generator.createAvatar(rng);
-        avatarBuffer.toBlob((err, img) => {
+export default Router()
+    .get('/:userId', (req, res) => {
+        const seedRng = seedrandom(murmurhash(req.params.userId));
+        const minMaxRng = (min, max) => Math.floor(seedRng() * (max - min)) + min;
+        generator.createAvatar(minMaxRng).toBlob((err, img) => {
             res.contentType('png');
-            res.setHeader('Cache-Control', 'public, max-age=300');
             res.end(img, 'binary');
         });
-    }
-
-    static getRandomInt(random, min, max) {
-        return Math.floor(random() * (max - min)) + min;
-    }
-}
+    });

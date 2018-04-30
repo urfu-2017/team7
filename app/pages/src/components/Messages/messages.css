@@ -1,0 +1,15 @@
+.messages {
+    display: flex;
+    flex-direction: column-reverse;
+    padding: 2rem;
+}
+
+.comment:last-child {
+    padding-top: 0 !important;
+    margin-top: 0 !important;
+}
+
+.comment:first-child {
+    padding-top: .5em !important;
+    margin-top: .5em !important;
+}

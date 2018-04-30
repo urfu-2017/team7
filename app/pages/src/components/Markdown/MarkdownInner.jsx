@@ -19,6 +19,8 @@ const MardownNode = ({ item, needFormat }) => {
         return <i>{child}</i>;
     case '``':
         return <code><pre className={css.pre}>{child}</pre></code>;
+    case 'link':
+        return <a href={child} target="_blank">{child}</a>;
     default:
         return child;
     }

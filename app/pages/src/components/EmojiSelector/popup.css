@@ -1,6 +1,7 @@
 .popup
 {
     box-sizing: initial;
+    user-select: none;
 }
 
 .popup__emoji

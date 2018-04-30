@@ -54,7 +54,7 @@ export default (socketServer, socket, currentUserId) => {
         async sendUserChats() {
             const user = await usersRepo.getUser(currentUserId);
             Promise.map(user.chatIds, async (chatId) => {
-                const chat = await chatsRepo.getChat(chatId);
+                const chat = await chatsRepo.getChatForUser(currentUserId, chatId);
                 socket.emit(eventNames.server.CHAT, chat);
                 socket.join(chat.chatId);
                 await Promise.join(

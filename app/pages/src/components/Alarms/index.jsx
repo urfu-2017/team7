@@ -1,35 +1,30 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react/index';
-import { List, Message } from 'semantic-ui-react';
-import AlarmItem from './AlarmItem';
+import { Message } from 'semantic-ui-react';
+import Alarm from './Alarm';
 import NewAlarm from './NewAlarm';
+import css from './styles.css';
 
-const compareTimeObjs = (i, j) => {
-    if (i.time.hours !== j.time.hours) {
-        return i.time.hours - j.time.hours;
+const compareTimes = (i, j) => {
+    if (i.isAfter(j)) {
+        return 1;
     }
-    if (i.time.minutes !== j.time.minutes) {
-        return i.time.minutes - j.time.minutes;
+    if (i.isBefore(j)) {
+        return -1;
     }
 
     return 0;
 };
 
-const AlarmsItems = props => props.alarmsStore.alarms
-    .sort(compareTimeObjs)
-    .map(i => (
-        <AlarmItem
-            key={i.id}
-            removeAlarm={id => props.alarmsStore.remove(id)}
-            changeAlarmActiveness={id => props.alarmsStore.changeActiveness(id)}
-            {...i}
-        />
-    ));
+const AlarmsList = ({ alarms }) => alarms
+    .sort((i, j) => compareTimes(i.time, j.time))
+    .map(i => <Alarm key={i.id} {...i} />);
 
 const NoAlarmsMessage = () => (
     <Message
         header="Будильники не найдены"
         content="Вы можете добавить новые, через форму внизу"
+        className={css.empty_message}
     />
 );
 
@@ -37,17 +32,15 @@ const NoAlarmsMessage = () => (
 @observer
 class Alarms extends React.Component {
     render() {
-        const { alarmsStore } = this.props;
+        const { alarms } = this.props.alarmsStore;
 
         return (
-            <List>
-                {
-                    alarmsStore.alarms.length
-                        ? <AlarmsItems alarmsStore={alarmsStore} key={alarmsStore.alarms.length} />
-                        : <NoAlarmsMessage />
-                }
+            <React.Fragment>
+                { alarms.length
+                    ? <AlarmsList alarms={alarms} key={alarms.length} />
+                    : <NoAlarmsMessage />}
                 <NewAlarm />
-            </List>
+            </React.Fragment>
         );
     }
 }

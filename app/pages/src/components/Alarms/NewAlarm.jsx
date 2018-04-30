@@ -1,6 +1,7 @@
 import React from 'react';
 import { inject } from 'mobx-react/index';
 import { Input, Button, Icon, Dropdown } from 'semantic-ui-react';
+import moment from 'moment';
 
 import css from './styles.css';
 import { alarmsInfo, playSound } from './alarms';
@@ -15,32 +16,38 @@ const options = alarmsInfo.map(i => ({
 class NewAlarm extends React.Component {
     timeOnChange = (event, data) => {
         const splittedTime = data.value.split(':');
-        this.time = {
-            hours: Number(splittedTime[0]),
-            minutes: Number(splittedTime[1])
-        };
+        this.time = data.value
+            ? moment().hours(Number(splittedTime[0])).minutes(Number(splittedTime[1]))
+            : null;
     }
     voiceOnChange = (event, data) => {
         this.voice = data.value;
     }
     buttonOnClick = () => {
         const { props: { alarmsStore }, time, voice } = this;
-        if (alarmsStore.alarms.length >= 5 ||
-            !voice || !time || !Number.isInteger(time.minutes) || !Number.isInteger(time.hours)) {
-            playSound('common', 'cant');
-
-            return;
-        }
-        if (Number.isInteger(time.minutes) && Number.isInteger(time.hours) && voice) {
+        if (voice && time && time.isValid() && alarmsStore.alarms.length < 5) {
             alarmsStore.createAlarm(time, voice);
             playSound(voice, 'add');
+        } else {
+            playSound('common', 'cant');
         }
     }
     render() {
         return (
             <div className={css.new_alarm} >
-                <Input type="time" placeholder="Время" onChange={this.timeOnChange} />
-                <Dropdown placeholder="Озвучка" selection options={options} onChange={this.voiceOnChange} />
+                <Input
+                    type="time"
+                    placeholder="Время"
+                    onChange={this.timeOnChange}
+                    className={css.new_alarm__time_input}
+                />
+                <Dropdown
+                    placeholder="Озвучка"
+                    selection
+                    options={options}
+                    onChange={this.voiceOnChange}
+                    className={css.new_alarm__voice_input}
+                />
                 <Button onClick={this.buttonOnClick}>
                     <Icon name="clock" size="big" /> Добавить
                 </Button>

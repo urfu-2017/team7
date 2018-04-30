@@ -3,14 +3,31 @@
   justify-content: space-between;
   align-items: center;
   padding: 5px 0;
+  height: 90px;
 }
 
 .new_alarm {
+  padding-top: 15px;
   display: flex;
   justify-content: space-between;
+}
+
+.new_alarm__time_input,
+.new_alarm__voice_input {
+  font-size: 1.2rem !important;
+  height: 45px;
+}
+
+.new_alarm__voice_input {
+  min-width: 10em !important;
 }
 
 .modal_actions {
   display: flex;
   justify-content: center;
+}
+
+.empty_message {
+  height: 80px;
+  margin-bottom: 10px !important;
 }

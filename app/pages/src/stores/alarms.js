@@ -9,7 +9,7 @@ class AlarmsStore {
 
     startCronJob(alarm) {
         const job = new CronJob({
-            cronTime: `0 ${moment().minutes(alarm.time.minutes).hours(alarm.time.hours).format('mm HH')} * * *`,
+            cronTime: `0 ${alarm.time.format('mm HH')} * * *`,
             onTick: () => {
                 this.setActiveAlarm(alarm);
                 if (alarm.snoozed) {
@@ -27,13 +27,13 @@ class AlarmsStore {
             time, voice, id, active: true
         };
         this.addAlarm(alarm);
-        // eslint-disable-next-line
-        localStorage.setItem(id, JSON.stringify(alarm));
+        this.saveToLocalStore(alarm);
     }
 
     @action addAlarm(alarm) {
-        this.alarms.push(alarm);
-        this.startCronJob(alarm);
+        const newAlarm = { ...alarm, time: moment(alarm.time) };
+        this.alarms.push(newAlarm);
+        this.startCronJob(newAlarm);
     }
 
     @action setActiveAlarm(alarm) {
@@ -49,25 +49,23 @@ class AlarmsStore {
 
     @action remove(id) {
         this.alarms = this.alarms.filter(i => i.id !== id);
-        // eslint-disable-next-line
         localStorage.removeItem(id);
     }
 
     changeActiveness(id) {
         const alarm = this.alarms.find(i => i.id === id);
         alarm.active = !alarm.active;
-        // eslint-disable-next-line
-        localStorage.setItem(id, JSON.stringify(alarm));
+        this.saveToLocalStore(alarm);
     }
 
     @action snooze(minutes) {
         const alarm = this.activeAlarm;
-        const newAlarm = JSON.parse(JSON.stringify(alarm));
-        const alarmTime = moment().minutes(alarm.time.minutes).hours(alarm.time.hours).add(minutes, 'minutes');
-        newAlarm.time = { minutes: alarmTime.minutes(), hours: alarmTime.hours() };
-        newAlarm.snoozed = true;
-        this.startCronJob(newAlarm);
+        this.startCronJob({ ...alarm, time: alarm.time.add(minutes, 'minutes'), snoozed: true });
         this.removeActiveAlarm();
+    }
+
+    saveToLocalStore(alarm) {
+        localStorage[alarm.id] = JSON.stringify(alarm);
     }
 }
 

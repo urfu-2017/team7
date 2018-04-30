@@ -4,17 +4,11 @@ import { Button, Header, Image, Modal } from 'semantic-ui-react';
 import { alarmsInfo, playSoundSrc, stopSound } from '../Alarms/alarms';
 import css from './styles.css';
 
-const SnoozeButton = props => <Button color="black" onClick={() => props.snooze()} content={props.text} />;
+const SnoozeButton = ({ snooze, text }) => <Button color="black" onClick={() => snooze()} content={text} />;
 
 @inject('alarmsStore')
 @observer
-class ModalExampleDimmer extends Component {
-    constructor(props) {
-        super(props);
-
-        this.close = this.close.bind(this);
-        this.snooze = this.snooze.bind(this);
-    }
+class AlarmModal extends Component {
     componentDidUpdate() {
         const { alarmsStore } = this.props;
         if (alarmsStore.activeAlarm) {
@@ -67,7 +61,7 @@ class ModalExampleDimmer extends Component {
                         <SnoozeButton snooze={() => this.snooze(1)} text="Одну минуту!" />
                         <SnoozeButton snooze={() => this.snooze(5)} text="Еще 5 минуточек..." />
                         <SnoozeButton snooze={() => this.snooze(30)} text="Не тревожьте меня полчаса!" />
-                        <Button positive content="Просыпаюсь!" onClick={this.close} />
+                        <Button positive content="Просыпаюсь!" onClick={() => this.close()} />
                     </Modal.Actions>
                 </Modal>
             </div>
@@ -75,4 +69,4 @@ class ModalExampleDimmer extends Component {
     }
 }
 
-export default ModalExampleDimmer;
+export default AlarmModal;

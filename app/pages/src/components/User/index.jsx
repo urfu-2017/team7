@@ -6,6 +6,7 @@ import DimmerLoader from '../DimmerLoader';
 import BackButton from '../BackButton';
 import LogoutButton from '../LogoutButton';
 import AvatarChanger from '../AvatarChanger';
+import AlarmButton from '../Alarms/AlarmButton';
 
 
 @inject('currentUserStore', 'usersStore')
@@ -27,7 +28,8 @@ class User extends React.Component {
             <div className={css.layout}>
                 <BackButton className={css.layout__back} />
                 <UserCard user={user} className={css.layout__user} />
-                {isSelf && <AvatarChanger className={css.layout__name} /> }
+                {isSelf && <AvatarChanger className={css.layout__name} />}
+                {isSelf && <AlarmButton className={css.layout__alarm} />}
                 {isSelf && <LogoutButton className={css.layout__logout} /> }
             </div>
         );

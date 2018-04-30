@@ -1,6 +1,7 @@
 import React from 'react';
 import { Provider } from 'mobx-react';
 import { HashRouter } from 'react-router-dom';
+
 import chatsStore from './stores/chats';
 import messagesStore from './stores/messages';
 import usersStore from './stores/users';
@@ -24,15 +25,13 @@ const stores = {
 
 class App extends React.Component {
     componentDidMount() {
-        // eslint-disable-next-line
-        const storage = localStorage;
         let i = 0;
-        let key = storage.key(i);
+        let key = localStorage.key(i);
         while (key) {
-            const alarm = JSON.parse(storage.getItem(key));
+            const alarm = JSON.parse(localStorage[key]);
             alarmsStore.addAlarm(alarm);
             i++;
-            key = storage.key(i);
+            key = localStorage.key(i);
         }
     }
     render() {

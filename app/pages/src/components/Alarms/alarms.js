@@ -66,5 +66,6 @@ export const playSoundSrc = (src) => {
 };
 
 export const playSound = (voice, soundName) => {
-    playSoundSrc(alarms.find(i => i.voice === voice)[soundName]);
+    const foundedVoice = alarms.find(i => i.voice === voice);
+    playSoundSrc(foundedVoice && foundedVoice[soundName] ? foundedVoice[soundName] : null);
 };

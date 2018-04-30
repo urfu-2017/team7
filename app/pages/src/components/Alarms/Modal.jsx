@@ -7,7 +7,7 @@ import css from './styles.css';
 const SnoozeButton = props => <Button color="black" onClick={() => props.snooze()} content={props.text} />;
 
 @inject('alarmsStore')
-@observer    
+@observer
 class ModalExampleDimmer extends Component {
     constructor(props) {
         super(props);

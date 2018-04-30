@@ -28,6 +28,7 @@ class NewAlarm extends React.Component {
         if (alarmsStore.alarms.length >= 5 ||
             !voice || !time || !Number.isInteger(time.minutes) || !Number.isInteger(time.hours)) {
             playSound('common', 'cant');
+
             return;
         }
         if (Number.isInteger(time.minutes) && Number.isInteger(time.hours) && voice) {

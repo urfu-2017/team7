@@ -62,12 +62,10 @@ class AlarmsStore {
 
     @action snooze(minutes) {
         const alarm = this.activeAlarm;
-        console.log(alarm);
         const newAlarm = JSON.parse(JSON.stringify(alarm));
         const alarmTime = moment().minutes(alarm.time.minutes).hours(alarm.time.hours).add(minutes, 'minutes');
         newAlarm.time = { minutes: alarmTime.minutes(), hours: alarmTime.hours() };
         newAlarm.snoozed = true;
-        console.log(newAlarm);
         this.startCronJob(newAlarm);
         this.removeActiveAlarm();
     }

@@ -1,6 +1,6 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react/index';
-import { List, Message, Segment } from 'semantic-ui-react';
+import { List, Message } from 'semantic-ui-react';
 import AlarmItem from './AlarmItem';
 import NewAlarm from './NewAlarm';
 

@@ -30,6 +30,10 @@ const registerMessageHandlers = (socketServer, socket, currentUserId) => {
 
     on(client.CHANGE_AVATAR_URL, handlers.changeAvatarUrl);
 
+    on(client.GET_PRIVATE_CHAT, handlers.getPrivateChat);
+
+    on(client.INVITE_WORD, handlers.getChatByInviteWord);
+
     return handlers;
 };
 

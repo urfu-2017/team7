@@ -1,5 +1,6 @@
 import Knex from 'knex';
-import { expect, proxyquire } from '../helpers';
+import mngen from 'mngen';
+import { expect, proxyquire, sandbox } from '../helpers';
 import { createTables } from '../../db/postgres/knex';
 import { User, Message } from '../../db/datatypes';
 
@@ -11,7 +12,12 @@ let messagesRepo;
 
 suite('Knex.Repositories.Integration');
 
+afterEach(async () => {
+    sandbox.restore();
+});
+
 beforeEach(async () => {
+    sandbox.stub(mngen);
     const knexInstance = await Knex({
         client: 'sqlite3',
         connection: { filename: ':memory:' },
@@ -30,7 +36,8 @@ beforeEach(async () => {
         './knex': knex
     });
     chatsRepo = proxyquire('../db/postgres/chats-repository', {
-        './knex': knex
+        './knex': knex,
+        mngen
     });
     loginUser = proxyquire('../db/postgres/login-manager', {
         './knex': knex,
@@ -52,6 +59,7 @@ test('can login thru github', async () => {
 });
 
 test('can join public chat', async () => {
+    mngen.word.withArgs(1).returns('vovvy');
     const userId1 = await loginUser(user1.githubId, user1.username);
     const userId2 = await loginUser(user2.githubId, user2.username);
     const chat = await chatsRepo.createChat('чятик', 'avatarUrl');
@@ -60,16 +68,17 @@ test('can join public chat', async () => {
     await chatsRepo.joinChat(userId2, chat.chatId);
 
     const {
-        avatarUrl, chatId, name, userIds, isPrivate
+        avatarUrl, chatId, name, userIds, isPrivate, inviteWord
     } = await chatsRepo.getChatForUser(userId1, chat.chatId);
     expect(chat.isPrivate).to.be.false;
     expect({
-        avatarUrl, chatId, name, isPrivate
+        avatarUrl, chatId, name, isPrivate, inviteWord
     }).to.be.deep.equal({
         avatarUrl: chat.avatarUrl,
         chatId: chat.chatId,
         name: chat.name,
-        isPrivate: chat.isPrivate
+        isPrivate: chat.isPrivate,
+        inviteWord: 'vovvy'
     });
     expect(userIds).to.have.deep.members([userId1, userId2]);
 });
@@ -133,7 +142,8 @@ test('can create self private chat', async () => {
         userIds: [userId],
         isPrivate: true,
         avatarUrl: user1.avatarUrl,
-        name: `@${user1.username}`
+        name: `@${user1.username}`,
+        inviteWord: null
     });
 });
 
@@ -148,3 +158,18 @@ test('can getAll users', async () => {
     });
 });
 
+test('can create two different inviteWord on collision', async () => {
+    mngen.word.withArgs(1).returns('vovvy');
+    mngen.word.withArgs(2).returns('yes-yes');
+
+    const chat1 = await chatsRepo.createChat('чятик', 'avatarUrl');
+    const chat2 = await chatsRepo.createChat('чятик', 'avatarUrl');
+    const chat3 = await chatsRepo.getChatByInviteWord('vovvy');
+    const chat4 = await chatsRepo.getChatByInviteWord('yes-yes');
+
+    expect(mngen.word).to.have.been.calledThrice;
+    expect(chat1.inviteWord).to.be.equal('vovvy');
+    expect(chat2.inviteWord).to.be.equal('yes-yes');
+    expect(chat1).to.be.deep.equal(chat3);
+    expect(chat2).to.be.deep.equal(chat4);
+});

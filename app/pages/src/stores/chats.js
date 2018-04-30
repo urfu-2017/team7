@@ -1,5 +1,6 @@
 import { observable, action, computed } from 'mobx';
-import { getMessages, onChat } from '../../../sockets/client';
+import currentUserStore from './current-user';
+import { getMessages, onChat, getChatByInviteWord, getPrivateChat } from '../../../sockets/client';
 
 class ChatsStore {
     @observable activeChatId = null;
@@ -9,14 +10,41 @@ class ChatsStore {
         return this.chatsById.get(this.activeChatId) || null;
     }
 
+    getChatByInviteWord(inviteWord) {
+        const chat = this.allChats.find(x => !x.isPrivate && x.inviteWord === inviteWord);
+        if (!chat) {
+            getChatByInviteWord(inviteWord);
+        }
+
+        return chat || null;
+    }
+
+    getPrivateChat(userId) {
+        const isSelfChat = currentUserStore.userId === userId;
+        const chat = isSelfChat ?
+            this.allChats.find(x => x.isPrivate && x.userIds.length === 1) :
+            this.allChats.find(x => x.isPrivate && x.userIds.includes(userId));
+        if (!chat) {
+            getPrivateChat(userId);
+        }
+
+        return chat || null;
+    }
+
     @computed get activeChatName() {
         return this.activeChat
             ? this.activeChat.name
             : null;
     }
 
+    @computed get activeChatInviteLink() {
+        return this.activeChat
+            ? this.activeChat.inviteWord
+            : null;
+    }
+
     @action selectChat(chatId) {
-        if (this.activeChatId !== chatId) {
+        if (chatId && this.activeChatId !== chatId) {
             this.activeChatId = chatId;
             getMessages({ chatId });
         }

@@ -85,6 +85,20 @@ export default (socketServer, socket, currentUserId) => {
             await createMessage(socket, text, currentUserId, chatId);
         },
 
+        async getPrivateChat({ userId }) {
+            const chatId = await chatsRepo.getOrCreatePrivateChatId(currentUserId, userId);
+            const chat = await chatsRepo.getChatForUser(currentUserId, chatId);
+            socket.emit(eventNames.server.CHAT, chat);
+        },
+
+        async getChatByInviteWord({ inviteWord }) {
+            const chat = await chatsRepo.getChatByInviteWord(inviteWord);
+            if (!chat.userIds.includes(currentUserId)) {
+                await chatsRepo.joinChat(currentUserId, chat.chatId);
+            }
+            socket.emit(eventNames.server.CHAT, chat);
+        },
+
         async getUrlMeta(url) {
             try {
                 const meta = await getMetadata(url);

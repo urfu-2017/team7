@@ -81,7 +81,7 @@ class Messages extends React.Component {
                     <Comment key={message.messageId} className={css.comment}>
                         <Comment.Avatar src={usersStore.getAvatar(message.authorUserId)} />
                         <Comment.Content>
-                            <Comment.Author as={Link} to={`/user_${message.authorUserId}`}>
+                            <Comment.Author as={Link} to={`/user/${message.authorUserId}`}>
                                 {usersStore.getUsername(message.authorUserId)}
                             </Comment.Author>
                             <Comment.Metadata style={{ minHeight: '1.5em' }}>

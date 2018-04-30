@@ -32,7 +32,7 @@ class WeatherWidget extends React.Component {
         const forecast = data.list;
 
         return (
-            <Table basic="very" celled collapsing>
+            <Table style={{ margin: 0 }} basic="very" celled collapsing>
                 <Table.Body>
                     {forecast
                         .map(item => (

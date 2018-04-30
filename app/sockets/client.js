@@ -103,3 +103,11 @@ export const getWeather = (city) => {
 export const onWeather = (handler) => {
     socket.on(eventNames.server.WEATHER, handler);
 };
+
+export const leaveChat = (payload) => {
+    socket.emit(eventNames.client.LEAVE_CHAT, payload);
+};
+
+export const onUserLeavedChat = (handler) => {
+    socket.on(eventNames.server.USER_LEAVED_CHAT, handler);
+};

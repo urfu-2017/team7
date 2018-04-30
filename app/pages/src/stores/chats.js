@@ -1,6 +1,6 @@
 import { observable, action, computed } from 'mobx';
 import currentUserStore from './current-user';
-import { getMessages, onChat, getChatByInviteWord, getPrivateChat } from '../../../sockets/client';
+import { getMessages, onChat, getChatByInviteWord, getPrivateChat, leaveChat, onUserLeavedChat } from '../../../sockets/client';
 
 class ChatsStore {
     @observable activeChatId = null;
@@ -8,6 +8,10 @@ class ChatsStore {
 
     @computed get activeChat() {
         return this.chatsById.get(this.activeChatId) || null;
+    }
+
+    @computed get me() {
+        return currentUserStore.user;
     }
 
     getChatByInviteWord(inviteWord) {
@@ -55,6 +59,10 @@ class ChatsStore {
         this.activeChatId = null;
     }
 
+    @action leaveChat(userId, chatId) {
+        leaveChat({ userId, chatId });
+    }
+
     @action setScrollHeight(height, chatId) {
         const chat = this.chatsById.get(chatId);
         if (chat) {
@@ -71,6 +79,13 @@ class ChatsStore {
     constructor() {
         onChat((chat) => {
             this.chatsById.set(chat.chatId, chat);
+        });
+
+        onUserLeavedChat(({ userId, chatId }) => {
+            console.log(userId, chatId, this.me.userId);
+            if (userId === this.me.userId) {
+                this.chatsById.delete(chatId);
+            }
         });
     }
 

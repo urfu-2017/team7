@@ -1,12 +1,29 @@
 import React from 'react';
-import { Icon, Menu, Dropdown, Header } from 'semantic-ui-react';
+import { withRouter } from 'react-router-dom'
+import { Icon, Menu, Dropdown, Header, Modal, Button } from 'semantic-ui-react';
 import { observer, inject } from 'mobx-react';
 import css from './menu.css';
 import Invite from '../Invite';
+import ConfirmationModal from '../ConfirmationModal';
 
-@inject('chatsStore')
+@withRouter
+@inject('chatsStore', 'currentUserStore')
 @observer
 export default class MessagesMenu extends React.Component {
+    constructor() {
+        super();
+        this.leaveChat = this.leaveChat.bind(this);
+    }
+
+    leaveChat() {
+        const { history } = this.props;
+        const { leaveChat, activeChatId } = this.props.chatsStore;
+        const { userId } = this.props.currentUserStore;
+
+        leaveChat(userId, activeChatId);
+        history.push('/');
+    }
+
     render() {
         const { activeChatName, activeChat } = this.props.chatsStore;
 
@@ -30,7 +47,13 @@ export default class MessagesMenu extends React.Component {
                                 </Invite>
                                 <Dropdown.Divider />
                                 <Dropdown.Item>
-                                    <Header color="red" size="tiny">Покинуть чат</Header>
+                                    <ConfirmationModal
+                                        trigger={<Header color="red" size="tiny">Покинуть чат</Header>}
+                                        size="mini"
+                                        header="Покинуть чат"
+                                        question="Вы действительно уверены, что хотите покинуть данный чат?"
+                                        onAgree={this.leaveChat}
+                                    />
                                 </Dropdown.Item>
                             </Dropdown.Menu>
                         </Dropdown>

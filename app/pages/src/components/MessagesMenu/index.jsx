@@ -12,11 +12,11 @@ export default class MessagesMenu extends React.Component {
 
         return (
             <Menu className={css.menu}>
-                {activeChatName
-                    ? <Menu.Item header className={css.menu__chatname} content={activeChatName} />
-                    : ''}
+                {activeChatName &&
+                    <Menu.Item header className={css.menu__chatname} content={activeChatName} />
+                }
                 <Menu.Item style={{ padding: 0 }} position="right">
-                    {activeChatName ?
+                    {activeChatName &&
                         <Dropdown simple direction="left" item icon={<Icon size="large" color="grey" name="setting" style={{ margin: 0 }} />}>
                             <Dropdown.Menu>
                                 <Dropdown.Item text="Участники" />
@@ -34,7 +34,7 @@ export default class MessagesMenu extends React.Component {
                                 </Dropdown.Item>
                             </Dropdown.Menu>
                         </Dropdown>
-                        : ''}
+                    }
                 </Menu.Item>
             </Menu>
         );

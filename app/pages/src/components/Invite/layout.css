@@ -1,5 +1,5 @@
-.qr,
-.inputbox
+.layout__qrcode,
+.layout__inputbox
 {
     display: block;
     margin-left: auto;
@@ -10,8 +10,8 @@
     margin-bottom: 1rem;
 }
 
-.inputbox
+.layout.layout__inputbox
 {
-    display: flex !important;
+    display: flex;
     margin-bottom: 0;
 }

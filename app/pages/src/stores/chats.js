@@ -19,12 +19,14 @@ class ChatsStore {
     }
 
     getPrivateChat(userId) {
-        const chat = this.allChats.find(x => x.isPrivate && x.userIds.includes(userId));
-        if (!chat) {
+        const privateChats = this.allChats.filter(x => x.isPrivate);
+        const selfChat = privateChats.find(x => x.userIds[0] === userId && x.userIds.length === 1);
+        const chat = privateChats.find(x => x.userIds.includes(userId));
+        if (!selfChat && !chat) {
             getPrivateChat(userId);
         }
 
-        return chat || null;
+        return selfChat || chat || null;
     }
 
     @computed get activeChatName() {

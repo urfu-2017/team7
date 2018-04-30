@@ -15,3 +15,8 @@
     display: flex;
     margin-bottom: 0;
 }
+
+.layout__input
+{
+    direction: rtl;
+}

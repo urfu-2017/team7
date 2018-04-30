@@ -36,7 +36,7 @@ export default class Invite extends React.Component {
                 <Modal.Content>
                     <QRCode className={css.layout__qrcode} renderAs="svg" value={link} />
                     <Input className={`${css.layout} ${css.layout__inputbox}`} defaultValue={link} action>
-                        <input readOnly />
+                        <input readOnly className={css.layout__input} />
                         <CopyToClipboard text={link} onCopy={() => this.onCopy()}>
                             {wasSaved ?
                                 <Button key="clipboard-btn-saved" icon="checkmark" color="green" /> :

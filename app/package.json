@@ -1,7 +1,8 @@
 {
   "name": "team7chat",
   "version": "1.0.0",
-  "repository": "https://github.com/urfu-2017",
+  "repository": "https://github.com/urfu-2017/team7",
+  "description": "Ultimate Online Chat",
   "license": "MIT",
   "scripts": {
     "start": "node .",
@@ -45,6 +46,8 @@
     "react": "16.3.1",
     "react-dom": "16.3.1",
     "react-router-dom": "4.2.2",
+    "minio": "5.0.0",
+    "react-s3-uploader": "Edheltur/react-s3-uploader#v5.0.0",
     "seedrandom": "2.4.3",
     "semantic-ui-react": "0.79.1",
     "shortid": "2.2.8",

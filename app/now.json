@@ -6,6 +6,7 @@
     "HTTP_SCHEME": "https",
     "NODE_ENV": "production",
     "SITE_URL": "https://team7chat.now.sh",
+    "S3_BUCKET": "prod",
 
     "GITHUB_CLIENT_ID": "@github-client-id",
     "GITHUB_CLIENT_SECRET": "@github-client-secret",

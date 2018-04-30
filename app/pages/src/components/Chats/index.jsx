@@ -2,7 +2,7 @@ import _ from 'lodash';
 import React from 'react';
 import { observer, inject } from 'mobx-react';
 import { Link } from 'react-router-dom';
-import { List, Image, Menu, Input, Button } from 'semantic-ui-react';
+import { List, Image, Menu, Input, Button, Icon } from 'semantic-ui-react';
 import Chat from '../Chat';
 import Markdown from '../Markdown';
 
@@ -48,6 +48,11 @@ class ChatList extends React.Component {
                         <Link to="/new-chat"><Button icon="plus" /></Link>
                         <input />
                     </Input>
+                </List.Item>
+                <List.Item>
+                    <Link to="/alarms">
+                        <Icon name="clock" size="big" /> Ваши Будильники
+                    </Link>
                 </List.Item>
                 {chats
                     .map(chat => (

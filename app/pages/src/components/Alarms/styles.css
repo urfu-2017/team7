@@ -1,0 +1,16 @@
+.alarm {
+  display: flex !important;
+  justify-content: space-between;
+  align-items: center;
+  padding: 5px 0;
+}
+
+.new_alarm {
+  display: flex;
+  justify-content: space-between;
+}
+
+.modal_actions {
+  display: flex;
+  justify-content: center;
+}

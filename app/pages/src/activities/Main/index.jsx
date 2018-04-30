@@ -7,6 +7,8 @@ import MessagesActivity from '../Messages';
 import SegmentActivity from '../Segment';
 import ChatCreation from '../../components/ChatCreation/index';
 import User from '../../components/User';
+import Alarms from '../../components/Alarms';
+import AlarmsModal from '../../components/Alarms/Modal';
 
 
 const MainActivity = () => (
@@ -37,7 +39,13 @@ const MainActivity = () => (
                         </SegmentActivity>
                     )}
                 />
+                <Route exact path="/alarms">
+                    <SegmentActivity>
+                        <Alarms />
+                    </SegmentActivity>
+                </Route>
             </Switch>
+            <AlarmsModal />
         </div>
     </div>
 );

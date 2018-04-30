@@ -26,6 +26,7 @@ export const createTables = async (knex) => {
         table.uuid('chatId').primary();
         table.string('name', MAX_CHAT_NAME_LENGTH);
         table.boolean('isPrivate').notNullable();
+        table.string('inviteWord').unique();
         table.string('avatarUrl');
     });
 

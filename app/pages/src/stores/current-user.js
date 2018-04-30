@@ -11,6 +11,13 @@ class CurrentUserStore {
             : null;
     }
 
+    @computed
+    get userId() {
+        return this.user
+            ? this.user.userId
+            : null;
+    }
+
     @action
     changeAvatarUrl(url) {
         changeAvatarUrl(url);

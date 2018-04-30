@@ -43,7 +43,7 @@ class UrlMeta extends React.Component {
                     />
                     <Item.Content>
                         <Item.Header className={css.meta__header} as="a" href={meta.url} content={meta.title} />
-                        <Item.Meta>
+                        <Item.Meta className={css.meta__header} >
                             <a href={meta.url}>{meta.url}</a>
                         </Item.Meta>
                         <Item.Description className={css.meta__description} as="p" content={meta.description} />

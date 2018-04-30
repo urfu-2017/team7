@@ -8,7 +8,9 @@ import { getUser, onMessageSent, onUrlMeta, onWeather } from '../../../../socket
 import Markdown from '../Markdown';
 import UrlMeta from '../UrlMeta';
 import Weather from '../Weather';
+import Loader from '../Loader';
 import css from './messages.css';
+
 
 @inject('usersStore', 'currentUserStore', 'chatsStore')
 @observer
@@ -79,11 +81,14 @@ class Messages extends React.Component {
                     <Comment key={message.messageId} className={css.comment}>
                         <Comment.Avatar src={usersStore.getAvatar(message.authorUserId)} />
                         <Comment.Content>
-                            <Comment.Author as={Link} to={`/user_${message.authorUserId}`}>
+                            <Comment.Author as={Link} to={`/user/${message.authorUserId}`}>
                                 {usersStore.getUsername(message.authorUserId)}
                             </Comment.Author>
-                            <Comment.Metadata>
-                                <div>{moment(message.timestamp).format('HH:mm')}</div>
+                            <Comment.Metadata style={{ minHeight: '1.5em' }}>
+                                <div>
+                                    {moment(message.timestamp).format('HH:mm')}
+                                    <Loader status={message.status} />
+                                </div>
                             </Comment.Metadata>
                             <Comment.Text style={{ minHeight: '1em' }}>
                                 <Markdown source={message.content} needFormat />

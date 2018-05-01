@@ -1,25 +1,37 @@
 import React from 'react';
+import uuidv4 from 'uuid/v4';
 import { inject, observer } from 'mobx-react/index';
-import { Input, Button } from 'semantic-ui-react';
+import ReactS3Uploader from 'react-s3-uploader';
+import { Button } from 'semantic-ui-react';
 
 @inject('currentUserStore')
 @observer
 class AvatarChanger extends React.Component {
-    componentWillMount() {
-        this.setState({ avatarUrl: this.props.avatarUrl });
-    }
     render() {
-        const { changeAvatarUrl, user } = this.props.currentUserStore;
+        const { changeAvatarUrl } = this.props.currentUserStore;
+        const inputId = uuidv4();
 
         return (
-            <Input
-                placeholder={user.avatarUrl}
-                className={this.props.className}
-                onChange={(e, { value }) => this.setState({ avatarUrl: value })}
-            >
-                <input />
-                <Button content="Сохранить" onClick={() => changeAvatarUrl(this.state.avatarUrl)} />
-            </Input>);
+            <React.Fragment>
+                <ReactS3Uploader
+                    signingUrl="/s3/sign"
+                    accept="image/*"
+                    s3path="avatars/"
+                    contentDisposition="auto"
+                    onFinish={({ publicUrl }) => {
+                        changeAvatarUrl(publicUrl);
+                    }}
+                    style={{ display: 'none' }}
+                    id={inputId}
+                />
+                <Button
+                    as="label"
+                    icon="upload"
+                    for={inputId}
+                    content="Изменить аватар"
+                    className={this.props.className}
+                />
+            </React.Fragment>);
     }
 }
 

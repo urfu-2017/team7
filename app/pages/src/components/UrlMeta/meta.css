@@ -4,11 +4,7 @@
     border-left-style: solid;
     padding-left: .5em;
     min-height: 100px;
-}
-
-.meta__link {
-    height: 125px;
-    display: block;
+    margin: 0 !important;
 }
 
 .meta__header
@@ -17,6 +13,7 @@
     text-overflow: ellipsis;
     overflow: hidden;
     width: 100%;
+    margin: 0 !important;
 }
 
 .meta__description
@@ -34,7 +31,7 @@
 {
     content: '...';
     position: absolute;
-    right: 0;
+    right: 0.2em;
     bottom: 0;
 }
 
@@ -43,7 +40,7 @@
     content: '';
     position: absolute;
     right: 0;
-    width: 3em;
+    width: 2em;
     height: 3em;
     margin-top: 0.2em;
     background: white;

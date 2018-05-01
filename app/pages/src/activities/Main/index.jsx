@@ -5,8 +5,10 @@ import Chats from '../../components/Chats/index';
 import css from './layout.css';
 import MessagesActivity from '../Messages';
 import SegmentActivity from '../Segment';
+import PrivateChatActivity from '../PrivateChat';
 import ChatCreation from '../../components/ChatCreation/index';
 import User from '../../components/User';
+import InviteActivity from '../Invite';
 
 
 const MainActivity = () => (
@@ -17,6 +19,9 @@ const MainActivity = () => (
         <div className={css.layout__main_activity}>
             <Switch>
                 <Route exact path="/" component={MessagesActivity} />
+                <Route exact path="/chat/:chatId" component={MessagesActivity} />
+                <Route exact path="/@:username" component={PrivateChatActivity} />
+                <Route exact path="/join/:inviteWord" component={InviteActivity} />
                 <Route exact path="/new-chat">
                     <SegmentActivity>
                         <ChatCreation />
@@ -29,7 +34,7 @@ const MainActivity = () => (
                 </Route>
                 <Route
                     exact
-                    path="/user_:userId"
+                    path="/user/:userId"
                     render={({ match }) => (
                         <SegmentActivity>
                             <User userId={match.params.userId} />

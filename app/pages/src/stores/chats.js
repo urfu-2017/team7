@@ -1,9 +1,35 @@
 import { observable, action, computed } from 'mobx';
-import { getMessages, onChat } from '../../../sockets/client';
+import currentUserStore from './current-user';
+import { getMessages, onChat, getChatByInviteWord, getPrivateChat } from '../../../sockets/client';
 
 class ChatsStore {
-    @observable activeChat = null;
+    @observable activeChatId = null;
     @observable chatsById = observable.map();
+
+    @computed get activeChat() {
+        return this.chatsById.get(this.activeChatId) || null;
+    }
+
+    getChatByInviteWord(inviteWord) {
+        const chat = this.allChats.find(x => !x.isPrivate && x.inviteWord === inviteWord);
+        if (!chat) {
+            getChatByInviteWord(inviteWord);
+        }
+
+        return chat || null;
+    }
+
+    getPrivateChat(userId) {
+        const isSelfChat = currentUserStore.userId === userId;
+        const chat = isSelfChat ?
+            this.allChats.find(x => x.isPrivate && x.userIds.length === 1) :
+            this.allChats.find(x => x.isPrivate && x.userIds.includes(userId));
+        if (!chat) {
+            getPrivateChat(userId);
+        }
+
+        return chat || null;
+    }
 
     @computed get activeChatName() {
         return this.activeChat
@@ -11,14 +37,22 @@ class ChatsStore {
             : null;
     }
 
-    @action selectChat(chat) {
-        this.activeChat = chat;
-        getMessages({ chatId: chat.chatId });
+    @computed get activeChatInviteLink() {
+        return this.activeChat
+            ? this.activeChat.inviteWord
+            : null;
+    }
+
+    @action selectChat(chatId) {
+        if (chatId && this.activeChatId !== chatId) {
+            this.activeChatId = chatId;
+            getMessages({ chatId });
+        }
     }
 
     @action setAllChats(chats) {
         this.chatsById = observable.map(chats.map(chat => [chat.chatId, chat]));
-        this.activeChat = null;
+        this.activeChatId = null;
     }
 
     @action setScrollHeight(height, chatId) {
@@ -38,6 +72,10 @@ class ChatsStore {
         onChat((chat) => {
             this.chatsById.set(chat.chatId, chat);
         });
+    }
+
+    @computed get allChats() {
+        return [...this.chatsById.toJS().values()];
     }
 }
 

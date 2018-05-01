@@ -1,6 +1,6 @@
 import React from 'react';
-import { withRouter } from 'react-router-dom'
-import { Icon, Menu, Dropdown, Header, Modal, Button } from 'semantic-ui-react';
+import { withRouter } from 'react-router-dom';
+import { Icon, Menu, Dropdown, Header } from 'semantic-ui-react';
 import { observer, inject } from 'mobx-react';
 import css from './menu.css';
 import Invite from '../Invite';
@@ -53,6 +53,8 @@ export default class MessagesMenu extends React.Component {
                                         header="Покинуть чат"
                                         question="Вы действительно уверены, что хотите покинуть данный чат?"
                                         onAgree={this.leaveChat}
+                                        onAgreeText="Покинуть"
+                                        onDenyText="Отмена"
                                     />
                                 </Dropdown.Item>
                             </Dropdown.Menu>

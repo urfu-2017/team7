@@ -56,6 +56,8 @@ export default class MessageInput extends React.Component {
     };
 
     render() {
+        const { activeChat } = this.props.chatsStore;
+
         return (
             <div className={css.layout}>
                 <Input
@@ -70,13 +72,13 @@ export default class MessageInput extends React.Component {
                     maxLength={MAX_MESSAGE_LENGTH}
                 >
                     <input className={`${css.s1} ${css.s2} ${css.s3} ${css.s4} ${css.layout__inputbox}`} />
-                    <MessageImageUploader
+                    {activeChat && <MessageImageUploader
                         className={`${css.layout__imageicon} ${css.layout__icon}`}
                         onFinish={(url) => {
-                            const { chatId } = this.props.chatsStore.activeChat;
+                            const { chatId } = activeChat;
                             sendMessage({ text: url, chatId });
                         }}
-                    />
+                    />}
                     <EmojiSelector
                         onSelected={this.handleEmojiSelect}
                         onOpenedChanged={this.setPopupOpened}

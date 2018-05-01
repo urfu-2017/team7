@@ -4,13 +4,11 @@ import UserCard from '../UserCard';
 import css from './layout.css';
 import DimmerLoader from '../DimmerLoader';
 import BackButton from '../BackButton';
-import LogoutButton from '../LogoutButton';
-import AvatarChanger from '../AvatarChanger';
 
 
 @inject('currentUserStore', 'usersStore')
 @observer
-class User extends React.Component {
+export default class User extends React.Component {
     render() {
         const { usersStore, currentUserStore, userId } = this.props;
         const isSelf = !userId;
@@ -26,12 +24,8 @@ class User extends React.Component {
         return (
             <div className={css.layout}>
                 <BackButton className={css.layout__back} />
-                <UserCard user={user} className={css.layout__user} />
-                {isSelf && <AvatarChanger className={css.layout__name} /> }
-                {isSelf && <LogoutButton className={css.layout__logout} /> }
+                <UserCard user={user} isSelf={isSelf} className={css.layout__user} />
             </div>
         );
     }
 }
-
-export default User;

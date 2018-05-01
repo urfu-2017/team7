@@ -20,10 +20,12 @@
 .layout__icon,
 .layout__icon_active
 {
+    box-sizing: border-box;
     pointer-events: auto !important;
-    width: 2.2em !important;
+    width: 1.8em !important;
     cursor: pointer !important;
     opacity: 0.5 !important;
+    margin-right: .2em !important;
 }
 
 .layout__icon:hover,
@@ -31,3 +33,22 @@
 {
     opacity: 1 !important;
 }
+
+.layout__imageicon
+{
+    margin-right: 2em !important;
+}
+
+.layout__inputbox
+{
+    animation: 1s linear infinite forcePadding;
+}
+
+@keyframes forcePadding {
+    from {
+        padding-right: 5.8em;
+    }
+    to {
+        padding-right: 5.8em;
+    }
+  }

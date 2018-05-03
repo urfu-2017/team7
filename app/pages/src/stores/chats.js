@@ -82,7 +82,6 @@ class ChatsStore {
         });
 
         onUserLeavedChat(({ userId, chatId }) => {
-            console.log(userId, chatId, this.me.userId);
             if (userId === this.me.userId) {
                 this.chatsById.delete(chatId);
             }

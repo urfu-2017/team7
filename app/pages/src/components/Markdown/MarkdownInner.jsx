@@ -1,11 +1,22 @@
 import React from 'react';
+import uuidv4 from 'uuid/v4';
 import css from './markdown.css';
+import { getMatch } from '../../common/url-regex';
 
+
+const formatLink = (fullmatch) => {
+    const { isSameDomain, schema, path } = getMatch(fullmatch);
+    if (isSameDomain) {
+        return <a href={path}>{path}</a>;
+    }
+
+    return <a href={schema ? fullmatch : `//${fullmatch}`} target="_blank">{fullmatch}</a>;
+};
 
 const MardownNode = ({ item, needFormat }) => {
     let child = item.content;
     if (typeof child === 'object') {
-        child = <MarkdownInner source={child} needFormat={needFormat} />;
+        child = <MarkdownInner key={uuidv4()} source={child} needFormat={needFormat} />;
     }
 
     if (!needFormat) {
@@ -20,7 +31,7 @@ const MardownNode = ({ item, needFormat }) => {
     case '``':
         return <code><pre className={css.pre}>{child}</pre></code>;
     case 'link':
-        return <a href={/^https?:/.test(child) ? child : `//${child}`} target="_blank">{child}</a>;
+        return formatLink(child);
     default:
         return child;
     }
@@ -33,7 +44,7 @@ export default class MarkdownInner extends React.Component {
             <React.Fragment>
                 {source.map(item =>
                     (<MardownNode
-                        key={item.id}
+                        key={uuidv4()}
                         item={item}
                         needFormat={needFormat}
                     />))}

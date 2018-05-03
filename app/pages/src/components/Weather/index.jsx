@@ -2,6 +2,7 @@ import React from 'react';
 import { observer, inject } from 'mobx-react';
 import { Header, Image, Table } from 'semantic-ui-react';
 import { isUndefined } from 'util';
+import uuidv4 from 'uuid/v4';
 
 @inject('weatherStore')
 @observer
@@ -36,7 +37,7 @@ class WeatherWidget extends React.Component {
                 <Table.Body>
                     {forecast
                         .map(item => (
-                            <Table.Row>
+                            <Table.Row key={uuidv4()}>
                                 <Table.Cell>
                                     <Header as="h4" image>
                                         <Image

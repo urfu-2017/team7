@@ -25,12 +25,13 @@ const connectUsers = async (sockets, chat, userIds) =>
         });
 
 // eslint-disable-next-line import/prefer-default-export
-export const createChat = async (socketServer, { name, userIds }) => {
+export const createChat = async (socketServer, { name, currentUserId, userIds }) => {
     const sockets = await getAllConnectedSockets(socketServer);
     const chat = await chatsRepo.createChat(name, getOwlUrl());
+    const newIds = userIds.concat([currentUserId]);
 
     await Promise.all(
-        updateDb(chat, userIds),
-        connectUsers(sockets, chat, userIds)
+        updateDb(chat, newIds),
+        connectUsers(sockets, chat, newIds)
     );
 };

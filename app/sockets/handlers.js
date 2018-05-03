@@ -110,7 +110,7 @@ export default (socketServer, socket, currentUserId) => {
         },
 
         async createChat({ name, userIds }) {
-            await createChat(socketServer, { name, userIds });
+            await createChat(socketServer, { currentUserId, name, userIds });
         },
 
         async getWeather(city) {

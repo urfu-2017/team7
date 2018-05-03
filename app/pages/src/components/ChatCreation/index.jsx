@@ -22,7 +22,7 @@ class ChatCreation extends React.Component {
     }
 
     get isValid() {
-        return this.state.name.trim() && this.state.selectedUserIds.length > 0;
+        return this.state.name.trim();
     }
 
     resetComponent() {
@@ -34,8 +34,7 @@ class ChatCreation extends React.Component {
             return;
         }
         const { name, selectedUserIds } = this.state;
-        const userIds = [...selectedUserIds, this.props.currentUserStore.user.userId];
-        createChat({ name, userIds });
+        createChat({ name, userIds: selectedUserIds });
         this.resetComponent();
         this.props.history.goBack();
     };
@@ -58,7 +57,6 @@ class ChatCreation extends React.Component {
         this.props.usersStore.searchUser(value);
         this.setState({ query: value });
     };
-
 
     render() {
         const currentUser = this.props.currentUserStore.user;

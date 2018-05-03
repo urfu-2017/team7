@@ -25,7 +25,7 @@ class NewAlarm extends React.Component {
     }
     buttonOnClick = () => {
         const { props: { alarmsStore }, time, voice } = this;
-        if (voice && time && time.isValid() && alarmsStore.alarms.length < 5) {
+        if (voice && time && time.isValid() && alarmsStore.canCreateAlarm(time)) {
             alarmsStore.createAlarm(time, voice);
             playSound(voice, 'add');
         } else {
@@ -49,7 +49,7 @@ class NewAlarm extends React.Component {
                     className={css.new_alarm__voice_input}
                 />
                 <Button onClick={this.buttonOnClick}>
-                    <Icon name="clock" size="big" /> Добавить
+                    <Icon style={{ height: '28px' }} name="clock" size="big" /> Добавить
                 </Button>
             </div>
         );

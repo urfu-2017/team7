@@ -25,7 +25,9 @@ class Alarm extends React.PureComponent {
                 <Image src={img} size="tiny" />
                 <span>{time.format('HH:mm')}</span>
                 <Checkbox toggle defaultChecked={active} onChange={() => this.checkboxOnChange()} />
-                <Button color="red" onClick={() => this.buttonOnClick()}><Icon name="trash" size="big" />Удалить</Button>
+                <Button color="red" onClick={() => this.buttonOnClick()}>
+                    <Icon style={{ height: '28px' }} name="trash" size="big" /> Удалить
+                </Button>
             </div>
         );
     }

@@ -67,6 +67,13 @@ class AlarmsStore {
     saveToLocalStore(alarm) {
         localStorage[alarm.id] = JSON.stringify(alarm);
     }
+
+    canCreateAlarm(time) {
+        const alarmExistAlready = this.alarms.find(i => i.time.format('HH:mm') === time.format('HH:mm'));
+        const lessThenFiveAlarms = this.alarms.length <= 5;
+
+        return !alarmExistAlready && lessThenFiveAlarms;
+    }
 }
 
 const alarmsStore = new AlarmsStore();

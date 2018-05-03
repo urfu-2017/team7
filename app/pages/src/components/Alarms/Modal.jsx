@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { inject, observer } from 'mobx-react';
-import { Button, Header, Image, Modal } from 'semantic-ui-react';
+import { Button, Image, Modal } from 'semantic-ui-react';
 import { alarmsInfo, playSoundSrc, stopSound } from '../Alarms/alarms';
 import css from './styles.css';
 
@@ -49,18 +49,16 @@ class AlarmModal extends Component {
                     open={!!activeAlarm}
                     closeOnEscape={false}
                     closeOnRootNodeClick={false}
+                    size="tiny"
                 >
-                    <Modal.Header>{alarm ? alarm.name : null}</Modal.Header>
-                    <Modal.Content image>
-                        <Image wrapped size="medium" src={alarm ? alarm.img : null} />
-                        <Modal.Description>
-                            <Header>{`${alarm ? alarm.name : null} пытается разбудить вас!`}</Header>
-                        </Modal.Description>
+                    <Modal.Header style={{ padding: '10px 0', 'text-align': 'center' }}>
+                        {`${alarm ? alarm.name : null} пытается разбудить вас!`}
+                    </Modal.Header>
+                    <Modal.Content image style={{ display: 'block' }}>
+                        <Image style={{ margin: 'auto' }} fluid size="medium" src={alarm ? alarm.img : null} />
                     </Modal.Content>
                     <Modal.Actions className={css.modal_actions}>
-                        <SnoozeButton snooze={() => this.snooze(1)} text="Одну минуту!" />
                         <SnoozeButton snooze={() => this.snooze(5)} text="Еще 5 минуточек..." />
-                        <SnoozeButton snooze={() => this.snooze(30)} text="Не тревожьте меня полчаса!" />
                         <Button positive content="Просыпаюсь!" onClick={() => this.close()} />
                     </Modal.Actions>
                 </Modal>

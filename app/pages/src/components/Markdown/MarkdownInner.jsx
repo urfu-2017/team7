@@ -13,7 +13,7 @@ const formatLink = (fullmatch) => {
     return <a href={schema ? fullmatch : `//${fullmatch}`} target="_blank">{fullmatch}</a>;
 };
 
-const MardownNode = ({ item, needFormat }) => {
+const MarkdownNode = ({ item, needFormat }) => {
     let child = item.content;
     if (typeof child === 'object') {
         child = <MarkdownInner key={uuidv4()} source={child} needFormat={needFormat} />;
@@ -43,7 +43,7 @@ export default class MarkdownInner extends React.Component {
         return (
             <React.Fragment>
                 {source.map(item =>
-                    (<MardownNode
+                    (<MarkdownNode
                         key={uuidv4()}
                         item={item}
                         needFormat={needFormat}

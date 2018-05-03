@@ -12,7 +12,7 @@ export default class UrlMeta extends React.Component {
         const match = getMatch(text);
         if (match && !match.isSameDomain) {
             this.url = match.fullmatch;
-            if (!urlMetaStore.metaByUrl.get(this.url)) {
+            if (!urlMetaStore.metaByUrl.has(this.url)) {
                 urlMetaStore.fetchUrlMeta(this.url);
             }
         }

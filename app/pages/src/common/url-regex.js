@@ -7,7 +7,7 @@ export const getMatch = (text) => {
     if (!groups) {
         return null;
     }
-    // eslint-disable-next-line no-undef
+
     const { hostname: currentDomain, port: currentPort } = window.location;
     const [, fullmatch, schema, domain, port, path, query] = groups;
     const isSameDomain = currentDomain === domain &&

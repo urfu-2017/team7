@@ -4,8 +4,6 @@ import { Button, Image, Modal } from 'semantic-ui-react';
 import { alarmsInfo, playSoundSrc, stopSound } from '../Alarms/alarms';
 import css from './styles.css';
 
-const SnoozeButton = ({ snooze, text }) => <Button color="black" onClick={() => snooze()} content={text} />;
-
 @inject('alarmsStore')
 @observer
 class AlarmModal extends Component {
@@ -51,15 +49,15 @@ class AlarmModal extends Component {
                     closeOnRootNodeClick={false}
                     size="tiny"
                 >
-                    <Modal.Header style={{ padding: '10px 0', 'text-align': 'center' }}>
+                    <Modal.Header>
                         {`${alarm ? alarm.name : null} пытается разбудить вас!`}
                     </Modal.Header>
                     <Modal.Content image style={{ display: 'block' }}>
                         <Image style={{ margin: 'auto' }} fluid size="medium" src={alarm ? alarm.img : null} />
                     </Modal.Content>
                     <Modal.Actions className={css.modal_actions}>
-                        <SnoozeButton snooze={() => this.snooze(5)} text="Еще 5 минуточек..." />
-                        <Button positive content="Просыпаюсь!" onClick={() => this.close()} />
+                        <Button style={{ margin: '0 5px' }} onClick={() => this.snooze(5)} content="Еще 5 минуточек..." />
+                        <Button style={{ margin: '0 5px' }} positive content="Просыпаюсь!" onClick={() => this.close()} />
                     </Modal.Actions>
                 </Modal>
             </div>

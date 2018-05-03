@@ -70,7 +70,7 @@ class AlarmsStore {
 
     canCreateAlarm(time) {
         const alarmExistAlready = this.alarms.find(i => i.time.format('HH:mm') === time.format('HH:mm'));
-        const lessThenFiveAlarms = this.alarms.length <= 5;
+        const lessThenFiveAlarms = this.alarms.length < 5;
 
         return !alarmExistAlready && lessThenFiveAlarms;
     }

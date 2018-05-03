@@ -3,7 +3,6 @@ import { Card, Image, Icon } from 'semantic-ui-react';
 import { observer } from 'mobx-react';
 import Invite from '../Invite';
 import AvatarChanger from '../AvatarChanger';
-import AlarmLink from '../Alarms/AlarmLink';
 
 
 @observer
@@ -31,7 +30,7 @@ export default class UserCard extends React.Component {
                             <AvatarChanger />
                         </Card.Content>
                         <Card.Content extra>
-                            <AlarmLink />
+                            <a href="/#alarms"><Icon name="clock" />Ваши Будильники</a>
                         </Card.Content>
                         <Card.Content extra>
                             <a href="/logout"><Icon name="rocket" />Выйти</a>

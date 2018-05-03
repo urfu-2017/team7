@@ -39,16 +39,7 @@
     margin-right: 2em !important;
 }
 
-.layout__inputbox
+.s1.s2.s3.s4.layout__inputbox
 {
-    animation: 1s linear infinite forcePadding;
+    padding-right: 5.8em !important;
 }
-
-@keyframes forcePadding {
-    from {
-        padding-right: 5.8em;
-    }
-    to {
-        padding-right: 5.8em;
-    }
-  }

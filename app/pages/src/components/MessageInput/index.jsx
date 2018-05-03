@@ -71,7 +71,7 @@ export default class MessageInput extends React.Component {
                     onKeyPress={this.handleKeyPress}
                     maxLength={MAX_MESSAGE_LENGTH}
                 >
-                    <input className={css.layout__inputbox} />
+                    <input className={`${css.s1} ${css.s2} ${css.s3} ${css.s4} ${css.layout__inputbox}`} />
                     {activeChat && <MessageImageUploader
                         className={`${css.layout__imageicon} ${css.layout__icon}`}
                         onFinish={(url) => {

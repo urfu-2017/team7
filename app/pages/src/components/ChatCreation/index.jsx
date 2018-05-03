@@ -1,7 +1,7 @@
 import React from 'react';
 import _ from 'lodash';
 import { withRouter } from 'react-router-dom';
-import { List, Input, Button, Image } from 'semantic-ui-react';
+import { List, Input, Button, Image, Icon } from 'semantic-ui-react';
 import { inject, observer } from 'mobx-react/index';
 import { createChat } from '../../../../sockets/client';
 import DimmerLoader from '../DimmerLoader';
@@ -113,14 +113,19 @@ class ChatCreation extends React.Component {
                             key={user.userId}
                             active={this.state.selectedUserIds.includes(user.userId)}
                             onClick={() => this.updateSelectedUserIds(user)}
+                            style={{ display: 'flex', alignItems: 'center' }}
                         >
                             <Image
                                 avatar
-                                style={{ borderRadius: '.25rem' }}
+                                style={{ borderRadius: '.25rem', flex: '0 0 auto' }}
                                 src={user.avatarUrl || `/avatar/${user.userId}`}
                             />
-                            <List.Content verticalAlign="middle">
-                                <List.Header content={user.username} />
+                            <List.Content style={{ flex: '1 1 auto' }} verticalAlign="middle">
+                                <List.Header>
+                                    {user.username}
+                                    <a className={css.layout__iconlink} href={`/#user/${user.userId}`}><Icon name="user" /></a>
+                                    <a className={css.layout__iconlink} href={`/#@${user.username}`}><Icon name="comment" /></a>
+                                </List.Header>
                             </List.Content>
                         </List.Item>))}
                 </List>

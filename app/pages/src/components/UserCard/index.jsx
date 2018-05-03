@@ -30,6 +30,9 @@ export default class UserCard extends React.Component {
                             <AvatarChanger />
                         </Card.Content>
                         <Card.Content extra>
+                            <a href="/#alarms"><Icon name="clock" />Будильники</a>
+                        </Card.Content>
+                        <Card.Content extra>
                             <a href="/logout"><Icon name="rocket" />Выйти</a>
                         </Card.Content>
                     </React.Fragment>

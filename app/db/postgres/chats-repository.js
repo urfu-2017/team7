@@ -98,3 +98,18 @@ export const getOrCreatePrivateChatId = async (user1id, user2id) => {
 
 export const joinChat = async (userId, chatId) =>
     knex('users_chats').insert({ userId, chatId });
+
+const isPrivateChat = async (chatId) => {
+    const [chat] = await knex('chat').where({ chatId });
+
+    return chat.isPrivate;
+};
+
+export const leaveChat = async (userId, chatId) => {
+    const isPrivate = await isPrivateChat(chatId);
+    const conditionObejct = isPrivate ? { chatId } : { chatId, userId };
+
+    return knex('users_chats')
+        .where(conditionObejct)
+        .del();
+};

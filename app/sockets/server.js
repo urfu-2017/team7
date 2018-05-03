@@ -34,6 +34,8 @@ const registerMessageHandlers = (socketServer, socket, currentUserId) => {
 
     on(client.INVITE_WORD, handlers.getChatByInviteWord);
 
+    on(client.LEAVE_CHAT, handlers.leaveChat);
+
     return handlers;
 };
 

@@ -18,8 +18,7 @@ export default class Invite extends React.Component {
 
     createLink() {
         const { inviteWord, isForUser } = this.props;
-        // eslint-disable-next-line
-        const { hostname, port, protocol } = location;
+        const { hostname, port, protocol } = window.location;
         const root = `${protocol}//${hostname}${port ? `:${port}` : ''}`;
 
         return `${root}/${isForUser ? '#' : '#join/'}${inviteWord}`;

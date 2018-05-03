@@ -22,17 +22,17 @@ function listen(server) {
 
 export default async () => {
     try {
+        await connect();
         const nextApp = next({ dev: !config.IS_PRODUCTION });
         await nextApp.prepare();
         const expressApp = buildExpressApp(nextApp.getRequestHandler());
         const server = Server(expressApp);
         await installSocketServer(server);
         await listen(server);
-        await connect();
         logger.info(`Running on http://${config.HOST}:${config.PORT}`);
     } catch (e) {
         logger.fatal(e, 'Failed to run server');
-        process.exit(1);
+        setTimeout(() => process.exit(1), 10000);
     }
 };
 

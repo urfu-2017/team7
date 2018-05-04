@@ -13,28 +13,23 @@ class ReactionButton extends React.Component {
 
     render() {
         const { message, isHovering, inReactionBar } = this.props;
-
-        const cssStyles = inReactionBar ? cssFromReactionBar.reaction : css.reactionButton;
-        const iconName = inReactionBar ? 'plus' : 'smile';
+        const condition = isHovering && (!inReactionBar || message.reactions.length);
 
         return (
             <EmojiSelector
                 onSelected={this.addFromPlus(message.messageId)}
                 onOpenedChanged={() => null}
             >
+                {condition &&
                 <Button
                     basic
-                    style={{
-                        display: isHovering &&
-                            (!inReactionBar || message.reactions.length > 0) ? 'inline-block' : 'none'
-                    }}
-                    className={cssStyles}
+                    className={inReactionBar ? cssFromReactionBar.reaction : css.reactionButton}
                     icon
                 >
                     <Icon
-                        name={iconName}
+                        name={inReactionBar ? 'plus' : 'smile'}
                     />
-                </Button>
+                </Button>}
             </EmojiSelector>
         );
     }

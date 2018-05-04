@@ -53,7 +53,7 @@ class AlarmModal extends Component {
                         {`${alarm ? alarm.name : null} пытается разбудить вас!`}
                     </Modal.Header>
                     <Modal.Content image style={{ display: 'block' }}>
-                        <Image style={{ margin: 'auto' }} fluid src={alarm ? alarm.img : null} />
+                        <Image style={{ margin: 'auto' }} src={alarm ? alarm.img : null} />
                     </Modal.Content>
                     <Modal.Actions className={css.modal_actions}>
                         <Button style={{ margin: '0 5px' }} onClick={() => this.snooze(5)} content="Еще 5 минуточек..." />

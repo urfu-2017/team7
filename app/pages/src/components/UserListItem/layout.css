@@ -3,4 +3,5 @@
     color: #000;
     float: right;
     opacity: 0.2;
+    flex: 0 0 auto;
 }

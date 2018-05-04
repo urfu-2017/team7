@@ -132,6 +132,19 @@ test("can't create two private chats", async () => {
     expect(chatId2).to.be.equal(chatId4).and.to.be.equal(chatId5);
 });
 
+
+test("can't create two private chats (parallel)", async () => {
+    const userId = await loginUser(user1.githubId, user1.username);
+    await Promise.all([
+        chatsRepo.getOrCreatePrivateChatId(userId, userId),
+        chatsRepo.getOrCreatePrivateChatId(userId, userId),
+        chatsRepo.getOrCreatePrivateChatId(userId, userId)
+    ]);
+
+    const gotUser = await usersRepo.getUser(userId);
+    expect(gotUser.chatIds).to.have.lengthOf(1);
+});
+
 test('can create self private chat', async () => {
     const userId = await loginUser(user1.githubId, user1.username);
     const chatId = await chatsRepo.getOrCreatePrivateChatId(userId, userId);

@@ -18,9 +18,6 @@ class UsersStore {
 
     getUserByName(username) {
         const user = this.allUsers.find(x => x.username === username);
-        if (!user) {
-            this.searchUser(username);
-        }
 
         return user || null;
     }

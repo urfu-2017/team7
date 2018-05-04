@@ -29,7 +29,7 @@ export default class MessagesMenu extends React.Component {
         const { activeChatName, activeChat } = this.props.chatsStore;
 
         if (!activeChat) {
-            return '';
+            return <Menu className={css.menu} />;
         }
 
         const { usersStore } = this.props;
@@ -37,11 +37,9 @@ export default class MessagesMenu extends React.Component {
 
         return (
             <Menu className={css.menu}>
-                {activeChatName &&
-                    <Menu.Item header className={css.menu__chatname} content={activeChatName} />
-                }
+                <Menu.Item header className={css.menu__chatname} content={activeChatName} />
                 <Menu.Item style={{ padding: 0 }} position="right">
-                    {activeChatName &&
+                    {
                         <Dropdown simple direction="left" item icon={<Icon size="large" color="grey" name="setting" style={{ margin: 0 }} />}>
                             <Dropdown.Menu>
                                 <Modal

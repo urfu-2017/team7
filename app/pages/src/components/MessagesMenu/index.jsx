@@ -53,7 +53,11 @@ export default class MessagesMenu extends React.Component {
                                     size="mini"
                                     closeIcon
                                 >
-                                    <Modal.Header>Участники ({users.length})</Modal.Header>
+                                    <Modal.Header>
+                                        <Icon name="users" />
+                                        Участники ({users.length})
+                                        <Icon name="user plus" link style={{ float: 'right', opacity: '.5' }} />
+                                    </Modal.Header>
                                     <Modal.Content>
                                         <List divided size="huge" verticalAlign="middle" className={css.members}>
                                             {users.map(user => (user &&

@@ -145,6 +145,32 @@ test("can't create two private chats (parallel)", async () => {
     expect(gotUser.chatIds).to.have.lengthOf(1);
 });
 
+test('can destroy private chat on leaving', async () => {
+    const userId1 = await loginUser(user1.githubId, user1.username);
+    const userId2 = await loginUser(user2.githubId, user2.username);
+    const chatId = await chatsRepo.getOrCreatePrivateChatId(userId1, userId2);
+    await chatsRepo.leaveChat(userId1, chatId);
+
+    const gotUser1 = await usersRepo.getUser(userId1);
+    const gotUser2 = await usersRepo.getUser(userId2);
+    expect(gotUser1.chatIds).to.be.empty;
+    expect(gotUser2.chatIds).to.be.empty;
+});
+
+test("can't destroy chat on leaving", async () => {
+    const userId1 = await loginUser(user1.githubId, user1.username);
+    const userId2 = await loginUser(user2.githubId, user2.username);
+    const chat = await chatsRepo.createChat('LAX', '/avahuyava');
+    await chatsRepo.joinChat(userId1, chat.chatId);
+    await chatsRepo.joinChat(userId2, chat.chatId);
+    await chatsRepo.leaveChat(userId1, chat.chatId);
+
+    const gotUser1 = await usersRepo.getUser(userId1);
+    const gotUser2 = await usersRepo.getUser(userId2);
+    expect(gotUser1.chatIds).to.be.empty;
+    expect(gotUser2.chatIds).to.be.lengthOf(1);
+});
+
 test('can create self private chat', async () => {
     const userId = await loginUser(user1.githubId, user1.username);
     const chatId = await chatsRepo.getOrCreatePrivateChatId(userId, userId);

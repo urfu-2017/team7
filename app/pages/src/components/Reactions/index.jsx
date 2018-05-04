@@ -1,8 +1,8 @@
 import React from 'react';
 import { inject, observer } from 'mobx-react/index';
 import { Button, Popup } from 'semantic-ui-react';
-import { isUndefined } from 'util';
 import ReactHoverObserver from 'react-hover-observer';
+import _ from 'lodash';
 import { addReaction, removeReaction } from '../../../../sockets/client';
 import ReactionButton from '../ReactionButton';
 import css from './styles.css';
@@ -14,7 +14,7 @@ class Reactions extends React.Component {
     changeCount(reactions, messageId, reaction, currentId) {
         const ownReaction = reactions
             .find(element => element.userId === currentId && element.reaction === reaction);
-        if (isUndefined(ownReaction)) {
+        if (!ownReaction) {
             return () => addReaction(messageId, reaction);
         }
 
@@ -25,35 +25,26 @@ class Reactions extends React.Component {
         return value => addReaction(messageId, value);
     }
 
+    // eslint-disable-next-line class-methods-use-this
     reformingReactions(reactions) {
-        const reactionCountAndUsers = {};
-        const result = [];
+        let reactionUsers = [];
 
-        if (!isUndefined(reactions)) {
-            reactions.forEach((element) => {
-                const currentName = this.props.usersStore.getUser(element.userId).username;
+        if (reactions) {
+            reactionUsers = _(reactions)
+                .groupBy('reaction')
+                .map((values, reaction) => {
+                    const users = [];
+                    values.forEach(value => users
+                        .push(this.props.usersStore.getUser(value.userId).username));
 
-                if (reactionCountAndUsers
-                    .hasOwnProperty(element.reaction) &&// eslint-disable-line no-prototype-builtins
-                    reactionCountAndUsers[element.reaction].users.indexOf(currentName) === -1) {
-                    reactionCountAndUsers[element.reaction].count += 1;
-                    reactionCountAndUsers[element.reaction].users.push(currentName);
-                } else {
-                    reactionCountAndUsers[element.reaction] = {
-                        count: 1,
-                        users: [currentName]
-                    };
-                }
-            });
+                    return { reaction, users };
+                })
+                .value();
         }
 
-        Object.keys(reactionCountAndUsers).forEach((key) => {
-            result.push([key, reactionCountAndUsers[key].count, reactionCountAndUsers[key].users]);
-        });
+        reactionUsers.sort((first, second) => second.users.length - first.users.length);
 
-        result.sort((first, second) => second[1] - first[1]);
-
-        return result;
+        return reactionUsers;
     }
 
     render() {
@@ -64,6 +55,7 @@ class Reactions extends React.Component {
             <ReactHoverObserver className={css.reactionsBar}>
                 {reactions.map(item => (
                     <Popup
+                        key={message.messageId + item.reaction + item.users.length}
                         trigger={
                             <Button
                                 basic
@@ -71,14 +63,14 @@ class Reactions extends React.Component {
                                 onClick={this.changeCount(
                                     message.reactions,
                                     message.messageId,
-                                    item[0],
+                                    item.reaction,
                                     currentUserStore.user.userId
                                 )}
                             >
-                                {item[0]} {item[1]}
+                                {item.reaction} {item.users.length}
                             </Button>
                         }
-                        content={item[2].join(', ')}
+                        content={item.users.join(', ')}
                     />
                 ))}
                 <ReactionButton inReactionBar message={message} />

@@ -29,6 +29,8 @@ export const createPrivateChat = async (socketServer, { currentUserId, userId })
     mySocket.join(chatId);
     mySocket.emit(eventNames.server.CHAT, await chatsRepo.getChatForUser(currentUserId, chatId));
     const [hisSocket] = await getUsersSockets(socketServer, [userId]);
-    hisSocket.join(chatId);
-    hisSocket.emit(eventNames.server.CHAT, await chatsRepo.getChatForUser(userId, chatId));
+    if (hisSocket) {
+        hisSocket.join(chatId);
+        hisSocket.emit(eventNames.server.CHAT, await chatsRepo.getChatForUser(userId, chatId));
+    }
 };

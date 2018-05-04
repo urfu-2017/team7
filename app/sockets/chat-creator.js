@@ -1,15 +1,16 @@
 import Promise from 'bluebird';
 import { getOwlUrl } from '../utils/owl-provider';
-import { chatsRepo } from '../db';
+import { chatsRepo, usersRepo } from '../db';
 import * as userInfoProvider from './user-info-provider';
 import * as eventNames from './event-names';
 import { getAllConnectedSockets } from './utils';
 
-const updateDb = async (chat, userIds) => Promise.map(
-    userIds,
-    userId => chatsRepo.joinChat(userId, chat.chatId),
-    { concurrency: 5 }
-);
+const updateChat = async (chat, userIds) =>
+    Promise.map(
+        userIds,
+        userId => chatsRepo.joinChat(userId, chat.chatId),
+        { concurrency: 5 }
+    );
 
 const toOtherUserInfo = async otherSocket => ({
     otherUserId: await userInfoProvider.getUserId(otherSocket.handshake),
@@ -28,10 +29,13 @@ const connectUsers = async (sockets, chat, userIds) =>
 export const createChat = async (socketServer, { name, currentUserId, userIds }) => {
     const sockets = await getAllConnectedSockets(socketServer);
     const chat = await chatsRepo.createChat(name, getOwlUrl());
-    const newIds = userIds.concat([currentUserId]);
+    const newIds = [...userIds, currentUserId];
 
-    await Promise.all(
-        updateDb(chat, newIds),
-        connectUsers(sockets, chat, newIds)
-    );
+    await updateChat(chat, newIds);
+    await connectUsers(sockets, { ...chat, userIds: newIds }, newIds);
+
+    await Promise.all(newIds.map(async (userId) => {
+        const user = await usersRepo.getUser(userId);
+        socketServer.to(chat.chatId).emit(eventNames.server.USER, user);
+    }));
 };

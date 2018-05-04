@@ -1,13 +1,15 @@
 import React from 'react';
 import _ from 'lodash';
 import { withRouter } from 'react-router-dom';
-import { List, Input, Button, Image, Icon } from 'semantic-ui-react';
+import { List, Input, Button } from 'semantic-ui-react';
 import { inject, observer } from 'mobx-react/index';
 import { createChat } from '../../../../sockets/client';
 import DimmerLoader from '../DimmerLoader';
 import BackButton from '../BackButton';
-import css from './layout.css';
+import UserListItem from '../UserListItem';
 import { MAX_CHAT_NAME_LENGTH } from '../../../../utils/constants';
+
+import css from './layout.css';
 
 @withRouter
 @inject('usersStore', 'currentUserStore')
@@ -109,25 +111,13 @@ class ChatCreation extends React.Component {
                     verticalAlign="middle"
                 >
                     {users.map(user => (
-                        <List.Item
+                        <UserListItem
                             key={user.userId}
+                            user={user}
                             active={this.state.selectedUserIds.includes(user.userId)}
                             onClick={() => this.updateSelectedUserIds(user)}
-                            style={{ display: 'flex', alignItems: 'center' }}
-                        >
-                            <Image
-                                avatar
-                                style={{ borderRadius: '.25rem', flex: '0 0 auto' }}
-                                src={user.avatarUrl || `/avatar/${user.userId}`}
-                            />
-                            <List.Content style={{ flex: '1 1 auto' }} verticalAlign="middle">
-                                <List.Header>
-                                    {user.username}
-                                    <a className={css.layout__iconlink} href={`/#user/${user.userId}`}><Icon name="user" /></a>
-                                    <a className={css.layout__iconlink} href={`/#@${user.username}`}><Icon name="comment" /></a>
-                                </List.Header>
-                            </List.Content>
-                        </List.Item>))}
+                        />
+                    ))}
                 </List>
             </div>
         );

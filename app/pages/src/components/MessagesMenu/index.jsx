@@ -1,13 +1,14 @@
 import React from 'react';
 import { withRouter } from 'react-router-dom';
-import { Icon, Menu, Dropdown, Header } from 'semantic-ui-react';
+import { Icon, Menu, Dropdown, Header, Modal, List } from 'semantic-ui-react';
 import { observer, inject } from 'mobx-react';
 import css from './menu.css';
-import Invite from '../Invite';
 import ConfirmationModal from '../ConfirmationModal';
+import Invite from '../Invite';
+import UserListItem from '../UserListItem';
 
 @withRouter
-@inject('chatsStore', 'currentUserStore')
+@inject('chatsStore', 'usersStore', 'currentUserStore')
 @observer
 export default class MessagesMenu extends React.Component {
     constructor() {
@@ -27,6 +28,13 @@ export default class MessagesMenu extends React.Component {
     render() {
         const { activeChatName, activeChat } = this.props.chatsStore;
 
+        if (!activeChat) {
+            return '';
+        }
+
+        const { usersStore } = this.props;
+        const users = activeChat.userIds.map(userId => usersStore.usersById.get(userId));
+
         return (
             <Menu className={css.menu}>
                 {activeChatName &&
@@ -36,7 +44,18 @@ export default class MessagesMenu extends React.Component {
                     {activeChatName &&
                         <Dropdown simple direction="left" item icon={<Icon size="large" color="grey" name="setting" style={{ margin: 0 }} />}>
                             <Dropdown.Menu>
-                                <Dropdown.Item text="Участники" />
+                                <Dropdown.Item>
+                                    <Modal trigger={<Header size="tiny">Участники</Header>} size="mini" closeIcon>
+                                        <Modal.Header>Участники ({users.length})</Modal.Header>
+                                        <Modal.Content>
+                                            <List divided size="huge" verticalAlign="middle" className={css.members}>
+                                                {users.map(user => (user &&
+                                                    <UserListItem key={user.userId} user={user} />
+                                                ))}
+                                            </List>
+                                        </Modal.Content>
+                                    </Modal>
+                                </Dropdown.Item>
                                 <Invite
                                     isForUser={activeChat.isPrivate}
                                     inviteWord={activeChat.isPrivate ?

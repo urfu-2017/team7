@@ -44,12 +44,6 @@
     overflow-y: auto;
 }
 
-.layout__iconlink {
-    color: #000;
-    float: right;
-    opacity: 0.2;
-}
-
 .layout__iconlink:hover {
     color: #000;
     opacity: 0.7;

@@ -44,18 +44,24 @@ export default class MessagesMenu extends React.Component {
                     {activeChatName &&
                         <Dropdown simple direction="left" item icon={<Icon size="large" color="grey" name="setting" style={{ margin: 0 }} />}>
                             <Dropdown.Menu>
-                                <Dropdown.Item>
-                                    <Modal trigger={<Header size="tiny">Участники</Header>} size="mini" closeIcon>
-                                        <Modal.Header>Участники ({users.length})</Modal.Header>
-                                        <Modal.Content>
-                                            <List divided size="huge" verticalAlign="middle" className={css.members}>
-                                                {users.map(user => (user &&
-                                                    <UserListItem key={user.userId} user={user} />
-                                                ))}
-                                            </List>
-                                        </Modal.Content>
-                                    </Modal>
-                                </Dropdown.Item>
+                                <Modal
+                                    trigger={
+                                        <Dropdown.Item>
+                                            <Header size="tiny">Участники</Header>
+                                        </Dropdown.Item>
+                                    }
+                                    size="mini"
+                                    closeIcon
+                                >
+                                    <Modal.Header>Участники ({users.length})</Modal.Header>
+                                    <Modal.Content>
+                                        <List divided size="huge" verticalAlign="middle" className={css.members}>
+                                            {users.map(user => (user &&
+                                                <UserListItem key={user.userId} user={user} />
+                                            ))}
+                                        </List>
+                                    </Modal.Content>
+                                </Modal>
                                 <Invite
                                     isForUser={activeChat.isPrivate}
                                     inviteWord={activeChat.isPrivate ?
@@ -65,17 +71,19 @@ export default class MessagesMenu extends React.Component {
                                     <Dropdown.Item text="Пригласительная ссылка" />
                                 </Invite>
                                 <Dropdown.Divider />
-                                <Dropdown.Item>
-                                    <ConfirmationModal
-                                        trigger={<Header color="red" size="tiny">Покинуть чат</Header>}
-                                        size="mini"
-                                        header="Покинуть чат"
-                                        question="Вы действительно уверены, что хотите покинуть данный чат?"
-                                        onAgree={this.leaveChat}
-                                        onAgreeText="Покинуть"
-                                        onDenyText="Отмена"
-                                    />
-                                </Dropdown.Item>
+                                <ConfirmationModal
+                                    trigger={
+                                        <Dropdown.Item>
+                                            <Header color="red" size="tiny">Покинуть чат</Header>
+                                        </Dropdown.Item>
+                                    }
+                                    size="mini"
+                                    header="Покинуть чат"
+                                    question="Вы действительно уверены, что хотите покинуть данный чат?"
+                                    onAgree={this.leaveChat}
+                                    onAgreeText="Покинуть"
+                                    onDenyText="Отмена"
+                                />
                             </Dropdown.Menu>
                         </Dropdown>
                     }

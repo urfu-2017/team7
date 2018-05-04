@@ -12,8 +12,8 @@ const socket = process.browser
     ? connect(socketOptions)
     : { emit: () => { }, on: () => { } };
 
-export const getPrivateChat = (userId) => {
-    socket.emit(eventNames.client.GET_PRIVATE_CHAT, { userId });
+export const getOrCreatePrivateChat = (userId) => {
+    socket.emit(eventNames.client.GET_OR_CREATE_PRIVATE_CHAT, { userId });
 };
 
 export const getChatByInviteWord = (inviteWord) => {

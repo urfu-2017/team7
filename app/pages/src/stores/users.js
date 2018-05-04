@@ -1,5 +1,5 @@
 import { observable, computed } from 'mobx';
-import { onUser, searchUser, getPrivateChat } from '../../../sockets/client';
+import { onUser, searchUser, getOrCreatePrivateChat } from '../../../sockets/client';
 import chatsStore from './chats';
 
 
@@ -18,9 +18,6 @@ class UsersStore {
 
     getUserByName(username) {
         const user = this.allUsers.find(x => x.username === username);
-        if (!user) {
-            this.searchUser(username);
-        }
 
         return user || null;
     }
@@ -50,9 +47,12 @@ class UsersStore {
 
     constructor() {
         onUser((user) => {
+            const existingUser = this.usersById.get(user.userId) || {};
+            const hasChangedAvatar = existingUser.avatarUrl !== user.avatarUrl;
             this.usersById.set(user.userId, user);
-            if (chatsStore.getPrivateChat(user.userId)) {
-                getPrivateChat(user.userId);
+
+            if (hasChangedAvatar && chatsStore.getPrivateChat(user.userId)) {
+                getOrCreatePrivateChat(user.userId);
             }
         });
     }

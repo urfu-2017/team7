@@ -1,5 +1,7 @@
 import { observable, computed } from 'mobx';
-import { onUser, searchUser } from '../../../sockets/client';
+import { onUser, searchUser, getPrivateChat } from '../../../sockets/client';
+import chatsStore from './chats';
+
 
 class UsersStore {
     @observable usersById = observable.map();
@@ -49,6 +51,9 @@ class UsersStore {
     constructor() {
         onUser((user) => {
             this.usersById.set(user.userId, user);
+            if (chatsStore.getPrivateChat(user.userId)) {
+                getPrivateChat(user.userId);
+            }
         });
     }
 }

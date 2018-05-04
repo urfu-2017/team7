@@ -20,14 +20,26 @@
 .layout__icon,
 .layout__icon_active
 {
+    box-sizing: border-box;
     pointer-events: auto !important;
-    width: 2.2em !important;
+    width: 1.8em !important;
     cursor: pointer !important;
     opacity: 0.5 !important;
+    margin-right: .2em !important;
 }
 
 .layout__icon:hover,
 .layout__icon_active
 {
     opacity: 1 !important;
+}
+
+.layout__imageicon
+{
+    margin-right: 2em !important;
+}
+
+.s1.s2.s3.s4.layout__inputbox
+{
+    padding-right: 5.8em !important;
 }

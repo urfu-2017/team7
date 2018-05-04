@@ -99,6 +99,11 @@ export default (socketServer, socket, currentUserId) => {
             socket.emit(eventNames.server.CHAT, chat);
         },
 
+        async leaveChat({ userId, chatId }) {
+            await chatsRepo.leaveChat(userId, chatId);
+            socket.emit(eventNames.server.USER_LEAVED_CHAT, { userId, chatId });
+        },
+
         async getUrlMeta(url) {
             try {
                 const meta = await getMetadata(url);
@@ -110,7 +115,7 @@ export default (socketServer, socket, currentUserId) => {
         },
 
         async createChat({ name, userIds }) {
-            await createChat(socketServer, { name, userIds });
+            await createChat(socketServer, { currentUserId, name, userIds });
         },
 
         async getWeather(city) {

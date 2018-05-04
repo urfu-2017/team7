@@ -1,11 +1,9 @@
-import shortid from 'shortid';
 import urlregex from '../../common/url-regex';
 
 class Node {
     constructor(type, content) {
         this.type = type;
         this.content = content;
-        this.id = shortid();
     }
 
     static text(content) {
@@ -16,10 +14,11 @@ class Node {
         let currentPos = 0;
         const result = [];
 
-        textToken.replace(urlregex, (...args) => {
-            result.push({ type: 'text', content: textToken.substring(currentPos, args[args.length - 2]) });
-            result.push({ type: 'link', content: args[0] });
-            currentPos = args[args.length - 2] + args[0].length;
+        textToken.replace(urlregex, (fullmatch, ...args) => {
+            const matchIndex = args[args.length - 2];
+            result.push({ type: 'text', content: textToken.substring(currentPos, matchIndex) });
+            result.push({ type: 'link', content: fullmatch });
+            currentPos = matchIndex + fullmatch.length;
         });
         result.push({ type: 'text', content: textToken.substring(currentPos) });
 

@@ -6,7 +6,7 @@ class Loader extends React.Component {
         const { status } = this.props;
         const style = {
             margin: '0 1em',
-            'font-size': '1.2rem',
+            fontSize: '1.2rem',
             height: '1rem',
             width: '1rem'
         };

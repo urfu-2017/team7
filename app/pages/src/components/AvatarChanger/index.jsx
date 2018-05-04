@@ -1,38 +1,45 @@
 import React from 'react';
 import uuidv4 from 'uuid/v4';
-import { inject, observer } from 'mobx-react/index';
-import ReactS3Uploader from 'react-s3-uploader';
-import { Button } from 'semantic-ui-react';
+import { inject, observer } from 'mobx-react';
+import { Icon } from 'semantic-ui-react';
+import ImageUploader from '../ImageUploader';
+
 
 @inject('currentUserStore')
 @observer
-class AvatarChanger extends React.Component {
+export default class AvatarChanger extends React.Component {
+    state = { isLoading: false, gotError: false }
+
+    onError() {
+        this.setState({ gotError: true, isLoading: false });
+    }
+
+    onProgress(percent) {
+        this.setState({ gotError: false, isLoading: percent !== 100 });
+    }
+
     render() {
         const { changeAvatarUrl } = this.props.currentUserStore;
+        const { gotError, isLoading } = this.state;
         const inputId = uuidv4();
+        const icon = (gotError ? <Icon color="red" name="warning" /> : <Icon name="photo" />);
 
         return (
             <React.Fragment>
-                <ReactS3Uploader
-                    signingUrl="/s3/sign"
-                    accept="image/*"
-                    s3path="avatars/"
-                    contentDisposition="auto"
+                <ImageUploader
+                    onProgress={percent => this.onProgress(percent)}
+                    onError={() => this.onError()}
                     onFinish={({ publicUrl }) => {
                         changeAvatarUrl(publicUrl);
                     }}
-                    style={{ display: 'none' }}
-                    id={inputId}
+                    inputId={inputId}
+                    avatar
                 />
-                <Button
-                    as="label"
-                    icon="upload"
-                    for={inputId}
-                    content="Изменить аватар"
-                    className={this.props.className}
-                />
+                {
+                    isLoading ?
+                        (<span><Icon loading name="circle notched" />Сменить аватарку</span>) :
+                        (<label htmlFor={inputId}><a>{icon}Сменить аватарку</a></label>)
+                }
             </React.Fragment>);
     }
 }
-
-export default AvatarChanger;

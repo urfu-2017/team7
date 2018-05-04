@@ -15,5 +15,9 @@
       "error",
       { "blankLine": "always", "prev": "*", "next": "return" }
     ]
-  }
+  },
+  "env": {
+    "browser": true,
+    "node": true
+  }  
 }

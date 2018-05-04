@@ -9,8 +9,9 @@ export const client = Object.freeze({
     CHANGE_AVATAR_URL: 'CHANGE_AVATAR_URL',
     GET_CURRENT_USER: 'GET_CURRENT_USER',
     GET_WEATHER: 'GET_WEATHER',
-    GET_PRIVATE_CHAT: 'GET_PRIVATE_CHAT',
-    INVITE_WORD: 'INVITE_WORD'
+    GET_OR_CREATE_PRIVATE_CHAT: 'GET_OR_CREATE_PRIVATE_CHAT',
+    INVITE_WORD: 'INVITE_WORD',
+    LEAVE_CHAT: 'LEAVE_CHAT'
 });
 
 export const server = Object.freeze({
@@ -23,5 +24,6 @@ export const server = Object.freeze({
     USER: 'USER',
     URL_META: 'URL_META',
     CURRENT_USER: 'CURRENT_USER',
-    WEATHER: 'WEATHER'
+    WEATHER: 'WEATHER',
+    USER_LEAVED_CHAT: 'USER_LEAVED_CHAT'
 });

@@ -12,8 +12,8 @@ const socket = process.browser
     ? connect(socketOptions)
     : { emit: () => { }, on: () => { } };
 
-export const getPrivateChat = (userId) => {
-    socket.emit(eventNames.client.GET_PRIVATE_CHAT, { userId });
+export const getOrCreatePrivateChat = (userId) => {
+    socket.emit(eventNames.client.GET_OR_CREATE_PRIVATE_CHAT, { userId });
 };
 
 export const getChatByInviteWord = (inviteWord) => {
@@ -102,4 +102,12 @@ export const getWeather = (city) => {
 
 export const onWeather = (handler) => {
     socket.on(eventNames.server.WEATHER, handler);
+};
+
+export const leaveChat = (payload) => {
+    socket.emit(eventNames.client.LEAVE_CHAT, payload);
+};
+
+export const onUserLeavedChat = (handler) => {
+    socket.on(eventNames.server.USER_LEAVED_CHAT, handler);
 };

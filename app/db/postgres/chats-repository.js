@@ -56,7 +56,7 @@ export const createChat = async (longName, avatarUrl) => {
         }
         const inviteWord = mngen.word(i);
         await knex('chat').insert({
-            name, avatarUrl, chatId, isPrivate: false, inviteWord
+            name, avatarUrl, chatId, isPrivate: false, inviteWord, isSelfChat: false
         }).then(() => {
             chat = new Chat(chatId, name, [], avatarUrl, false, inviteWord);
         }, () => null);
@@ -68,33 +68,52 @@ export const createChat = async (longName, avatarUrl) => {
     return chat;
 };
 
-const getPrivateChatId = async (user1id, user2id) => {
+const getPrivateChatId = async (user1id, user2id, trx) => {
+    const isSelfChat = user1id === user2id;
     const [privateChat] = await knex('chat')
+        .transacting(trx)
         .join('users_chats as uc1', 'uc1.chatId', 'chat.chatId')
         .join('users_chats as uc2', 'uc2.chatId', 'uc1.chatId')
         .where('uc1.userId', user1id)
         .andWhere('uc2.userId', user2id)
         .andWhere('chat.isPrivate', true)
-        .select('chat.chatId', 'uc2.userId');
+        .andWhere('chat.isSelfChat', isSelfChat)
+        .select('chat.chatId');
 
     return privateChat ? privateChat.chatId : null;
 };
 
 export const getOrCreatePrivateChatId = async (user1id, user2id) => {
-    const privateChatId = await getPrivateChatId(user1id, user2id);
-    if (privateChatId) {
-        return privateChatId;
-    }
-    const chatId = uuidv4();
+    let chatId = uuidv4();
+    const isSelfChat = user1id === user2id;
 
-    await transactAsync(async trx => Promise.all([
-        knex('chat').transacting(trx).insert({ chatId, isPrivate: true }),
-        knex('users_chats').transacting(trx).insert({ userId: user1id, chatId }),
-        user1id === user2id ? Promise.resolve() : knex('users_chats').transacting(trx).insert({ userId: user2id, chatId })
-    ]));
+    await transactAsync(async (trx) => {
+        const privateChatId = await getPrivateChatId(user1id, user2id, trx);
+        if (privateChatId) {
+            chatId = privateChatId;
+
+            return;
+        }
+
+        await Promise.all([
+            knex('chat').transacting(trx).insert({ chatId, isPrivate: true, isSelfChat }),
+            knex('users_chats').transacting(trx).insert({ userId: user1id, chatId }),
+            isSelfChat ?
+                Promise.resolve() :
+                knex('users_chats').transacting(trx).insert({ userId: user2id, chatId })
+        ]);
+    });
 
     return chatId;
 };
 
 export const joinChat = async (userId, chatId) =>
     knex('users_chats').insert({ userId, chatId });
+
+export const leaveChat = async (userId, chatId) => {
+    const [{ isPrivate }] = await knex('chat').where({ chatId });
+
+    return knex('users_chats')
+        .where(isPrivate ? { chatId } : { chatId, userId })
+        .del();
+};

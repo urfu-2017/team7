@@ -4,13 +4,15 @@ import moment from 'moment';
 import { observer, inject } from 'mobx-react';
 import { Comment } from 'semantic-ui-react';
 import { Link } from 'react-router-dom';
+import ReactHoverObserver from 'react-hover-observer';
 import { getUser, onMessageSent, onUrlMeta, onWeather } from '../../../../sockets/client';
 import Markdown from '../Markdown';
 import UrlMeta from '../UrlMeta';
 import Weather from '../Weather';
 import Loader from '../Loader';
+import Reactions from '../Reactions';
+import ReactionButton from '../ReactionButton';
 import css from './messages.css';
-
 
 @inject('usersStore', 'currentUserStore', 'chatsStore')
 @observer
@@ -81,20 +83,24 @@ class Messages extends React.Component {
                     <Comment key={message.messageId} className={css.comment}>
                         <Comment.Avatar src={usersStore.getAvatar(message.authorUserId)} />
                         <Comment.Content>
-                            <Comment.Author as={Link} to={`/user/${message.authorUserId}`}>
-                                {usersStore.getUsername(message.authorUserId)}
-                            </Comment.Author>
-                            <Comment.Metadata style={{ minHeight: '1.5em' }}>
-                                <div>
-                                    {moment(message.timestamp).format('HH:mm')}
-                                    <Loader status={message.status} />
-                                </div>
-                            </Comment.Metadata>
-                            <Comment.Text style={{ minHeight: '1em' }}>
-                                <Markdown source={message.content} needFormat />
-                            </Comment.Text>
-                            <UrlMeta text={message.content} />
-                            <Weather text={message.content} />
+                            <ReactHoverObserver>
+                                <ReactionButton message={message} inReactionBar={false} />
+                                <Comment.Author as={Link} to={`/user/${message.authorUserId}`}>
+                                    {usersStore.getUsername(message.authorUserId)}
+                                </Comment.Author>
+                                <Comment.Metadata style={{ minHeight: '1.5em' }}>
+                                    <div>
+                                        {moment(message.timestamp).format('HH:mm')}
+                                        <Loader status={message.status} />
+                                    </div>
+                                </Comment.Metadata>
+                                <Comment.Text style={{ minHeight: '1em' }}>
+                                    <Markdown source={message.content} needFormat />
+                                </Comment.Text>
+                                <UrlMeta text={message.content} />
+                                <Weather text={message.content} />
+                            </ReactHoverObserver>
+                            <Reactions message={message} />
                         </Comment.Content>
                     </Comment>
                 ))}

@@ -1,0 +1,8 @@
+.reactionsBar {
+    display: flex !important;
+    flex-wrap: wrap !important;
+}
+.reaction {
+    margin: 0.5em 0.5em 0 0 !important;
+    padding: 0.5em !important;
+}

@@ -1,9 +1,9 @@
 import Promise from 'bluebird';
 import { getOwlUrl } from '../utils/owl-provider';
 import { chatsRepo, usersRepo } from '../db';
-import * as userInfoProvider from './user-info-provider';
 import * as eventNames from './event-names';
-import { getAllConnectedSockets } from './utils';
+import { getUsersSockets } from './utils';
+
 
 const updateChat = async (chat, userIds) =>
     Promise.map(
@@ -12,30 +12,29 @@ const updateChat = async (chat, userIds) =>
         { concurrency: 5 }
     );
 
-const toOtherUserInfo = async otherSocket => ({
-    otherUserId: await userInfoProvider.getUserId(otherSocket.handshake),
-    otherSocket
-});
 
-const connectUsers = async (sockets, chat, userIds) =>
-    Promise.map(sockets, toOtherUserInfo)
-        .filter(({ otherUserId }) => userIds.includes(otherUserId))
-        .each(({ otherSocket }) => {
-            otherSocket.join(chat.chatId);
-            otherSocket.emit(eventNames.server.CHAT, chat);
-        });
-
-// eslint-disable-next-line import/prefer-default-export
 export const createChat = async (socketServer, { name, currentUserId, userIds }) => {
-    const sockets = await getAllConnectedSockets(socketServer);
     const chat = await chatsRepo.createChat(name, getOwlUrl());
-    const newIds = [...userIds, currentUserId];
-
+    const newIds = userIds.concat([currentUserId]);
     await updateChat(chat, newIds);
-    await connectUsers(sockets, { ...chat, userIds: newIds }, newIds);
+    const sockets = await getUsersSockets(socketServer, newIds);
+    sockets.forEach((socket) => {
+        socket.join(chat.chatId);
+        socket.emit(eventNames.server.CHAT, { ...chat, userIds: newIds });
+    });
 
     await Promise.all(newIds.map(async (userId) => {
         const user = await usersRepo.getUser(userId);
         socketServer.to(chat.chatId).emit(eventNames.server.USER, user);
     }));
+};
+
+export const createPrivateChat = async (socketServer, { currentUserId, userId }) => {
+    const chatId = await chatsRepo.getOrCreatePrivateChatId(currentUserId, userId);
+    const [mySocket] = await getUsersSockets(socketServer, [currentUserId]);
+    mySocket.join(chatId);
+    mySocket.emit(eventNames.server.CHAT, await chatsRepo.getChatForUser(currentUserId, chatId));
+    const [hisSocket] = await getUsersSockets(socketServer, [userId]);
+    hisSocket.join(chatId);
+    hisSocket.emit(eventNames.server.CHAT, await chatsRepo.getChatForUser(userId, chatId));
 };

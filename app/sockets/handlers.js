@@ -2,7 +2,7 @@ import _ from 'lodash';
 import Promise from 'bluebird';
 import * as eventNames from './event-names';
 import { usersRepo, messagesRepo, chatsRepo } from '../db/postgres';
-import { createChat } from './chat-creator';
+import { createChat, createPrivateChat } from './chat-creator';
 import { createMessage } from './message-creator';
 import getMetadata from '../utils/url-metadata';
 import getWeather from '../utils/weather';
@@ -85,10 +85,8 @@ export default (socketServer, socket, currentUserId) => {
             await createMessage(socket, text, currentUserId, chatId);
         },
 
-        async getPrivateChat({ userId }) {
-            const chatId = await chatsRepo.getOrCreatePrivateChatId(currentUserId, userId);
-            const chat = await chatsRepo.getChatForUser(currentUserId, chatId);
-            socket.emit(eventNames.server.CHAT, chat);
+        async getOrCreatePrivateChat({ userId }) {
+            await createPrivateChat(socketServer, { currentUserId, userId });
         },
 
         async getChatByInviteWord({ inviteWord }) {

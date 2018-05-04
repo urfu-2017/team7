@@ -85,7 +85,7 @@ export default (socketServer, socket, currentUserId) => {
             await createMessage(socket, text, currentUserId, chatId);
         },
 
-        async getPrivateChat({ userId }) {
+        async getOrCreatePrivateChat({ userId }) {
             const chatId = await chatsRepo.getOrCreatePrivateChatId(currentUserId, userId);
             const chat = await chatsRepo.getChatForUser(currentUserId, chatId);
             socket.emit(eventNames.server.CHAT, chat);

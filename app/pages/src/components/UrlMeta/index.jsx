@@ -10,7 +10,7 @@ export default class UrlMeta extends React.Component {
     componentWillMount() {
         const { text, urlMetaStore } = this.props;
         const match = getMatch(text);
-        if (match && !match.isSameDomain) {
+        if (match && !match.isSameDomain && !text.startsWith('/s3/uploads')) {
             this.url = match.fullmatch;
             if (!urlMetaStore.metaByUrl.has(this.url)) {
                 urlMetaStore.fetchUrlMeta(this.url);

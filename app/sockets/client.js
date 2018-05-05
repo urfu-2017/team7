@@ -111,3 +111,15 @@ export const leaveChat = (payload) => {
 export const onUserLeavedChat = (handler) => {
     socket.on(eventNames.server.USER_LEAVED_CHAT, handler);
 };
+
+export const addReaction = (messageId, reaction) => {
+    socket.emit(eventNames.client.ADD_REACTION, { messageId, reaction });
+};
+
+export const removeReaction = (messageId, reaction) => {
+    socket.emit(eventNames.client.REMOVE_REACTION, { messageId, reaction });
+};
+
+export const onMessageUpdate = (handler) => {
+    socket.on(eventNames.server.UPDATE_MESSAGE, handler);
+};

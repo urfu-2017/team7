@@ -22,14 +22,25 @@ const stores = {
     alarmsStore
 };
 
+function isJsonString(str) {
+    try {
+        JSON.parse(str);
+    } catch (e) {
+        return false;
+    }
+
+    return true;
+}
 
 class App extends React.Component {
     componentDidMount() {
         let i = 0;
         let key = localStorage.key(i);
         while (key) {
-            const alarm = JSON.parse(localStorage[key]);
-            alarmsStore.addAlarm(alarm);
+            const alarmStr = localStorage[key];
+            if (isJsonString(alarmStr)) {
+                alarmsStore.addAlarm(JSON.parse(alarmStr));
+            }
             i++;
             key = localStorage.key(i);
         }

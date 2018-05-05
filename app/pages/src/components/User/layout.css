@@ -3,15 +3,11 @@
     display: grid;
     grid-template-areas:
             'back  .     .  '
-            'user  user  user'
-            'name  name  name'
-            'alarm alarm alarm'
-            ' .    .     .   '
-            ' .    .     logout';
+            'user  user  user';
 
-    grid-template-rows: auto min-content auto auto 1fr auto;
+    grid-template-rows: auto min-content;
     grid-template-columns: auto 1fr auto;
-    align-content: space-between;
+    align-content: flex-start;
     padding: 1em;
     height: 100%;
     grid-row-gap: 1em;

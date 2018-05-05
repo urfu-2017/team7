@@ -93,13 +93,18 @@ export default (socketServer, socket, currentUserId) => {
             const chat = await chatsRepo.getChatByInviteWord(inviteWord);
             if (!chat.userIds.includes(currentUserId)) {
                 await chatsRepo.joinChat(currentUserId, chat.chatId);
+                socket.join(chat.chatId);
+                chat.userIds.push(currentUserId);
             }
-            socket.emit(eventNames.server.CHAT, chat);
+
+            socketServer.to(chat.chatId).emit(eventNames.server.CHAT, chat);
         },
 
         async leaveChat({ userId, chatId }) {
             await chatsRepo.leaveChat(userId, chatId);
-            socket.emit(eventNames.server.USER_LEAVED_CHAT, { userId, chatId });
+            socketServer
+                .to(chatId)
+                .emit(eventNames.server.USER_LEAVED_CHAT, { userId, chatId });
         },
 
         async getUrlMeta(url) {
@@ -132,6 +137,20 @@ export default (socketServer, socket, currentUserId) => {
             currentUser.chatIds
                 .map(chatId => socket.broadcast.to(chatId))
                 .map(endpoint => endpoint.emit(eventNames.server.USER, currentUser));
+        },
+
+        async addReaction({ messageId, reaction }) {
+            await messagesRepo.addReaction({ messageId, userId: currentUserId, reaction });
+            const message = await messagesRepo.getMessage(messageId);
+            socket.emit(eventNames.server.UPDATE_MESSAGE, message);
+            socket.broadcast.to(message.chatId).emit(eventNames.server.UPDATE_MESSAGE, message);
+        },
+
+        async removeReaction({ messageId, reaction }) {
+            await messagesRepo.removeReaction({ messageId, userId: currentUserId, reaction });
+            const message = await messagesRepo.getMessage(messageId);
+            socket.emit(eventNames.server.UPDATE_MESSAGE, message);
+            socket.broadcast.to(message.chatId).emit(eventNames.server.UPDATE_MESSAGE, message);
         }
     };
 };

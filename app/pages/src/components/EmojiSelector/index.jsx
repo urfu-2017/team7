@@ -26,7 +26,12 @@ export default class EmojiSelector extends React.Component {
     };
 
     render() {
-        const { className, children, onSelected } = this.props;
+        const {
+            className,
+            children,
+            onSelected,
+            positionOfPopup
+        } = this.props;
 
         return (
             <Popup
@@ -36,7 +41,7 @@ export default class EmojiSelector extends React.Component {
                 onClose={this.handleClose}
                 onOpen={this.handleOpen}
                 on="click"
-                position="top center"
+                position={positionOfPopup || 'top center'}
                 as="table"
                 role="grid"
             >

@@ -45,6 +45,13 @@ export const createTables = async (knex) => {
         table.string('originalContent', MAX_MESSAGE_LENGTH);
         table.uuid('chatId').references('chat.chatId');
     });
+
+    await createTable('reactions', (table) => {
+        table.uuid('messageId').references('message.messageId');
+        table.uuid('userId').references('user.userId');
+        table.primary(['messageId', 'userId', 'reaction']);
+        table.string('reaction');
+    });
 };
 
 let knexInstance;

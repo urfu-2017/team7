@@ -20,12 +20,13 @@ export class Chat {
 }
 
 export class Message {
-    constructor(messageId, timestamp, authorUserId, content, originalContent, chatId) {
+    constructor(messageId, timestamp, authorUserId, content, originalContent, chatId, reactions) {
         this.messageId = messageId;
         this.timestamp = timestamp;
         this.authorUserId = authorUserId;
         this.content = content;
         this.originalContent = originalContent;
         this.chatId = chatId;
+        this.reactions = reactions;
     }
 }

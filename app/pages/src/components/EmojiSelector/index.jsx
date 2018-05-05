@@ -26,7 +26,12 @@ export default class EmojiSelector extends React.Component {
     };
 
     render() {
-        const { className, children, onSelected, positionOfPopup } = this.props;
+        const {
+            className,
+            children,
+            onSelected,
+            positionOfPopup
+        } = this.props;
 
         return (
             <Popup

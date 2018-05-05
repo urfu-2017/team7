@@ -23,9 +23,15 @@ class ReactionButton extends React.Component {
     }
 
     render() {
-        const { message, isHovering, inReactionBar, currentUserStore } = this.props;
+        const {
+            message,
+            isHovering,
+            inReactionBar,
+            currentUserStore
+        } = this.props;
         const visibility = isHovering && (!inReactionBar || message.reactions.length);
-        const positionOfPopup = !inReactionBar || (message.reactions && message.reactions.length) >= 4 ?
+        const positionOfPopup = !inReactionBar ||
+            (message.reactions && message.reactions.length) >= 4 ?
             'bottom right' : 'bottom left';
 
         return (

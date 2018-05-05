@@ -143,12 +143,14 @@ export default (socketServer, socket, currentUserId) => {
             await messagesRepo.addReaction({ messageId, userId: currentUserId, reaction });
             const message = await messagesRepo.getMessage(messageId);
             socket.emit(eventNames.server.UPDATE_MESSAGE, message);
+            socket.broadcast.to(message.chatId).emit(eventNames.server.UPDATE_MESSAGE, message);
         },
 
         async removeReaction({ messageId, reaction }) {
             await messagesRepo.removeReaction({ messageId, userId: currentUserId, reaction });
             const message = await messagesRepo.getMessage(messageId);
             socket.emit(eventNames.server.UPDATE_MESSAGE, message);
+            socket.broadcast.to(message.chatId).emit(eventNames.server.UPDATE_MESSAGE, message);
         }
     };
 };

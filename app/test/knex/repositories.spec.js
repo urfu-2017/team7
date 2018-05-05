@@ -261,3 +261,25 @@ test('can remove reaction', async () => {
 
     expect(reactionsAfterDelete).to.be.deep.equal([]);
 });
+
+test('add reaction dont create messages', async () => {
+    const userId1 = await loginUser(user1.githubId, user1.username);
+    const reaction1 = 'reaction1';
+    const reaction2 = 'reaction2';
+    const chat = await chatsRepo.createChat('чятик', 'avatarUrl');
+    await chatsRepo.joinChat(userId1, chat.chatId);
+    const msg1 = new Message(
+        '21111117-287a-46ec-8c67-8cc0c89eb77c', new Date(), userId1,
+        'privet1', 'privet1', chat.chatId, []
+    );
+    await messagesRepo.createMessage(msg1);
+    await messagesRepo.addReaction({
+        messageId: msg1.messageId, userId: userId1, reaction: reaction1
+    });
+    await messagesRepo.addReaction({
+        messageId: msg1.messageId, userId: userId1, reaction: reaction2
+    });
+    const messages = await messagesRepo.getMessagesFromChat(chat.chatId);
+
+    expect(messages.length).to.be.equal(1);
+});

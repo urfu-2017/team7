@@ -31,9 +31,11 @@ class AlarmsStore {
     }
 
     @action addAlarm(alarm) {
-        const newAlarm = { ...alarm, time: moment(alarm.time) };
-        this.alarms.push(newAlarm);
-        this.startCronJob(newAlarm);
+        if (typeof alarm.active === 'boolean' && moment(alarm.time).isValid() && alarm.id && alarm.voice) {
+            const newAlarm = { ...alarm, time: moment(alarm.time) };
+            this.alarms.push(newAlarm);
+            this.startCronJob(newAlarm);
+        }
     }
 
     @action setActiveAlarm(alarm) {

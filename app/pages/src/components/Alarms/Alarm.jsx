@@ -22,7 +22,7 @@ class Alarm extends React.PureComponent {
 
         return (
             <div className={css.alarm}>
-                <Image src={img} size="tiny" />
+                <Image src={img} size="tiny" style={{ height: '80px' }} />
                 <span>{time.format('HH:mm')}</span>
                 <Checkbox toggle defaultChecked={active} onChange={() => this.checkboxOnChange()} />
                 <Button color="red" onClick={() => this.buttonOnClick()}>

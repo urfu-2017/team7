@@ -1,6 +1,6 @@
 import { observable, action, computed } from 'mobx';
 import currentUserStore from './current-user';
-import { getMessages, onChat, getChatByInviteWord, getPrivateChat, leaveChat, onUserLeavedChat } from '../../../sockets/client';
+import { getMessages, onChat, getChatByInviteWord, leaveChat, onUserLeavedChat } from '../../../sockets/client';
 
 class ChatsStore {
     @observable activeChatId = null;
@@ -28,9 +28,6 @@ class ChatsStore {
         const chat = isSelfChat ?
             this.allChats.find(x => x.isPrivate && x.userIds.length === 1) :
             this.allChats.find(x => x.isPrivate && x.userIds.includes(userId));
-        if (!chat) {
-            getPrivateChat(userId);
-        }
 
         return chat || null;
     }
@@ -84,6 +81,9 @@ class ChatsStore {
         onUserLeavedChat(({ userId, chatId }) => {
             if (userId === this.me.userId) {
                 this.chatsById.delete(chatId);
+            } else {
+                const chat = this.chatsById.get(chatId);
+                chat.userIds = chat.userIds.filter(uid => uid !== userId);
             }
         });
     }

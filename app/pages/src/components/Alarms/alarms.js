@@ -1,23 +1,44 @@
-import ArtasAdd from './files/Artas/add.mp3';
-import UndeadAdd from './files/Undead/add.mp3';
+const Artas0 = '/static/alarms/Artas/0.mp3';
+const Artas1 = '/static/alarms/Artas/1.mp3';
+const Artas2 = '/static/alarms/Artas/2.mp3';
+const Artas3 = '/static/alarms/Artas/3.mp3';
+const ArtasRemove = '/static/alarms/Artas/remove.mp3';
+const ArtasAdd = '/static/alarms/Artas/add.mp3';
+const ArtasImg = '/static/alarms/Artas/img.jpg';
 
-import ArtasImg from './files/Artas/img.jpg';
-import UndeadImg from './files/Undead/img.jpg';
+const Undead0 = '/static/alarms/Undead/0.mp3';
+const Undead1 = '/static/alarms/Undead/1.mp3';
+const Undead2 = '/static/alarms/Undead/2.mp3';
+const Undead3 = '/static/alarms/Undead/3.mp3';
+const UndeadRemove = '/static/alarms/Undead/remove.mp3';
+const UndeadAdd = '/static/alarms/Undead/add.mp3';
+const UndeadImg = '/static/alarms/Undead/img.jpg';
 
-import UndeadRemove from './files/Undead/remove.mp3';
-import ArtasRemove from './files/Artas/remove.mp3';
+const Succubus0 = '/static/alarms/Succubus/0.mp3';
+const Succubus1 = '/static/alarms/Succubus/1.mp3';
+const Succubus2 = '/static/alarms/Succubus/2.mp3';
+const Succubus3 = '/static/alarms/Succubus/3.mp3';
+const SuccubusRemove = '/static/alarms/Succubus/remove.mp3';
+const SuccubusAdd = '/static/alarms/Succubus/add.mp3';
+const SuccubusImg = '/static/alarms/Succubus/img.jpg';
 
-import Artas0 from './files/Artas/0.mp3';
-import Artas1 from './files/Artas/1.mp3';
-import Artas2 from './files/Artas/2.mp3';
-import Artas3 from './files/Artas/3.mp3';
+const Thrall0 = '/static/alarms/Thrall/0.mp3';
+const Thrall1 = '/static/alarms/Thrall/1.mp3';
+const Thrall2 = '/static/alarms/Thrall/2.mp3';
+const Thrall3 = '/static/alarms/Thrall/3.mp3';
+const ThrallRemove = '/static/alarms/Thrall/remove.mp3';
+const ThrallAdd = '/static/alarms/Thrall/add.mp3';
+const ThrallImg = '/static/alarms/Thrall/img.jpg';
 
-import Undead0 from './files/Undead/0.mp3';
-import Undead1 from './files/Undead/1.mp3';
-import Undead2 from './files/Undead/2.mp3';
-import Undead3 from './files/Undead/3.mp3';
+const CenaShort = '/static/alarms/Cena/short.mp3';
+const CenaLong = '/static/alarms/Cena/long.mp3';
+const CenaImg = '/static/alarms/Cena/img.jpg';
 
-import Cant from './files/Common/cant.mp3';
+const DIMONShort = '/static/alarms/DIMON/short.mp3';
+const DIMONLong = '/static/alarms/DIMON/long.mp3';
+const DIMONImg = '/static/alarms/DIMON/img.jpg';
+
+const Cant = '/static/alarms/Common/cant.mp3';
 
 export const alarmsInfo = [
     {
@@ -27,7 +48,6 @@ export const alarmsInfo = [
         remove: ArtasRemove,
         sounds: [Artas0, Artas1, Artas2, Artas3],
         img: ArtasImg,
-        header: 'За Лордерон!',
         interval: 3000
     },
     {
@@ -37,8 +57,43 @@ export const alarmsInfo = [
         remove: UndeadRemove,
         sounds: [Undead0, Undead1, Undead2, Undead3],
         img: UndeadImg,
-        header: 'Мертвые идут!',
         interval: 3000
+    },
+    {
+        voice: 'Sucubus',
+        name: 'Суккуб',
+        add: SuccubusAdd,
+        remove: SuccubusRemove,
+        sounds: [Succubus0, Succubus1, Succubus2, Succubus3],
+        img: SuccubusImg,
+        interval: 2000
+    },
+    {
+        voice: 'Thrall',
+        name: 'Тралл',
+        add: ThrallAdd,
+        remove: ThrallRemove,
+        sounds: [Thrall0, Thrall1, Thrall2, Thrall3],
+        img: ThrallImg,
+        interval: 2000
+    },
+    {
+        voice: 'Cena',
+        name: 'Джон Сина',
+        add: CenaShort,
+        remove: CenaShort,
+        sounds: [CenaLong],
+        img: CenaImg,
+        interval: 10000
+    },
+    {
+        voice: 'DIMON',
+        name: 'ДИМОООООН',
+        add: DIMONShort,
+        remove: DIMONShort,
+        sounds: [DIMONLong],
+        img: DIMONImg,
+        interval: 10000
     }
 ];
 
@@ -60,7 +115,6 @@ export const stopSound = () => {
 
 export const playSoundSrc = (src) => {
     stopSound();
-    // eslint-disable-next-line
     sound = new Audio(src);
     sound.play();
 };

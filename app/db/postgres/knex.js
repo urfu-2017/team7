@@ -26,6 +26,7 @@ export const createTables = async (knex) => {
         table.uuid('chatId').primary();
         table.string('name', MAX_CHAT_NAME_LENGTH);
         table.boolean('isPrivate').notNullable();
+        table.boolean('isSelfChat').notNullable();
         table.string('inviteWord').unique();
         table.string('avatarUrl');
     });
@@ -43,6 +44,13 @@ export const createTables = async (knex) => {
         table.string('content', MAX_MESSAGE_LENGTH);
         table.string('originalContent', MAX_MESSAGE_LENGTH);
         table.uuid('chatId').references('chat.chatId');
+    });
+
+    await createTable('reactions', (table) => {
+        table.uuid('messageId').references('message.messageId');
+        table.uuid('userId').references('user.userId');
+        table.primary(['messageId', 'userId', 'reaction']);
+        table.string('reaction');
     });
 };
 

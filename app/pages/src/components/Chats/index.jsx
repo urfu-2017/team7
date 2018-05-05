@@ -30,6 +30,13 @@ class ChatList extends React.Component {
                 ],
                 ['desc', 'desc']
             );
+        const getLastMessageText = (chatId) => {
+            const text = messagesStore.getLastMessageText(chatId);
+
+            return text.startsWith('/s3/uploads') ?
+                'Изображение' :
+                <Markdown source={messagesStore.getLastMessageText(chatId)} />;
+        };
 
         return (
             <Menu as={List} size="large" style={{ boxShadow: 'none', border: 'none' }} vertical>
@@ -56,9 +63,7 @@ class ChatList extends React.Component {
                             key={chat.chatId}
                             isActive={chat === chatsStore.activeChat}
                             lastMessage={{
-                                text: <Markdown
-                                    source={messagesStore.getLastMessageText(chat.chatId)}
-                                />,
+                                text: getLastMessageText(chat.chatId),
                                 timestamp: messagesStore.getLastMessageTimestamp(chat.chatId)
                             }}
                             onClick={() => chatsStore.selectChat(chat.chatId)}

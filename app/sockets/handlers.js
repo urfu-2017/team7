@@ -2,7 +2,7 @@ import _ from 'lodash';
 import Promise from 'bluebird';
 import * as eventNames from './event-names';
 import { usersRepo, messagesRepo, chatsRepo } from '../db/postgres';
-import { createChat } from './chat-creator';
+import { createChat, createPrivateChat } from './chat-creator';
 import { createMessage } from './message-creator';
 import getMetadata from '../utils/url-metadata';
 import getWeather from '../utils/weather';
@@ -85,23 +85,26 @@ export default (socketServer, socket, currentUserId) => {
             await createMessage(socket, text, currentUserId, chatId);
         },
 
-        async getPrivateChat({ userId }) {
-            const chatId = await chatsRepo.getOrCreatePrivateChatId(currentUserId, userId);
-            const chat = await chatsRepo.getChatForUser(currentUserId, chatId);
-            socket.emit(eventNames.server.CHAT, chat);
+        async getOrCreatePrivateChat({ userId }) {
+            await createPrivateChat(socketServer, { currentUserId, userId });
         },
 
         async getChatByInviteWord({ inviteWord }) {
             const chat = await chatsRepo.getChatByInviteWord(inviteWord);
             if (!chat.userIds.includes(currentUserId)) {
                 await chatsRepo.joinChat(currentUserId, chat.chatId);
+                socket.join(chat.chatId);
+                chat.userIds.push(currentUserId);
             }
-            socket.emit(eventNames.server.CHAT, chat);
+
+            socketServer.to(chat.chatId).emit(eventNames.server.CHAT, chat);
         },
 
         async leaveChat({ userId, chatId }) {
             await chatsRepo.leaveChat(userId, chatId);
-            socket.emit(eventNames.server.USER_LEAVED_CHAT, { userId, chatId });
+            socketServer
+                .to(chatId)
+                .emit(eventNames.server.USER_LEAVED_CHAT, { userId, chatId });
         },
 
         async getUrlMeta(url) {
@@ -134,6 +137,20 @@ export default (socketServer, socket, currentUserId) => {
             currentUser.chatIds
                 .map(chatId => socket.broadcast.to(chatId))
                 .map(endpoint => endpoint.emit(eventNames.server.USER, currentUser));
+        },
+
+        async addReaction({ messageId, reaction }) {
+            await messagesRepo.addReaction({ messageId, userId: currentUserId, reaction });
+            const message = await messagesRepo.getMessage(messageId);
+            socket.emit(eventNames.server.UPDATE_MESSAGE, message);
+            socket.broadcast.to(message.chatId).emit(eventNames.server.UPDATE_MESSAGE, message);
+        },
+
+        async removeReaction({ messageId, reaction }) {
+            await messagesRepo.removeReaction({ messageId, userId: currentUserId, reaction });
+            const message = await messagesRepo.getMessage(messageId);
+            socket.emit(eventNames.server.UPDATE_MESSAGE, message);
+            socket.broadcast.to(message.chatId).emit(eventNames.server.UPDATE_MESSAGE, message);
         }
     };
 };

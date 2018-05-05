@@ -17,3 +17,8 @@
     padding-top: .5em;
     margin-top: .5em;
 }
+
+.members {
+   max-height: 400px;
+   overflow-y: auto;
+}

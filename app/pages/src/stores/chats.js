@@ -81,6 +81,9 @@ class ChatsStore {
         onUserLeavedChat(({ userId, chatId }) => {
             if (userId === this.me.userId) {
                 this.chatsById.delete(chatId);
+            } else {
+                const chat = this.chatsById.get(chatId);
+                chat.userIds = chat.userIds.filter(uid => uid !== userId);
             }
         });
     }

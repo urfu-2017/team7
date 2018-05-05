@@ -93,13 +93,18 @@ export default (socketServer, socket, currentUserId) => {
             const chat = await chatsRepo.getChatByInviteWord(inviteWord);
             if (!chat.userIds.includes(currentUserId)) {
                 await chatsRepo.joinChat(currentUserId, chat.chatId);
+                socket.join(chat.chatId);
+                chat.userIds.push(currentUserId);
             }
-            socket.emit(eventNames.server.CHAT, chat);
+
+            socketServer.to(chat.chatId).emit(eventNames.server.CHAT, chat);
         },
 
         async leaveChat({ userId, chatId }) {
             await chatsRepo.leaveChat(userId, chatId);
-            socket.emit(eventNames.server.USER_LEAVED_CHAT, { userId, chatId });
+            socketServer
+                .to(chatId)
+                .emit(eventNames.server.USER_LEAVED_CHAT, { userId, chatId });
         },
 
         async getUrlMeta(url) {

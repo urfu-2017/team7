@@ -22,11 +22,7 @@ class Reactions extends React.Component {
         return () => removeReaction(messageId, reaction);
     }
 
-    addFromPlus(messageId) {
-        return value => addReaction(messageId, value);
-    }
-
-    reformingReactions(reactions) {
+    reformingReactions(reactions, usersStore) {
         let reactionUsers = [];
 
         if (reactions) {
@@ -34,8 +30,12 @@ class Reactions extends React.Component {
                 .groupBy('reaction')
                 .map((values, reaction) => {
                     const users = [];
-                    values.forEach(value => users
-                        .push(this.props.usersStore.getUser(value.userId).username));
+                    values.forEach((value) => {
+                        const user = usersStore.getUser(value.userId);
+                        if (user) {
+                            users.push(user.username);
+                        }
+                    });
 
                     return { reaction, users };
                 })
@@ -48,8 +48,8 @@ class Reactions extends React.Component {
     }
 
     render() {
-        const { message, currentUserStore } = this.props;
-        const reactions = this.reformingReactions(message.reactions);
+        const { message, currentUserStore, usersStore } = this.props;
+        const reactions = this.reformingReactions(message.reactions, usersStore);
 
         return (
             <ReactHoverObserver className={css.reactionBar}>

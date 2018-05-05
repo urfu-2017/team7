@@ -10,6 +10,9 @@ export default class ImageUploader extends React.Component {
 
         return (
             <ReactS3Uploader
+                ref={(uploader) => {
+                    this.uploader = uploader;
+                }}
                 signingUrl="/s3/sign"
                 accept="image/*"
                 s3path={avatar ? 'avatars/' : 'images/'}
@@ -20,7 +23,13 @@ export default class ImageUploader extends React.Component {
                 }}
                 onProgress={onProgress}
                 onError={onError}
-                onFinish={onFinish}
+                onFinish={(e) => {
+                    this.uploader.clear();
+                    if (typeof onFinish === 'function') {
+                        onFinish(e);
+                    }
+                }
+                }
                 style={{ display: 'none' }}
                 id={inputId}
             />);

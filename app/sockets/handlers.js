@@ -132,6 +132,18 @@ export default (socketServer, socket, currentUserId) => {
             currentUser.chatIds
                 .map(chatId => socket.broadcast.to(chatId))
                 .map(endpoint => endpoint.emit(eventNames.server.USER, currentUser));
+        },
+
+        async addReaction({ messageId, reaction }) {
+            await messagesRepo.addReaction({ messageId, userId: currentUserId, reaction });
+            const message = await messagesRepo.getMessage(messageId);
+            socket.emit(eventNames.server.UPDATE_MESSAGE, message);
+        },
+
+        async removeReaction({ messageId, reaction }) {
+            await messagesRepo.removeReaction({ messageId, userId: currentUserId, reaction });
+            const message = await messagesRepo.getMessage(messageId);
+            socket.emit(eventNames.server.UPDATE_MESSAGE, message);
         }
     };
 };

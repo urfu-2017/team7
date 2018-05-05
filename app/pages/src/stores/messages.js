@@ -1,5 +1,5 @@
 import { observable, action } from 'mobx';
-import { onMessage, onMessagesList, onMessageSent, onMessageReceived, onMessageRevoked } from '../../../sockets/client';
+import { onMessage, onMessagesList, onMessageSent, onMessageReceived, onMessageRevoked, onMessageUpdate } from '../../../sockets/client';
 
 class MessagesStore {
     static messageStatuses = {
@@ -100,6 +100,10 @@ class MessagesStore {
 
         onMessageRevoked((message) => {
             this.setMessageStatus(message, MessagesStore.messageStatuses.REVOKED);
+        });
+
+        onMessageUpdate((message) => {
+            this.updateMessage(message);
         });
     }
 }

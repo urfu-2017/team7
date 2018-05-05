@@ -93,7 +93,7 @@ export default (socketServer, socket, currentUserId) => {
             const chat = await chatsRepo.getChatByInviteWord(inviteWord);
             if (!chat.userIds.includes(currentUserId)) {
                 await chatsRepo.joinChat(currentUserId, chat.chatId);
-
+                socket.join(chat.chatId);
                 chat.userIds.push(currentUserId);
             }
 

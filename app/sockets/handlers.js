@@ -7,6 +7,8 @@ import { createMessage } from './message-creator';
 import getMetadata from '../utils/url-metadata';
 import getWeather from '../utils/weather';
 import getLogger from '../utils/logger';
+import { getUsersSockets } from './utils';
+
 
 export const logger = getLogger('socket-server');
 
@@ -86,15 +88,23 @@ export default (socketServer, socket, currentUserId) => {
         },
 
         async getOrCreatePrivateChat({ userId }) {
-            await createPrivateChat(socketServer, { currentUserId, userId });
+            await createPrivateChat(socketServer, socket, { currentUserId, userId });
         },
 
         async getChatByInviteWord({ inviteWord }) {
             const chat = await chatsRepo.getChatByInviteWord(inviteWord);
+            const userIds = _.uniq([...chat.userIds, currentUserId]);
+            const newChat = { ...chat, userIds };
+            socket.emit(eventNames.server.CHAT, newChat);
             if (!chat.userIds.includes(currentUserId)) {
+                socket.join(chat.chatId);
+                const sockets = getUsersSockets(socketServer, chat.userIds);
+                sockets.forEach((otherSocket) => {
+                    otherSocket.emit(eventNames.server.CHAT, newChat);
+                    otherSocket.join(chat.chatId);
+                });
                 await chatsRepo.joinChat(currentUserId, chat.chatId);
             }
-            socket.emit(eventNames.server.CHAT, chat);
         },
 
         async leaveChat({ userId, chatId }) {

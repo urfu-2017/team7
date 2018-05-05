@@ -96,7 +96,7 @@ class Messages extends React.Component {
                                 </Comment.Metadata>
                                 <Comment.Text style={{ minHeight: '1em' }}>
                                     {message.content.startsWith('/s3/uploads') ?
-                                        <Image style={{ maxHeight: '30vh', width: 'auto' }} src={message.content} /> :
+                                        <Image style={{ maxHeight: '30vh', width: 'auto' }} src={message.content} onLoad={() => this.scroll()} /> :
                                         <Markdown source={message.content} needFormat />
                                     }
                                 </Comment.Text>

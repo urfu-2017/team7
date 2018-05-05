@@ -5,3 +5,8 @@
     opacity: 0.2;
     flex: 0 0 auto;
 }
+
+.layout__iconlink:hover {
+    color: #000;
+    opacity: 1;
+}

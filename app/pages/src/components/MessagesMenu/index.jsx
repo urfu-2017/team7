@@ -45,7 +45,7 @@ export default class MessagesMenu extends React.Component {
                                 <Modal
                                     trigger={
                                         <Dropdown.Item>
-                                            <Header size="tiny">Участники</Header>
+                                            Участники
                                         </Dropdown.Item>
                                     }
                                     size="mini"
@@ -54,7 +54,6 @@ export default class MessagesMenu extends React.Component {
                                     <Modal.Header>
                                         <Icon name="users" />
                                         Участники ({users.length})
-                                        <Icon name="user plus" link style={{ float: 'right', opacity: '.5' }} />
                                     </Modal.Header>
                                     <Modal.Content>
                                         <List divided size="huge" verticalAlign="middle" className={css.members}>
